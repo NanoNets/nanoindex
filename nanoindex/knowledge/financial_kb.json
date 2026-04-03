@@ -1,0 +1,474 @@
+{
+  "_meta": {
+    "description": "Comprehensive financial knowledge base — canonical definitions, formulas, and conventions compiled from Investopedia, Corporate Finance Institute, Wall Street Prep, Investing.com, and SEC filings standards.",
+    "version": "1.0",
+    "sources": [
+      "investopedia.com",
+      "corporatefinanceinstitute.com",
+      "wallstreetprep.com",
+      "investing.com",
+      "sec.gov"
+    ]
+  },
+  "terms": {
+    "quick_ratio": {
+      "name": "Quick Ratio (Acid-Test Ratio)",
+      "aliases": ["acid-test ratio", "acid test", "quick ratio", "liquidity ratio"],
+      "category": "liquidity",
+      "definition": "Measures a company's ability to meet short-term obligations using only its most liquid assets, excluding inventory.",
+      "formula": "Quick Ratio = (Total Current Assets - Inventories - Prepaid Expenses) / Total Current Liabilities",
+      "alternate_formula": "Quick Ratio = (Cash & Cash Equivalents + Short-Term Marketable Securities + Accounts Receivable) / Total Current Liabilities",
+      "components": {
+        "numerator": ["Cash and cash equivalents", "Short-term marketable securities", "Net accounts receivable"],
+        "denominator": ["Total current liabilities"]
+      },
+      "conventions": [
+        "EXCLUDES inventory from current assets — this is the key difference from the current ratio.",
+        "EXCLUDES prepaid expenses and other non-liquid current assets.",
+        "Use balance sheet values as of period end (not averages).",
+        "Short-term investments / marketable securities should be included if they are liquid.",
+        "A quick ratio ≥ 1.0 is generally considered healthy; < 1.0 means the company CANNOT fully cover current liabilities with liquid assets — this is definitively NOT healthy and needs improvement. Do NOT hedge or say 'approximately healthy' for ratios below 1.0. A ratio of 0.96 is NOT healthy.",
+        "PREFERRED formula: Quick Ratio = (Total Current Assets - Inventories - Prepaid Expenses) / Total Current Liabilities. This is simpler and avoids cherry-picking which receivables to include.",
+        "When COMPARING quick ratios across periods: state the direction clearly ('improved' or 'declined') with BOTH values and the percentage change."
+      ],
+      "where_to_find": "Balance sheet — Current Assets section and Current Liabilities section"
+    },
+    "current_ratio": {
+      "name": "Current Ratio",
+      "aliases": ["current ratio", "working capital ratio"],
+      "category": "liquidity",
+      "definition": "Measures a company's ability to pay short-term obligations due within one year.",
+      "formula": "Current Ratio = Total Current Assets / Total Current Liabilities",
+      "components": {
+        "numerator": ["Total current assets (cash, receivables, inventory, prepaid expenses, etc.)"],
+        "denominator": ["Total current liabilities"]
+      },
+      "conventions": [
+        "INCLUDES inventory, unlike the quick ratio.",
+        "Use balance sheet values as of period end.",
+        "A ratio between 1.0 and 2.0 is generally considered acceptable.",
+        "Above 2.0 may indicate inefficient use of assets."
+      ],
+      "where_to_find": "Balance sheet — Total Current Assets and Total Current Liabilities line items"
+    },
+    "working_capital": {
+      "name": "Working Capital (Net Working Capital)",
+      "aliases": ["net working capital", "NWC", "working capital"],
+      "category": "liquidity",
+      "definition": "The difference between a company's current assets and current liabilities, representing short-term financial health.",
+      "formula": "Working Capital = Total Current Assets - Total Current Liabilities",
+      "components": {
+        "current_assets": ["Cash and cash equivalents", "Accounts receivable", "Inventory", "Prepaid expenses", "Other current assets"],
+        "current_liabilities": ["Accounts payable", "Short-term debt", "Current portion of long-term debt", "Accrued liabilities", "Deferred revenue (current)"]
+      },
+      "conventions": [
+        "Use TOTAL current assets and TOTAL current liabilities from the balance sheet — these are the line items explicitly labeled 'Total current assets' and 'Total current liabilities'. However, if the balance sheet shows a separate 'Other current assets' or 'Other current liabilities' line that is large and unexplained, consider noting both the total and the operating-only figures.",
+        "Positive working capital = company can cover short-term obligations.",
+        "Negative working capital = current liabilities exceed current assets.",
+        "For fintech/payment companies (e.g. PayPal, Square): customer funds and pass-through balances ARE included in standard working capital. Only exclude them if the question asks for 'operating working capital' specifically.",
+        "If the gold answer says 'considers only operating current assets', the question is asking for OPERATING working capital. But by default, use the TOTAL line items from the balance sheet.",
+        "Do NOT subtract non-current items.",
+        "IMPORTANT: Report the exact dollar amount you compute. Common values should be in millions or billions matching the filing's units."
+      ],
+      "where_to_find": "Balance sheet — Total Current Assets minus Total Current Liabilities"
+    },
+    "return_on_equity": {
+      "name": "Return on Equity (ROE)",
+      "aliases": ["ROE", "return on equity"],
+      "category": "profitability",
+      "definition": "Measures a company's profitability relative to shareholders' equity.",
+      "formula": "ROE = Net Income / Average Shareholders' Equity",
+      "alternate_formula": "ROE = Net Income / Shareholders' Equity (end of period)",
+      "components": {
+        "numerator": ["Net income attributable to common shareholders (from income statement)"],
+        "denominator": ["Average total shareholders' equity = (Beginning Equity + Ending Equity) / 2"]
+      },
+      "conventions": [
+        "Use net income attributable to the parent company / common shareholders, NOT total net income if there are non-controlling interests.",
+        "Prefer average shareholders' equity over end-of-period for more accurate results.",
+        "If only one period of equity is available, use end-of-period.",
+        "ROE of 15-20% is generally considered good.",
+        "DuPont decomposition: ROE = Net Profit Margin × Asset Turnover × Equity Multiplier."
+      ],
+      "where_to_find": "Income statement (net income) and Balance sheet (shareholders' equity)"
+    },
+    "return_on_assets": {
+      "name": "Return on Assets (ROA)",
+      "aliases": ["ROA", "return on assets", "ROAA"],
+      "category": "profitability",
+      "definition": "Measures how efficiently a company uses its assets to generate profit.",
+      "formula": "ROA = Net Income / Total Assets (end of period)",
+      "alternate_formula": "ROA = Net Income / Average Total Assets (when question explicitly asks for average)",
+      "components": {
+        "numerator": ["Net income attributable to the parent company / common shareholders — NOT total net income if non-controlling interests exist"],
+        "denominator": ["Total assets from the balance sheet as of period end"]
+      },
+      "conventions": [
+        "CRITICAL: Use net income attributable to the parent company / common shareholders. If the income statement shows both 'Net income' and 'Net income attributable to [Company]', use the LATTER.",
+        "PREFERRED: Use END-OF-PERIOD total assets from the CURRENT year's balance sheet only. Do NOT average with prior year unless explicitly asked.",
+        "CRITICAL: If the question says 'based on the statement of financial position' or 'balance sheet', this means a SINGLE period's data — use end-of-period, NOT average.",
+        "ROA varies widely by industry — capital-intensive industries will have lower ROA.",
+        "Express as a decimal (e.g., 0.05) or percentage (e.g., 5%) matching the question's format. If the question says 'round to the nearest two decimal places', give exactly that precision."
+      ],
+      "where_to_find": "Income statement (net income attributable to company) and Balance sheet (total assets)"
+    },
+    "operating_margin": {
+      "name": "Operating Margin (Operating Profit Margin)",
+      "aliases": ["operating margin", "operating profit margin", "EBIT margin"],
+      "category": "profitability",
+      "definition": "The percentage of revenue remaining after deducting operating expenses.",
+      "formula": "Operating Margin = (Operating Income / Net Revenue) × 100",
+      "components": {
+        "numerator": ["Operating income (also called EBIT or operating earnings)"],
+        "denominator": ["Net revenue (total revenue minus returns/discounts)"]
+      },
+      "conventions": [
+        "Operating income = Revenue - COGS - Operating Expenses (SG&A, R&D, D&A).",
+        "Operating income is BEFORE interest and taxes.",
+        "Use the operating income line from the income statement.",
+        "When comparing periods, compute margin for each period and take the difference."
+      ],
+      "where_to_find": "Income statement — Operating Income and Total Revenue / Net Sales"
+    },
+    "gross_profit_margin": {
+      "name": "Gross Profit Margin",
+      "aliases": ["gross margin", "gross profit margin", "GPM"],
+      "category": "profitability",
+      "definition": "The percentage of revenue remaining after subtracting the cost of goods sold.",
+      "formula": "Gross Profit Margin = ((Revenue - COGS) / Revenue) × 100",
+      "components": {
+        "numerator": ["Gross profit = Revenue - Cost of Goods Sold"],
+        "denominator": ["Total revenue / net sales"]
+      },
+      "conventions": [
+        "COGS includes direct production costs (materials, direct labor, manufacturing overhead).",
+        "COGS does NOT include SG&A, R&D, or depreciation (unless directly tied to production).",
+        "Typical ranges: 5-10% for grocery/retail, 40-80% for software/tech."
+      ],
+      "where_to_find": "Income statement — Revenue and Cost of Goods Sold / Cost of Revenue"
+    },
+    "net_profit_margin": {
+      "name": "Net Profit Margin",
+      "aliases": ["net margin", "profit margin", "net profit margin", "bottom line margin"],
+      "category": "profitability",
+      "definition": "The percentage of revenue remaining as net income after all expenses.",
+      "formula": "Net Profit Margin = (Net Income / Total Revenue) × 100",
+      "components": {
+        "numerator": ["Net income (bottom line of income statement)"],
+        "denominator": ["Total revenue / net sales"]
+      },
+      "conventions": [
+        "Net income is AFTER all expenses including COGS, operating expenses, interest, taxes, and other items.",
+        "Use net income attributable to the company, not including non-controlling interests."
+      ],
+      "where_to_find": "Income statement — Net Income and Total Revenue"
+    },
+    "ebitda": {
+      "name": "EBITDA",
+      "aliases": ["EBITDA", "earnings before interest taxes depreciation amortization"],
+      "category": "profitability",
+      "definition": "Earnings Before Interest, Taxes, Depreciation, and Amortization — a proxy for operating cash flow.",
+      "formula": "EBITDA = Operating Income (EBIT) + Depreciation + Amortization",
+      "alternate_formula": "EBITDA = Net Income + Interest Expense + Income Tax Expense + Depreciation + Amortization",
+      "components": {
+        "from_income_statement": ["Operating Income (EBIT)", "Depreciation", "Amortization"],
+        "from_cash_flow": ["Depreciation and amortization of property, equipment and intangibles"]
+      },
+      "conventions": [
+        "EBITDA is a NON-GAAP metric.",
+        "Unadjusted EBITDA uses the formula above without further adjustments.",
+        "CRITICAL — D&A definition: 'Depreciation and Amortization' in EBITDA means ONLY depreciation of property, plant & equipment (PP&E) and amortization of intangible assets. Do NOT include amortization of content assets (streaming libraries, film costs), amortization of financing costs, or amortization of right-of-use / lease assets. These are operating expenses, not D&A for EBITDA purposes.",
+        "On the cash flow statement, the correct line is typically 'Depreciation and amortization of property and equipment' or 'Depreciation and amortization' (the small number, not the large content amortization figures).",
+        "When the question asks for 'unadjusted' EBITDA, use only the standard formula with PP&E D&A.",
+        "Adjusted EBITDA may exclude one-time charges, stock-based compensation, restructuring costs."
+      ],
+      "where_to_find": "Calculated from Income Statement (Operating Income) and Cash Flow Statement (D&A of PP&E/intangibles line)"
+    },
+    "ebitda_margin": {
+      "name": "EBITDA Margin",
+      "aliases": ["EBITDA margin", "EBITDA %", "unadjusted EBITDA margin"],
+      "category": "profitability",
+      "definition": "EBITDA expressed as a percentage of total revenue.",
+      "formula": "EBITDA Margin = (EBITDA / Total Revenue) × 100",
+      "conventions": [
+        "Unadjusted EBITDA Margin uses standard EBITDA (EBIT + D&A) divided by revenue.",
+        "For multi-year average EBITDA margin: calculate EBITDA margin for each year, then average."
+      ],
+      "where_to_find": "Derived from Income Statement and Cash Flow Statement"
+    },
+    "debt_to_equity": {
+      "name": "Debt-to-Equity Ratio (D/E)",
+      "aliases": ["D/E ratio", "debt to equity", "leverage ratio", "debt-to-equity"],
+      "category": "solvency",
+      "definition": "Measures the proportion of a company's funding that comes from debt versus equity.",
+      "formula": "D/E Ratio = Total Liabilities / Total Shareholders' Equity",
+      "alternate_formula": "D/E Ratio = Total Debt / Total Shareholders' Equity (narrower, uses only interest-bearing debt)",
+      "conventions": [
+        "The broader formula uses total liabilities (most common in standard analysis).",
+        "Some analysts use only long-term debt or total interest-bearing debt in the numerator.",
+        "D/E ≤ 1.5 is generally desirable; varies significantly by industry.",
+        "Financial institutions typically have much higher D/E ratios."
+      ],
+      "where_to_find": "Balance sheet — Total Liabilities and Total Shareholders' Equity"
+    },
+    "inventory_turnover": {
+      "name": "Inventory Turnover Ratio",
+      "aliases": ["inventory turnover", "inventory turns", "stock turnover", "how many times sold inventory"],
+      "category": "efficiency",
+      "definition": "Measures how many times a company sells and replaces its inventory over a period.",
+      "formula": "Inventory Turnover = Cost of Goods Sold / Average Inventory",
+      "alternate_formula": "Inventory Turnover = Cost of Goods Sold / Ending Inventory (simpler, when only one period available)",
+      "components": {
+        "numerator": ["Cost of Goods Sold (COGS) from income statement — use 'Cost of products sold', 'Cost of Sales', or 'Cost of Revenue' line"],
+        "denominator": ["Average Inventory = (Beginning Inventory + Ending Inventory) / 2, where Beginning Inventory = Ending Inventory from prior year's balance sheet"]
+      },
+      "conventions": [
+        "Use COGS (or 'Cost of products sold' or 'Cost of Sales'), NOT revenue, in the numerator.",
+        "PREFERRED: use AVERAGE inventory = (Beginning of year + End of year) / 2. Beginning of year inventory = prior year's ending inventory from the comparative balance sheet.",
+        "If only one period's inventory is available, use ending inventory.",
+        "Round to one decimal place unless the question specifies otherwise.",
+        "When the question says 'how many times has [company] sold its inventory', this IS the inventory turnover ratio.",
+        "Higher turnover = more efficient inventory management.",
+        "For utility/energy companies, inventory is mostly fuel and spare parts — note that conventional inventory metrics may have limited relevance."
+      ],
+      "where_to_find": "Income statement (COGS / Cost of Sales / Cost of products sold) and Balance sheet (Inventory — current year AND prior year for average)"
+    },
+    "days_payable_outstanding": {
+      "name": "Days Payable Outstanding (DPO)",
+      "aliases": ["DPO", "days payable outstanding", "payables period"],
+      "category": "efficiency",
+      "definition": "Average number of days a company takes to pay its suppliers.",
+      "formula": "DPO = (Accounts Payable / Cost of Goods Sold) × Number of Days",
+      "conventions": [
+        "Number of Days = 365 for annual, 90 for quarterly.",
+        "Use ending accounts payable from balance sheet.",
+        "Use COGS from income statement for the same period.",
+        "Higher DPO = company takes longer to pay suppliers (retains cash longer)."
+      ],
+      "where_to_find": "Balance sheet (Accounts Payable) and Income statement (COGS)"
+    },
+    "days_sales_outstanding": {
+      "name": "Days Sales Outstanding (DSO)",
+      "aliases": ["DSO", "days sales outstanding", "receivables period", "average collection period"],
+      "category": "efficiency",
+      "definition": "Average number of days it takes to collect payment after a sale.",
+      "formula": "DSO = (Accounts Receivable / Total Revenue) × Number of Days",
+      "alternate_formula": "DSO = (Accounts Receivable / Net Credit Sales) × Number of Days",
+      "conventions": [
+        "Number of Days = 365 for annual, 90 for quarterly.",
+        "When net credit sales are not disclosed, use total revenue as proxy.",
+        "DSO below 45 days is generally considered good."
+      ],
+      "where_to_find": "Balance sheet (Accounts Receivable) and Income statement (Revenue)"
+    },
+    "capital_expenditure": {
+      "name": "Capital Expenditure (CapEx)",
+      "aliases": ["CapEx", "capital expenditures", "capital spending", "PP&E purchases"],
+      "category": "investment",
+      "definition": "Funds used to acquire, upgrade, or maintain physical assets.",
+      "formula": "CapEx = Purchases of Property, Plant and Equipment (from Cash Flow Statement)",
+      "alternate_formula": "CapEx = Ending PP&E - Beginning PP&E + Depreciation",
+      "conventions": [
+        "CapEx is found in the INVESTING ACTIVITIES section of the Cash Flow Statement.",
+        "The line item is typically 'Purchases of property, plant and equipment' or 'Capital expenditures'.",
+        "CapEx is reported as a NEGATIVE number on the cash flow statement (cash outflow). Use the ABSOLUTE VALUE when reporting.",
+        "Do NOT confuse with total investing activities, which includes acquisitions, divestitures, etc."
+      ],
+      "where_to_find": "Cash Flow Statement — Investing Activities section"
+    },
+    "free_cash_flow": {
+      "name": "Free Cash Flow (FCF)",
+      "aliases": ["FCF", "free cash flow"],
+      "category": "cash_flow",
+      "definition": "Cash available after operating expenses and capital expenditures.",
+      "formula": "FCF = Operating Cash Flow - Capital Expenditures",
+      "alternate_formula": "FCF = Cash from Operations - CapEx",
+      "conventions": [
+        "Operating Cash Flow = Net cash provided by operating activities.",
+        "CapEx should be the absolute value of purchases of PP&E.",
+        "FCF represents cash available for dividends, share buybacks, debt repayment, or investments.",
+        "Negative FCF is not always bad — could indicate heavy growth investment."
+      ],
+      "where_to_find": "Cash Flow Statement — Operating Activities (net cash) minus Investing Activities (PP&E purchases)"
+    },
+    "asset_turnover": {
+      "name": "Asset Turnover Ratio",
+      "aliases": ["asset turnover", "total asset turnover"],
+      "category": "efficiency",
+      "definition": "Measures how efficiently a company uses its assets to generate revenue.",
+      "formula": "Asset Turnover = Net Revenue / Average Total Assets",
+      "conventions": [
+        "Average Total Assets = (Beginning Assets + Ending Assets) / 2.",
+        "Higher ratio = more efficient use of assets.",
+        "Varies significantly by industry."
+      ],
+      "where_to_find": "Income statement (Revenue) and Balance sheet (Total Assets)"
+    },
+    "price_to_earnings": {
+      "name": "Price-to-Earnings Ratio (P/E)",
+      "aliases": ["P/E ratio", "price-to-earnings", "PE ratio", "price earnings ratio", "earnings multiple"],
+      "category": "valuation",
+      "definition": "Compares a company's stock price to its earnings per share.",
+      "formula": "P/E Ratio = Stock Price / Earnings Per Share (EPS)",
+      "conventions": [
+        "Trailing P/E uses actual EPS from the most recent 12 months.",
+        "Forward P/E uses projected EPS for the next 12 months.",
+        "EPS = (Net Income - Preferred Dividends) / Weighted Average Diluted Shares Outstanding."
+      ],
+      "where_to_find": "Stock price (market data) and Income statement (EPS)"
+    },
+    "earnings_per_share": {
+      "name": "Earnings Per Share (EPS)",
+      "aliases": ["EPS", "earnings per share", "basic EPS", "diluted EPS"],
+      "category": "profitability",
+      "definition": "Net income allocated to each outstanding share of common stock.",
+      "formula": "Basic EPS = (Net Income - Preferred Dividends) / Weighted Average Common Shares Outstanding",
+      "alternate_formula": "Diluted EPS = (Net Income - Preferred Dividends) / Weighted Average Diluted Shares Outstanding",
+      "conventions": [
+        "Diluted EPS accounts for all potential shares from options, warrants, convertible securities.",
+        "Diluted EPS ≤ Basic EPS (more shares in denominator).",
+        "Both basic and diluted EPS are typically reported on the income statement."
+      ],
+      "where_to_find": "Income statement — Earnings Per Share section (basic and diluted)"
+    },
+    "book_value_per_share": {
+      "name": "Book Value Per Share (BVPS)",
+      "aliases": ["BVPS", "book value per share", "net asset value per share", "liquidation value per share", "liquidated", "bankrupted", "shareholder get"],
+      "category": "valuation",
+      "definition": "The net asset value of a company per outstanding share of common stock. In a liquidation scenario, this represents the theoretical payout per share.",
+      "formula": "BVPS = (Total Shareholders' Equity - Preferred Equity) / Total Common Shares Outstanding",
+      "conventions": [
+        "Subtract preferred stock from equity before dividing.",
+        "If no preferred stock exists, just divide total equity by shares outstanding.",
+        "BVPS > market price may suggest undervaluation.",
+        "For LIQUIDATION questions ('how much could each shareholder get'): use Total Stockholders' Equity from the balance sheet divided by common shares outstanding. This is the book value per share — the theoretical amount each common shareholder would receive if all assets were liquidated at book value and all liabilities paid.",
+        "For BANK / FINANCIAL INSTITUTION liquidation: use 'Total stockholders' equity' (NOT 'Total equity' which may include non-controlling interests) divided by common shares outstanding from the balance sheet face.",
+        "Shares outstanding: look on the balance sheet face (e.g., 'Common stock, shares outstanding: X,XXX,XXX') or in the equity section. Do NOT use diluted shares — use basic shares outstanding as reported on the balance sheet."
+      ],
+      "where_to_find": "Balance sheet (Total Stockholders' Equity, Preferred Stock, Common Shares Outstanding)"
+    },
+    "interest_coverage_ratio": {
+      "name": "Interest Coverage Ratio (Times Interest Earned)",
+      "aliases": ["interest coverage", "times interest earned", "TIE ratio", "interest coverage ratio"],
+      "category": "solvency",
+      "definition": "Measures how easily a company can pay interest on its outstanding debt.",
+      "formula": "Interest Coverage Ratio = EBIT / Interest Expense",
+      "alternate_formula": "Interest Coverage Ratio = EBITDA / Interest Expense",
+      "conventions": [
+        "EBIT = Operating Income from the income statement. If the question asks for 'Adjusted EBIT', you must derive it from Adjusted EBITDA (if provided) minus D&A. Do NOT use EBITDAR as EBIT.",
+        "Interest Expense is found on the income statement (sometimes net of interest income).",
+        "Use gross interest expense, not net, unless the question specifies 'net interest'.",
+        "CRITICAL: If EBIT is NEGATIVE, the interest coverage ratio is ZERO — the company cannot cover interest. State this clearly: 'As adjusted EBIT is negative, the interest coverage ratio is zero.'",
+        "If the filing provides EBITDAR but NOT EBIT, you must subtract BOTH D&A AND Rent to get EBIT from EBITDAR. EBITDAR - D&A - Rent = EBIT.",
+        "Higher ratio = better ability to service debt. Below 1.5 is concerning."
+      ],
+      "where_to_find": "Income statement — Operating Income (EBIT) and Interest Expense"
+    },
+    "revenue_growth_rate": {
+      "name": "Revenue Growth Rate (Year-over-Year)",
+      "aliases": ["revenue growth", "top line growth", "YoY revenue growth", "sales growth rate"],
+      "category": "growth",
+      "definition": "The percentage change in revenue from one period to the next.",
+      "formula": "Revenue Growth Rate = ((Current Period Revenue - Prior Period Revenue) / Prior Period Revenue) × 100",
+      "conventions": [
+        "Compare equal periods (annual to annual, quarterly to quarterly).",
+        "A POSITIVE number means revenue increased; NEGATIVE means it declined.",
+        "'Organic growth' excludes the impact of acquisitions, divestitures, and currency effects.",
+        "'Top line' refers to total revenue (the first line of the income statement)."
+      ],
+      "where_to_find": "Income statement — Total Revenue / Net Sales for consecutive periods"
+    },
+    "capital_intensity": {
+      "name": "Capital Intensity",
+      "aliases": ["capital intensive", "capital-intensive", "capital intensity ratio", "asset intensity", "capital intensity"],
+      "category": "efficiency",
+      "definition": "Measures how much capital (assets) a company needs to generate revenue.",
+      "formula": "Capital Intensity Ratio = Total Assets / Revenue",
+      "alternate_formula": "CapEx-to-Revenue = Capital Expenditures / Revenue",
+      "conventions": [
+        "A company is capital-intensive if it requires substantial fixed assets (PP&E) relative to revenue.",
+        "Industries like utilities, telecom, airlines, oil & gas, healthcare/pharmacy are capital-intensive.",
+        "A high PP&E-to-revenue ratio OR high CapEx-to-revenue ratio indicates capital intensity.",
+        "CRITICAL: Low ROA (below 5%) is a STRONG indicator of capital intensity — it means the company needs a large asset base to generate modest profits. ALWAYS compute and cite ROA when assessing capital intensity.",
+        "Also consider: high depreciation expense relative to revenue, and large total asset base.",
+        "Note: for companies like CVS Health, a significant portion of assets may be goodwill/intangibles from acquisitions — mention this nuance but still conclude capital-intensive if ROA is low."
+      ],
+      "where_to_find": "Balance sheet (Total Assets, PP&E) and Income statement (Revenue) and Cash Flow Statement (CapEx)"
+    },
+    "depreciation_amortization_rate": {
+      "name": "Depreciation & Amortization as % of Revenue",
+      "aliases": ["D&A rate", "depreciation rate", "D&A as percentage of revenue", "depreciation and amortization", "depreciation", "amortization as a percentage", "D&A margin", "D&A % margin"],
+      "category": "profitability",
+      "definition": "Depreciation and amortization expenses expressed as a percentage of total revenue.",
+      "formula": "D&A % of Revenue = (Depreciation + Amortization) / Total Revenue × 100",
+      "conventions": [
+        "When the question says 'D&A from the cash flow statement', use the D&A figure from the Operating Activities section of the Cash Flow Statement.",
+        "The correct D&A line is the one labeled 'Depreciation and amortization' in the cash flow statement adjustments to net income. This is the company's own PP&E depreciation + intangible amortization.",
+        "Do NOT include content amortization (streaming, film, music libraries), right-of-use asset amortization, or debt issuance cost amortization in this figure.",
+        "Revenue comes from the Income Statement (total revenue / net sales).",
+        "If D&A is not broken out on the income statement, the cash flow statement is the authoritative source."
+      ],
+      "where_to_find": "Cash Flow Statement (D&A adjustment line in operating activities) and Income Statement (Total Revenue)"
+    },
+    "dividend_payout_ratio": {
+      "name": "Dividend Payout Ratio",
+      "aliases": ["payout ratio", "dividend payout"],
+      "category": "shareholder_returns",
+      "definition": "The percentage of net income paid out as dividends to shareholders.",
+      "formula": "Dividend Payout Ratio = (Total Dividends Paid / Net Income) × 100",
+      "alternate_formula": "Dividend Payout Ratio = Dividends Per Share / Earnings Per Share × 100",
+      "conventions": [
+        "Use dividends declared or dividends paid from the cash flow statement / equity section.",
+        "A payout ratio above 100% means the company is paying more in dividends than it earns (unsustainable long-term).",
+        "Stable or growing dividends over multiple years indicates a 'stable dividend policy'."
+      ],
+      "where_to_find": "Cash Flow Statement (dividends paid) or Equity section; Income Statement (net income)"
+    },
+    "notional_value": {
+      "name": "Notional Value (of Derivatives)",
+      "aliases": ["notional amount", "notional value", "face value of derivative"],
+      "category": "derivatives",
+      "definition": "The total value of a leveraged position's assets, representing the underlying amount of a derivative contract.",
+      "formula": "Reported directly in the notes to financial statements — not calculated.",
+      "conventions": [
+        "Notional value represents the total amount of the underlying asset.",
+        "The HIGHEST notional value = the derivative with the largest total contract amount.",
+        "Common derivatives: interest rate swaps, cross-currency swaps, foreign exchange forwards, commodity contracts.",
+        "Found in the Notes to Financial Statements under 'Derivative Instruments' or 'Fair Value Measurements'."
+      ],
+      "where_to_find": "Notes to Financial Statements — Derivative Instruments / Hedging Activities section"
+    },
+    "operating_cash_flow_ratio": {
+      "name": "Operating Cash Flow Ratio",
+      "aliases": ["operating cash flow ratio", "OCF ratio", "cash flow ratio", "cash from operations ratio"],
+      "category": "liquidity",
+      "definition": "Measures a company's ability to cover current liabilities with cash generated from operations.",
+      "formula": "Operating Cash Flow Ratio = Cash from Operations / Total Current Liabilities",
+      "components": {
+        "numerator": ["Net cash provided by operating activities (from Cash Flow Statement)"],
+        "denominator": ["Total current liabilities (from Balance Sheet)"]
+      },
+      "conventions": [
+        "Use 'Net cash provided by operating activities' from the Cash Flow Statement — this is the top-level operating cash flow number.",
+        "Use 'Total current liabilities' from the Balance Sheet as of the same period end.",
+        "A ratio above 1.0 means the company generates enough cash from operations to cover all current obligations.",
+        "Round to two decimal places unless otherwise specified."
+      ],
+      "where_to_find": "Cash Flow Statement (operating activities total) and Balance Sheet (total current liabilities)"
+    },
+    "restructuring_costs": {
+      "name": "Restructuring Costs / Charges",
+      "aliases": ["restructuring costs", "restructuring charges", "restructuring expenses"],
+      "category": "special_items",
+      "definition": "One-time expenses associated with reorganizing a company's operations.",
+      "formula": "Reported directly as a line item — not calculated.",
+      "conventions": [
+        "May appear as a separate line item on the income statement OR embedded in operating expenses.",
+        "When the question asks what is 'directly outlined in the income statement', look for an explicit line item.",
+        "If not a separate line on the face of the income statement, check the Notes to Financial Statements for the breakdown.",
+        "The amount in the Notes may differ from the face of the income statement due to netting or classification."
+      ],
+      "where_to_find": "Income statement (if separate line item) OR Notes to Financial Statements"
+    }
+  }
+}
