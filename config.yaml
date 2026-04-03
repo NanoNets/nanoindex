@@ -1,0 +1,27 @@
+# NanoIndex default configuration
+# Override via environment variables or NanoIndexConfig constructor.
+
+nanonets_api_key: null          # Required — or set NANONETS_API_KEY env var
+
+llm_base_url: "https://extraction-api.nanonets.com/v1"
+llm_api_key: null               # Defaults to nanonets_api_key
+llm_model: "nanonets-ocr-3"
+
+# Reasoning LLM — used for retrieval + answer generation.
+# Set these to use a more capable model (GPT-4o, Claude, Gemini, etc.)
+# for search and answering while keeping the default model for enrichment.
+# When null, falls back to the default LLM above.
+reasoning_llm_base_url: null
+reasoning_llm_api_key: null
+reasoning_llm_model: null
+
+confidence_threshold: 0.7       # Drop bounding-box elements below this score
+min_node_tokens: 50             # Merge nodes smaller than this into parent
+max_node_tokens: 20000          # Recursively split nodes larger than this
+max_node_pages: 10              # Page-span threshold for LLM-based splitting
+split_strategy: "hybrid"        # "heuristic", "llm", or "hybrid"
+
+add_summaries: true
+add_doc_description: false
+add_node_text: false
+summary_model: null             # Override model used for summaries
