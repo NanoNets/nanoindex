@@ -1,0 +1,1348 @@
+[
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Document Name",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Document Name\" that should be reviewed by a lawyer. Details: The name of the contract",
+    "gold_answers": [
+      "WEB SITE HOSTING AGREEMENT"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Parties",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Parties\" that should be reviewed by a lawyer. Details: The two or more parties who signed the contract",
+    "gold_answers": [
+      "Centrack International",
+      "I-ON INTERACTIVE, INC.",
+      "i-on interactive",
+      "CENTRACK INTERNATIONAL, INC.",
+      "the Customer",
+      "i-on"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Agreement Date",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Agreement Date\" that should be reviewed by a lawyer. Details: The date of the contract",
+    "gold_answers": [
+      "6th day of April, 1999"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Effective Date",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Effective Date\" that should be reviewed by a lawyer. Details: The date when the contract is effective ",
+    "gold_answers": [
+      "The term of this Agreement for the Hosted Site shall commence upon April 1, 1999 and shall continue for a period of six (6) months, unless earlier terminated in accordance with provisions hereof."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Expiration Date",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Expiration Date\" that should be reviewed by a lawyer. Details: On what date will the contract's initial term expire?",
+    "gold_answers": [
+      "The term of this Agreement for the Hosted Site shall commence upon April 1, 1999 and shall continue for a period of six (6) months, unless earlier terminated in accordance with provisions hereof."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Renewal Term",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Renewal Term\" that should be reviewed by a lawyer. Details: What is the renewal term after the initial term expires? This includes automatic extensions and unilateral extensions with prior notice.",
+    "gold_answers": [
+      "Agreement, which notice must be given not less than fifteen (15) days before the end of the respective initial or renewal term.",
+      "This Agreement shall automatically be renewed for one (1) or more one (1) month periods unless either the Customer or i-on gives notice to the other party of its intention not to renew the"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Notice Period To Terminate Renewal",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Notice Period To Terminate Renewal\" that should be reviewed by a lawyer. Details: What is the notice period required to terminate renewal?",
+    "gold_answers": [
+      "Agreement, which notice must be given not less than fifteen (15) days before the end of the respective initial or renewal term.",
+      "This Agreement shall automatically be renewed for one (1) or more one (1) month periods unless either the Customer or i-on gives notice to the other party of its intention not to renew the"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Governing Law",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Governing Law\" that should be reviewed by a lawyer. Details: Which state/country's law governs the interpretation of the contract?",
+    "gold_answers": [
+      "This Agreement was entered into in the State of Florida, and its validity, construction, interpretation, and legal effect shall be governed by the laws and judicial decisions of the State of Florida applicable to contracts entered into and performed entirely within the State of Florida."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Most Favored Nation",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Most Favored Nation\" that should be reviewed by a lawyer. Details: Is there a clause that if a third party gets better terms on the licensing or sale of technology/goods/services described in the contract, the buyer of such technology/goods/services under the contract shall be entitled to those better terms?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Non-Compete",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Compete\" that should be reviewed by a lawyer. Details: Is there a restriction on the ability of a party to compete with the counterparty or operate in a certain geography or business or technology sector? ",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Exclusivity",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Exclusivity\" that should be reviewed by a lawyer. Details: Is there an exclusive dealing  commitment with the counterparty? This includes a commitment to procure all “requirements” from one party of certain technology, goods, or services or a prohibition on licensing or selling technology, goods or services to third parties, or a prohibition on  collaborating or working with other parties), whether during the contract or  after the contract ends (or both).",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__No-Solicit Of Customers",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"No-Solicit Of Customers\" that should be reviewed by a lawyer. Details: Is a party restricted from contracting or soliciting customers or partners of the counterparty, whether during the contract or after the contract ends (or both)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Competitive Restriction Exception",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Competitive Restriction Exception\" that should be reviewed by a lawyer. Details: This category includes the exceptions or carveouts to Non-Compete, Exclusivity and No-Solicit of Customers above.",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__No-Solicit Of Employees",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"No-Solicit Of Employees\" that should be reviewed by a lawyer. Details: Is there a restriction on a party’s soliciting or hiring employees and/or contractors from the  counterparty, whether during the contract or after the contract ends (or both)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Non-Disparagement",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Disparagement\" that should be reviewed by a lawyer. Details: Is there a requirement on a party not to disparage the counterparty?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Termination For Convenience",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Termination For Convenience\" that should be reviewed by a lawyer. Details: Can a party terminate this  contract without cause (solely by giving a notice and allowing a waiting  period to expire)?",
+    "gold_answers": [
+      "Either party may terminate this Agreement without cause at any time effective upon thirty (30) days' written notice."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Rofr/Rofo/Rofn",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Rofr/Rofo/Rofn\" that should be reviewed by a lawyer. Details: Is there a clause granting one party a right of first refusal, right of first offer or right of first negotiation to purchase, license, market, or distribute equity interest, technology, assets, products or services?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Change Of Control",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Change Of Control\" that should be reviewed by a lawyer. Details: Does one party have the right to terminate or is consent or notice required of the counterparty if such party undergoes a change of control, such as a merger, stock sale, transfer of all or substantially all of its assets or business, or assignment by operation of law?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Anti-Assignment",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Anti-Assignment\" that should be reviewed by a lawyer. Details: Is consent or notice required of a party if the contract is assigned to a third party?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Revenue/Profit Sharing",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Revenue/Profit Sharing\" that should be reviewed by a lawyer. Details: Is one party required to share revenue or profit with the counterparty for any technology, goods, or services?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Price Restrictions",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Price Restrictions\" that should be reviewed by a lawyer. Details: Is there a restriction on the  ability of a party to raise or reduce prices of technology, goods, or  services provided?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Minimum Commitment",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Minimum Commitment\" that should be reviewed by a lawyer. Details: Is there a minimum order size or minimum amount or units per-time period that one party must buy from the counterparty under the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Volume Restriction",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Volume Restriction\" that should be reviewed by a lawyer. Details: Is there a fee increase or consent requirement, etc. if one party’s use of the product/services exceeds certain threshold?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Ip Ownership Assignment",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Ip Ownership Assignment\" that should be reviewed by a lawyer. Details: Does intellectual property created  by one party become the property of the counterparty, either per the terms of the contract or upon the occurrence of certain events?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Joint Ip Ownership",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Joint Ip Ownership\" that should be reviewed by a lawyer. Details: Is there any clause providing for joint or shared ownership of intellectual property between the parties to the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__License Grant",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"License Grant\" that should be reviewed by a lawyer. Details: Does the contract contain a license granted by one party to its counterparty?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Non-Transferable License",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Transferable License\" that should be reviewed by a lawyer. Details: Does the contract limit the ability of a party to transfer the license being granted to a third party?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Affiliate License-Licensor",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Affiliate License-Licensor\" that should be reviewed by a lawyer. Details: Does the contract contain a license grant by affiliates of the licensor or that includes intellectual property of affiliates of the licensor? ",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Affiliate License-Licensee",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Affiliate License-Licensee\" that should be reviewed by a lawyer. Details: Does the contract contain a license grant to a licensee (incl. sublicensor) and the affiliates of such licensee/sublicensor?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Unlimited/All-You-Can-Eat-License",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Unlimited/All-You-Can-Eat-License\" that should be reviewed by a lawyer. Details: Is there a clause granting one party an “enterprise,” “all you can eat” or unlimited usage license?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Irrevocable Or Perpetual License",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Irrevocable Or Perpetual License\" that should be reviewed by a lawyer. Details: Does the contract contain a  license grant that is irrevocable or perpetual?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Source Code Escrow",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Source Code Escrow\" that should be reviewed by a lawyer. Details: Is one party required to deposit its source code into escrow with a third party, which can be released to the counterparty upon the occurrence of certain events (bankruptcy,  insolvency, etc.)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Post-Termination Services",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Post-Termination Services\" that should be reviewed by a lawyer. Details: Is a party subject to obligations after the termination or expiration of a contract, including any post-termination transition, payment, transfer of IP, wind-down, last-buy, or similar commitments?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Audit Rights",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Audit Rights\" that should be reviewed by a lawyer. Details: Does a party have the right to  audit the books, records, or physical locations of the counterparty to ensure compliance with the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Uncapped Liability",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Uncapped Liability\" that should be reviewed by a lawyer. Details: Is a party’s liability uncapped upon the breach of its obligation in the contract? This also includes uncap liability for a particular type of breach such as IP infringement or breach of confidentiality obligation.",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Cap On Liability",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Cap On Liability\" that should be reviewed by a lawyer. Details: Does the contract include a cap on liability upon the breach of a party’s obligation? This includes time limitation for the counterparty to bring claims or maximum amount for recovery.",
+    "gold_answers": [
+      "i-on will not be liable under any circumstances for any lost profits or other consequential damages, even if i-on has been advised as to the possibility of such damages. i-on's liability for damages to the Customer for any cause whatsoever, regardless of the form of action, and whether in contract or in tort, including negligence, shall be limited to one (1) month's fees and the remaining portion of any prepaid fees."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Liquidated Damages",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Liquidated Damages\" that should be reviewed by a lawyer. Details: Does the contract contain a clause that would award either party liquidated damages for breach or a fee upon the termination of a contract (termination fee)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Warranty Duration",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Warranty Duration\" that should be reviewed by a lawyer. Details: What is the duration of any  warranty against defects or errors in technology, products, or services  provided under the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Insurance",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Insurance\" that should be reviewed by a lawyer. Details: Is there a requirement for insurance that must be maintained by one party for the benefit of the counterparty?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Covenant Not To Sue",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Covenant Not To Sue\" that should be reviewed by a lawyer. Details: Is a party restricted from contesting the validity of the counterparty’s ownership of intellectual property or otherwise bringing a claim against the counterparty for matters unrelated to the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT__Third Party Beneficiary",
+    "contract": "CENTRACKINTERNATIONALINC_10_29_1999-EX-10.3-WEB SITE HOSTING AGREEMENT",
+    "question": "Highlight the parts (if any) of this contract related to \"Third Party Beneficiary\" that should be reviewed by a lawyer. Details: Is there a non-contracting party who is a beneficiary to some or all of the clauses in the contract and therefore can enforce its rights against a contracting party?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Document Name",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Document Name\" that should be reviewed by a lawyer. Details: The name of the contract",
+    "gold_answers": [
+      "CO-PROMOTION AGREEMENT"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Parties",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Parties\" that should be reviewed by a lawyer. Details: The two or more parties who signed the contract",
+    "gold_answers": [
+      "Dova",
+      "Dova and Valeant are each referred to individually as a \"Party\" and together as the \"Parties\".",
+      "Dova Pharmaceuticals, Inc.",
+      "Valeant",
+      "Valeant Pharmaceuticals North America LLC"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Agreement Date",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Agreement Date\" that should be reviewed by a lawyer. Details: The date of the contract",
+    "gold_answers": [
+      "September 26, 2018"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Effective Date",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Effective Date\" that should be reviewed by a lawyer. Details: The date when the contract is effective ",
+    "gold_answers": [
+      "September 26, 2018",
+      "\"Effective Date\" shall have the meaning set forth in the preamble to this Agreement."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Expiration Date",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Expiration Date\" that should be reviewed by a lawyer. Details: On what date will the contract's initial term expire?",
+    "gold_answers": [
+      "This Agreement shall become effective as of the Effective Date and, unless earlier terminated as provided in this ARTICLE 12, shall extend until the four (4) year anniversary of the Effective Date (the \"Term\")."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Renewal Term",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Renewal Term\" that should be reviewed by a lawyer. Details: What is the renewal term after the initial term expires? This includes automatic extensions and unilateral extensions with prior notice.",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Notice Period To Terminate Renewal",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Notice Period To Terminate Renewal\" that should be reviewed by a lawyer. Details: What is the notice period required to terminate renewal?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Governing Law",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Governing Law\" that should be reviewed by a lawyer. Details: Which state/country's law governs the interpretation of the contract?",
+    "gold_answers": [
+      "This Agreement and any and all matters arising directly or indirectly herefrom shall be governed by and construed and enforced in accordance with the internal laws of the [***] applicable to agreements made and to be performed entirely in such state, including its statutes of limitation but without giving effect to the conflict of law principles thereof."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Most Favored Nation",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Most Favored Nation\" that should be reviewed by a lawyer. Details: Is there a clause that if a third party gets better terms on the licensing or sale of technology/goods/services described in the contract, the buyer of such technology/goods/services under the contract shall be entitled to those better terms?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Non-Compete",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Compete\" that should be reviewed by a lawyer. Details: Is there a restriction on the ability of a party to compete with the counterparty or operate in a certain geography or business or technology sector? ",
+    "gold_answers": [
+      "[***], neither Valeant nor its Affiliates shall, directly or indirectly, [***] in the Territory other than the Product; provided that if the Agreement is terminated by Dova pursuant to [***], then any Tail Period shall be immediately terminated if either Valeant or any of its Affiliates, directly or indirectly, [***] in the Territory other than the Product during such Tail Period."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Exclusivity",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Exclusivity\" that should be reviewed by a lawyer. Details: Is there an exclusive dealing  commitment with the counterparty? This includes a commitment to procure all “requirements” from one party of certain technology, goods, or services or a prohibition on licensing or selling technology, goods or services to third parties, or a prohibition on  collaborating or working with other parties), whether during the contract or  after the contract ends (or both).",
+    "gold_answers": [
+      "During the Term, subject to the terms and conditions of this Agreement, Dova hereby grants to Valeant the right, on a co-exclusive basis (solely with Dova and its Affiliates), to Detail and promote the Product in the Specialty in the Territory in the Field, and to conduct the Valeant Activities and the activities of the institutional account management team (pursuant to and subject to the terms of Section 4.1.5) for the Product in the Territory in the Field in accordance with the terms and conditions of this Agreement."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__No-Solicit Of Customers",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"No-Solicit Of Customers\" that should be reviewed by a lawyer. Details: Is a party restricted from contracting or soliciting customers or partners of the counterparty, whether during the contract or after the contract ends (or both)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Competitive Restriction Exception",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Competitive Restriction Exception\" that should be reviewed by a lawyer. Details: This category includes the exceptions or carveouts to Non-Compete, Exclusivity and No-Solicit of Customers above.",
+    "gold_answers": [
+      "Notwithstanding anything to the contrary, in no event shall the restrictions set forth in this Section 2.3.2 apply to [***].",
+      "Notwithstanding the foregoing, this Section 2.3.1(a) shall not apply to any products marketed, promoted, detailed, offered for sale, or sold by any business (or any portion thereof), other Person, or group of Persons, [***]."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__No-Solicit Of Employees",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"No-Solicit Of Employees\" that should be reviewed by a lawyer. Details: Is there a restriction on a party’s soliciting or hiring employees and/or contractors from the  counterparty, whether during the contract or after the contract ends (or both)?",
+    "gold_answers": [
+      "[***], neither Valeant nor Dova (nor any of their respective Affiliates) shall directly or indirectly solicit for hire or employee as an employee, consultant or otherwise any of the other Party's professional personnel who have had direct involvement with the JSC, with the Valeant Activities under this Agreement (which, in the case of Valeant, includes the Field Force Personnel) or with Dova's commercialization activities for the Product, without the other Party's prior written consent."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Non-Disparagement",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Disparagement\" that should be reviewed by a lawyer. Details: Is there a requirement on a party not to disparage the counterparty?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Termination For Convenience",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Termination For Convenience\" that should be reviewed by a lawyer. Details: Can a party terminate this  contract without cause (solely by giving a notice and allowing a waiting  period to expire)?",
+    "gold_answers": [
+      "Either Party shall have the right to terminate this Agreement before the end of the Term for its convenience upon [***] written notice to the other Party (and any such termination shall become effective at the end of such [***]); [***]."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Rofr/Rofo/Rofn",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Rofr/Rofo/Rofn\" that should be reviewed by a lawyer. Details: Is there a clause granting one party a right of first refusal, right of first offer or right of first negotiation to purchase, license, market, or distribute equity interest, technology, assets, products or services?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Change Of Control",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Change Of Control\" that should be reviewed by a lawyer. Details: Does one party have the right to terminate or is consent or notice required of the counterparty if such party undergoes a change of control, such as a merger, stock sale, transfer of all or substantially all of its assets or business, or assignment by operation of law?",
+    "gold_answers": [
+      "Notwithstanding the foregoing, (a) either Party may, without the other Party's consent, assign this Agreement and its rights and obligations hereunder in whole or in part to an Affiliate; and (b) Dova may assign this Agreement to a successor in interest in connection with the sale or other transfer of all or substantially all of Dova's assets or rights relating to the Product; provided that such assignee shall remain subject to all of the terms and conditions hereof in all respects and shall assume all obligations of Dova hereunder whether accruing before or after such assignment."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Anti-Assignment",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Anti-Assignment\" that should be reviewed by a lawyer. Details: Is consent or notice required of a party if the contract is assigned to a third party?",
+    "gold_answers": [
+      "Any attempted assignment not in accordance with this Section 13.2 shall be void.",
+      "Except as provided in this Section 13.2, this Agreement may not be assigned or otherwise transferred, nor may any rights or obligations hereunder be assigned or transferred, by either Party, without the written consent of the other Party (such consent not to be unreasonably withheld); provided that a merger, sale of stock or comparable transaction shall not constitute an assignment.",
+      "Except to Affiliates of Valeant, Valeant shall not subcontract the Valeant Activities with any Third Party (including any contract sales force).",
+      "In the event either Party desires to make such an assignment or other transfer of this Agreement or any rights or obligations hereunder, such Party shall deliver a written notice to the other Party requesting the other Party's written consent in accordance with this Section 13.2, and the other Party shall provide such Party written notice of its determination whether to provide such written consent within [***] following its receipt of such written notice from such Party."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Revenue/Profit Sharing",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Revenue/Profit Sharing\" that should be reviewed by a lawyer. Details: Is one party required to share revenue or profit with the counterparty for any technology, goods, or services?",
+    "gold_answers": [
+      "If the aggregate actual number of Details for the Product made by the Sales Representatives for a Calendar Quarter is less than the Quarterly Minimum Details for such Calendar Quarter, then in calculating the promotion fee due under Section 6.1.1, the Applicable Percentage for such Calendar Quarter shall be reduced to a new percentage equal to [***].",
+      "Commencing with the Calendar Quarter commencing on October 1, 2018, as consideration for the Valeant Activities performed by Valeant, Dova shall pay Valeant a promotion fee based on annual Net Sales during the Term, calculated as follows:\n\n(a) For any portion of Net Sales up to and equal [***] in a Calendar Year, an amount equal to [***] of such portion of Net Sales;\n\n(b) For any portion of Net Sales in excess of [***] and up to and equal [***] in a Calendar Year, an amount equal to [***] of such portion of Net Sales; and\n\n(c) For any portion of Net Sales in excess of [***] in a Calendar Year, [***] of such portion of Net Sales.",
+      "If the Quarterly Average Sales Force Size is less than [***] Sales Representatives for an applicable Calendar Quarter, then in calculating the promotion fee due under Section 6.1.1, the Applicable Percentage for such Calendar Quarter shall be reduced to a new percentage equal to [***]."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Price Restrictions",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Price Restrictions\" that should be reviewed by a lawyer. Details: Is there a restriction on the  ability of a party to raise or reduce prices of technology, goods, or  services provided?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Minimum Commitment",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Minimum Commitment\" that should be reviewed by a lawyer. Details: Is there a minimum order size or minimum amount or units per-time period that one party must buy from the counterparty under the contract?",
+    "gold_answers": [
+      "Without limiting the generality of the foregoing, [***]) and continuing throughout the remainder of the Term, Valeant shall maintain at least one hundred (100) Sales Representatives with responsibility to Detail the Product in the Specialty in the Territory.",
+      "If the Quarterly Average Sales Force Size is less than [***] Sales Representatives for an applicable Calendar Quarter, then in calculating the promotion fee due under Section 6.1.1, the Applicable Percentage for such Calendar Quarter shall be reduced to a new percentage equal to [***].",
+      "A Party shall have the right to terminate this Agreement before the end of the Term as follows:",
+      "12.2.3 by Dova if the aggregate actual number of Details for the Product made by the Sales Representatives for a Calendar Quarter is less than the Quarterly Minimum Details for [***] consecutive Calendar Quarters, upon [***] written notice to Valeant, such notice to be delivered no less than [***] following the end of the last consecutive Calendar Quarter in which the actual Details are less than the Quarterly Minimum Details;",
+      "If the aggregate actual number of Details for the Product made by the Sales Representatives for a Calendar Quarter is less than the Quarterly Minimum Details for such Calendar Quarter, then in calculating the promotion fee due under Section 6.1.1, the Applicable Percentage for such Calendar Quarter shall be reduced to a new percentage equal to [***]."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Volume Restriction",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Volume Restriction\" that should be reviewed by a lawyer. Details: Is there a fee increase or consent requirement, etc. if one party’s use of the product/services exceeds certain threshold?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Ip Ownership Assignment",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Ip Ownership Assignment\" that should be reviewed by a lawyer. Details: Does intellectual property created  by one party become the property of the counterparty, either per the terms of the contract or upon the occurrence of certain events?",
+    "gold_answers": [
+      "The ownership, and all goodwill from the use, of any Dova Trademarks and Copyrights shall at all times vest in and inure to the benefit of Dova, and Valeant shall assign, and hereby does assign, any rights it may have in the foregoing to Dova.",
+      "Valeant agrees to assign, and hereby does assign, to Dova (and shall cause its Affiliates and its and their respective employees and other representatives to assign to Dova) any and all right, title and interest that Valeant (or any such Affiliates, employees or other representatives) may have in or to any Invention.",
+      "As between the Parties, Dova shall own all right, title and interest in and to any Product Materials (and all content contained therein) and any Product Labeling (and all content contained therein), including applicable copyrights and trademarks (other than any name, trademark, trade name or logo of Valeant or its Affiliates that may appear on such Product materials or Product Labeling), and to the extent Valeant (or any of its Affiliates) obtains or otherwise has a claim to any of the foregoing, Valeant hereby assigns (and shall cause any applicable Affiliate to assign) all of its right, title and interest in and to such Product Materials (and content) and Product Labeling (and content) (other than any name, trademark, trade name or logo of Valeant or its Affiliates that may appear on such Product materials or Product Labeling) to Dova and Valeant agrees to (and shall cause its applicable Affiliate to) execute all documents and take all actions as are reasonably requested by Dova to vest title to such Product Materials (and content) and Product Labeling (and content) in Dova (or its designated Affiliate)."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Joint Ip Ownership",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Joint Ip Ownership\" that should be reviewed by a lawyer. Details: Is there any clause providing for joint or shared ownership of intellectual property between the parties to the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__License Grant",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"License Grant\" that should be reviewed by a lawyer. Details: Does the contract contain a license granted by one party to its counterparty?",
+    "gold_answers": [
+      "Valeant shall have the non-exclusive right to use the Dova Trademarks and Copyrights solely on Product Materials in order to perform the Valeant Activities and solely in accordance with the terms and conditions of this Agreement.",
+      "During the Term, subject to the terms and conditions of this Agreement, Dova hereby grants to Valeant the right, on a co-exclusive basis (solely with Dova and its Affiliates), to Detail and promote the Product in the Specialty in the Territory in the Field, and to conduct the Valeant Activities and the activities of the institutional account management team (pursuant to and subject to the terms of Section 4.1.5) for the Product in the Territory in the Field in accordance with the terms and conditions of this Agreement.",
+      "[***], Valeant hereby grants to Dova a fully paid-up, royalty free, non-transferable, non- exclusive license (with a limited right to sub-license to its Affiliates) to any Valeant Property that appears on, embodied on or contained in the Product materials or Product Labeling solely for use in connection with Dova's promotion or other commercialization of the Product in the Territory."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Non-Transferable License",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Transferable License\" that should be reviewed by a lawyer. Details: Does the contract limit the ability of a party to transfer the license being granted to a third party?",
+    "gold_answers": [
+      "Except to Affiliates of Valeant, Valeant's rights and obligations under this Section 2.1 are non-transferable, non-assignable, and non-delegable.",
+      "[***], Valeant hereby grants to Dova a fully paid-up, royalty free, non-transferable, non- exclusive license (with a limited right to sub-license to its Affiliates) to any Valeant Property that appears on, embodied on or contained in the Product materials or Product Labeling solely for use in connection with Dova's promotion or other commercialization of the Product in the Territory."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Affiliate License-Licensor",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Affiliate License-Licensor\" that should be reviewed by a lawyer. Details: Does the contract contain a license grant by affiliates of the licensor or that includes intellectual property of affiliates of the licensor? ",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Affiliate License-Licensee",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Affiliate License-Licensee\" that should be reviewed by a lawyer. Details: Does the contract contain a license grant to a licensee (incl. sublicensor) and the affiliates of such licensee/sublicensor?",
+    "gold_answers": [
+      "[***], Valeant hereby grants to Dova a fully paid-up, royalty free, non-transferable, non- exclusive license (with a limited right to sub-license to its Affiliates) to any Valeant Property that appears on, embodied on or contained in the Product materials or Product Labeling solely for use in connection with Dova's promotion or other commercialization of the Product in the Territory."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Unlimited/All-You-Can-Eat-License",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Unlimited/All-You-Can-Eat-License\" that should be reviewed by a lawyer. Details: Is there a clause granting one party an “enterprise,” “all you can eat” or unlimited usage license?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Irrevocable Or Perpetual License",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Irrevocable Or Perpetual License\" that should be reviewed by a lawyer. Details: Does the contract contain a  license grant that is irrevocable or perpetual?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Source Code Escrow",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Source Code Escrow\" that should be reviewed by a lawyer. Details: Is one party required to deposit its source code into escrow with a third party, which can be released to the counterparty upon the occurrence of certain events (bankruptcy,  insolvency, etc.)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Post-Termination Services",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Post-Termination Services\" that should be reviewed by a lawyer. Details: Is a party subject to obligations after the termination or expiration of a contract, including any post-termination transition, payment, transfer of IP, wind-down, last-buy, or similar commitments?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Audit Rights",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Audit Rights\" that should be reviewed by a lawyer. Details: Does a party have the right to  audit the books, records, or physical locations of the counterparty to ensure compliance with the contract?",
+    "gold_answers": [
+      "Dova shall bear the out-of-pocket costs and expenses incurred by the Parties in connection with any such inspection or audit, unless the audit shows an undisputed over- payment for that audited period in excess of [***] of the amounts properly determined, in which case, Valeant shall reimburse Dova for its audit fees and reasonable out-of-pocket expenses in connection with said audit, which reimbursement shall be due and payable within [***] of receiving appropriate invoices and other support for such audit-related costs.",
+      "Valeant shall have the right, at its own expense, during normal business hours and upon reasonable prior notice, through certified public accounting firm or other auditor selected by Valeant and reasonably acceptable to Dova and upon execution of a confidentiality agreement reasonably satisfactory to Dova in form and substance, to inspect and audit the applicable records and books maintained by Dova for purposes of verifying Dova's payment obligations within this Agreement, including the applicable records and books of account maintained by Dova, or any Affiliate, as applicable, with respect to Net Sales in order to confirm the accuracy and completeness of such records and books of account and all payments hereunder; provided, however, that (i) such examination shall not take place more often than once per every twelve (12) months during the Term and once during the one (1) year period following the end of the Term, and (ii) such examination shall not cover a period of time that has previously been audited; provided that Valeant shall have the right to conduct additional \"for cause\" audits to the extent necessary to address significant problems relating to Dova's payment obligations hereunder.",
+      "Where necessary, on reasonable request, Dova's audit rights shall include interviewing Sales Representatives and other employees of Valeant.",
+      "Dova shall have the right, at its own expense, during normal business hours and upon reasonable prior notice, through a certified public accounting firm or other auditor selected by Dova and reasonably acceptable to Valeant and upon execution of a confidentiality agreement reasonably satisfactory to Valeant in form and substance, to inspect and audit the applicable records and books maintained by Valeant relating to the Valeant Activities for purposes of verifying Valeant's compliance with the terms of this Agreement, provided that (i) such examination shall not take place more often than once per every twelve (12) months during the Term and once during the one (1) year period following the end of the Term, and (ii) such examination shall not cover a period of time that has previously been audited; provided that Dova shall have the right to conduct additional \"for cause\" audits to the extent necessary to address significant compliance problems relating to Valeant's obligations hereunder or in response to any inquiry, inspection, investigation or other requirements of a Government Authority in the Territory relating to the Valeant Activities.",
+      "Valeant shall bear the out-of-pocket costs and expenses incurred by the Parties in connection with any such inspection or audit, unless the audit shows an undisputed under-reporting or underpayment for that audited period in excess of [***] of the amounts properly determined, in which case, Dova shall reimburse Valeant for its audit fees and reasonable out-of-pocket expenses in connection with said audit, which reimbursement shall be due and payable within [***] of receiving appropriate invoices and other support for such audit-related costs."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Uncapped Liability",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Uncapped Liability\" that should be reviewed by a lawyer. Details: Is a party’s liability uncapped upon the breach of its obligation in the contract? This also includes uncap liability for a particular type of breach such as IP infringement or breach of confidentiality obligation.",
+    "gold_answers": [
+      "THE FOREGOING SENTENCE SHALL NOT LIMIT (1) THE OBLIGATIONS OF EITHER PARTY TO INDEMNIFY THE OTHER PARTY FROM AND AGAINST THIRD PARTY CLAIMS UNDER SECTION 11.1 OR 11.2, AS APPLICABLE, OR (2) DAMAGES AVAILABLE FOR A PARTY'S BREACH OF THE CONFIDENTIALITY AND NON-USE OBLIGATIONS IN ARTICLE 9."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Cap On Liability",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Cap On Liability\" that should be reviewed by a lawyer. Details: Does the contract include a cap on liability upon the breach of a party’s obligation? This includes time limitation for the counterparty to bring claims or maximum amount for recovery.",
+    "gold_answers": [
+      "NOTWITHSTANDING ANY OTHER PROVISION CONTAINED HEREIN (OTHER THAN AS SET FORTH IN THE SECOND SENTENCE OF THIS SECTION 11.4), IN NO EVENT SHALL DOVA (OR ITS AFFILIATES) OR VALEANT (OR ITS AFFILIATES) BE LIABLE TO THE OTHER OR ANY OF THE OTHER PARTY'S AFFILIATES FOR ANY CONSEQUENTIAL, INCIDENTAL, INDIRECT, SPECIAL, PUNITIVE OR EXEMPLARY DAMAGES (INCLUDING LOST PROFITS) SUFFERED OR INCURRED BY SUCH OTHER PARTY OR ITS AFFILIATES THAT ARISE OUT OF OR RELATE TO THIS AGREEMENT OR IN CONNECTION WITH A BREACH OR ALLEGED BREACH OF THIS AGREEMENT, WHETHER IN CONTRACT, TORT, STRICT LIABILITY OR OTHERWISE, AND REGARDLESS OF ANY NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.",
+      "Notwithstanding the above, the sole remedy of Dova for breach of this Section 4.1.2 shall be (i) the adjustment to the promotion fee as set forth in Section 6.1.2 and (ii) the termination right set out in Section 12.2.2."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Liquidated Damages",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Liquidated Damages\" that should be reviewed by a lawyer. Details: Does the contract contain a clause that would award either party liquidated damages for breach or a fee upon the termination of a contract (termination fee)?",
+    "gold_answers": [
+      "Solely in the event that Dova has terminated this Agreement pursuant to Section 12.3.1 and notwithstanding anything else herein, in consideration of the promotion services performed by Valeant during the Term, with respect to the Tail Period, Dova shall make payments to Valeant in an amount equal to [***] of the amounts that would have been payable by Dova to Valeant with respect to such Tail Period pursuant to Section 6.1 had the Agreement not been so terminated."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Warranty Duration",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Warranty Duration\" that should be reviewed by a lawyer. Details: What is the duration of any  warranty against defects or errors in technology, products, or services  provided under the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Insurance",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Insurance\" that should be reviewed by a lawyer. Details: Is there a requirement for insurance that must be maintained by one party for the benefit of the counterparty?",
+    "gold_answers": [
+      "Each Party acknowledges and agrees that during the Term, it shall maintain, through purchase or self- insurance, adequate insurance, including products liability coverage and comprehensive general liability insurance, adequate to cover its obligations under this Agreement and which are consistent with normal business practices of prudent companies similarly situated."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Covenant Not To Sue",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Covenant Not To Sue\" that should be reviewed by a lawyer. Details: Is a party restricted from contesting the validity of the counterparty’s ownership of intellectual property or otherwise bringing a claim against the counterparty for matters unrelated to the contract?",
+    "gold_answers": [
+      "During the Term, Valeant will not contest the ownership of the Dova Trademarks and Copyrights, their validity, or the validity of any registration therefor.",
+      "Valeant shall not at any time during the Term knowingly do or allow to be done any act or thing which will in any way impair or diminish the rights of Dova in or to the Dova Trademarks and Copyrights."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement__Third Party Beneficiary",
+    "contract": "DovaPharmaceuticalsInc_20181108_10-Q_EX-10.2_11414857_EX-10.2_Promotion Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Third Party Beneficiary\" that should be reviewed by a lawyer. Details: Is there a non-contracting party who is a beneficiary to some or all of the clauses in the contract and therefore can enforce its rights against a contracting party?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Document Name",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Document Name\" that should be reviewed by a lawyer. Details: The name of the contract",
+    "gold_answers": [
+      "SUPPLY CONTRACT"
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Parties",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Parties\" that should be reviewed by a lawyer. Details: The two or more parties who signed the contract",
+    "gold_answers": [
+      "The seller:",
+      "The buyer/End-User: Shenzhen LOHAS Supply Chain Management Co., Ltd."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Agreement Date",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Agreement Date\" that should be reviewed by a lawyer. Details: The date of the contract",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Effective Date",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Effective Date\" that should be reviewed by a lawyer. Details: The date when the contract is effective ",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Expiration Date",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Expiration Date\" that should be reviewed by a lawyer. Details: On what date will the contract's initial term expire?",
+    "gold_answers": [
+      "The Contract is valid for 5 years, beginning from and ended on ."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Renewal Term",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Renewal Term\" that should be reviewed by a lawyer. Details: What is the renewal term after the initial term expires? This includes automatic extensions and unilateral extensions with prior notice.",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Notice Period To Terminate Renewal",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Notice Period To Terminate Renewal\" that should be reviewed by a lawyer. Details: What is the notice period required to terminate renewal?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Governing Law",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Governing Law\" that should be reviewed by a lawyer. Details: Which state/country's law governs the interpretation of the contract?",
+    "gold_answers": [
+      "It will be governed by the law of the People's Republic of China ,otherwise it is governed by United Nations Convention on Contract for the International Sale of Goods."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Most Favored Nation",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Most Favored Nation\" that should be reviewed by a lawyer. Details: Is there a clause that if a third party gets better terms on the licensing or sale of technology/goods/services described in the contract, the buyer of such technology/goods/services under the contract shall be entitled to those better terms?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Non-Compete",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Compete\" that should be reviewed by a lawyer. Details: Is there a restriction on the ability of a party to compete with the counterparty or operate in a certain geography or business or technology sector? ",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Exclusivity",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Exclusivity\" that should be reviewed by a lawyer. Details: Is there an exclusive dealing  commitment with the counterparty? This includes a commitment to procure all “requirements” from one party of certain technology, goods, or services or a prohibition on licensing or selling technology, goods or services to third parties, or a prohibition on  collaborating or working with other parties), whether during the contract or  after the contract ends (or both).",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__No-Solicit Of Customers",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"No-Solicit Of Customers\" that should be reviewed by a lawyer. Details: Is a party restricted from contracting or soliciting customers or partners of the counterparty, whether during the contract or after the contract ends (or both)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Competitive Restriction Exception",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Competitive Restriction Exception\" that should be reviewed by a lawyer. Details: This category includes the exceptions or carveouts to Non-Compete, Exclusivity and No-Solicit of Customers above.",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__No-Solicit Of Employees",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"No-Solicit Of Employees\" that should be reviewed by a lawyer. Details: Is there a restriction on a party’s soliciting or hiring employees and/or contractors from the  counterparty, whether during the contract or after the contract ends (or both)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Non-Disparagement",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Disparagement\" that should be reviewed by a lawyer. Details: Is there a requirement on a party not to disparage the counterparty?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Termination For Convenience",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Termination For Convenience\" that should be reviewed by a lawyer. Details: Can a party terminate this  contract without cause (solely by giving a notice and allowing a waiting  period to expire)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Rofr/Rofo/Rofn",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Rofr/Rofo/Rofn\" that should be reviewed by a lawyer. Details: Is there a clause granting one party a right of first refusal, right of first offer or right of first negotiation to purchase, license, market, or distribute equity interest, technology, assets, products or services?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Change Of Control",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Change Of Control\" that should be reviewed by a lawyer. Details: Does one party have the right to terminate or is consent or notice required of the counterparty if such party undergoes a change of control, such as a merger, stock sale, transfer of all or substantially all of its assets or business, or assignment by operation of law?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Anti-Assignment",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Anti-Assignment\" that should be reviewed by a lawyer. Details: Is consent or notice required of a party if the contract is assigned to a third party?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Revenue/Profit Sharing",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Revenue/Profit Sharing\" that should be reviewed by a lawyer. Details: Is one party required to share revenue or profit with the counterparty for any technology, goods, or services?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Price Restrictions",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Price Restrictions\" that should be reviewed by a lawyer. Details: Is there a restriction on the  ability of a party to raise or reduce prices of technology, goods, or  services provided?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Minimum Commitment",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Minimum Commitment\" that should be reviewed by a lawyer. Details: Is there a minimum order size or minimum amount or units per-time period that one party must buy from the counterparty under the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Volume Restriction",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Volume Restriction\" that should be reviewed by a lawyer. Details: Is there a fee increase or consent requirement, etc. if one party’s use of the product/services exceeds certain threshold?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Ip Ownership Assignment",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Ip Ownership Assignment\" that should be reviewed by a lawyer. Details: Does intellectual property created  by one party become the property of the counterparty, either per the terms of the contract or upon the occurrence of certain events?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Joint Ip Ownership",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Joint Ip Ownership\" that should be reviewed by a lawyer. Details: Is there any clause providing for joint or shared ownership of intellectual property between the parties to the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__License Grant",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"License Grant\" that should be reviewed by a lawyer. Details: Does the contract contain a license granted by one party to its counterparty?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Non-Transferable License",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Non-Transferable License\" that should be reviewed by a lawyer. Details: Does the contract limit the ability of a party to transfer the license being granted to a third party?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Affiliate License-Licensor",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Affiliate License-Licensor\" that should be reviewed by a lawyer. Details: Does the contract contain a license grant by affiliates of the licensor or that includes intellectual property of affiliates of the licensor? ",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Affiliate License-Licensee",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Affiliate License-Licensee\" that should be reviewed by a lawyer. Details: Does the contract contain a license grant to a licensee (incl. sublicensor) and the affiliates of such licensee/sublicensor?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Unlimited/All-You-Can-Eat-License",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Unlimited/All-You-Can-Eat-License\" that should be reviewed by a lawyer. Details: Is there a clause granting one party an “enterprise,” “all you can eat” or unlimited usage license?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Irrevocable Or Perpetual License",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Irrevocable Or Perpetual License\" that should be reviewed by a lawyer. Details: Does the contract contain a  license grant that is irrevocable or perpetual?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Source Code Escrow",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Source Code Escrow\" that should be reviewed by a lawyer. Details: Is one party required to deposit its source code into escrow with a third party, which can be released to the counterparty upon the occurrence of certain events (bankruptcy,  insolvency, etc.)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Post-Termination Services",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Post-Termination Services\" that should be reviewed by a lawyer. Details: Is a party subject to obligations after the termination or expiration of a contract, including any post-termination transition, payment, transfer of IP, wind-down, last-buy, or similar commitments?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Audit Rights",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Audit Rights\" that should be reviewed by a lawyer. Details: Does a party have the right to  audit the books, records, or physical locations of the counterparty to ensure compliance with the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Uncapped Liability",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Uncapped Liability\" that should be reviewed by a lawyer. Details: Is a party’s liability uncapped upon the breach of its obligation in the contract? This also includes uncap liability for a particular type of breach such as IP infringement or breach of confidentiality obligation.",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Cap On Liability",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Cap On Liability\" that should be reviewed by a lawyer. Details: Does the contract include a cap on liability upon the breach of a party’s obligation? This includes time limitation for the counterparty to bring claims or maximum amount for recovery.",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Liquidated Damages",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Liquidated Damages\" that should be reviewed by a lawyer. Details: Does the contract contain a clause that would award either party liquidated damages for breach or a fee upon the termination of a contract (termination fee)?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Warranty Duration",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Warranty Duration\" that should be reviewed by a lawyer. Details: What is the duration of any  warranty against defects or errors in technology, products, or services  provided under the contract?",
+    "gold_answers": [
+      "Within 7 days after the arrival of the goods at destination, should the quality, specification, or quantity be found not in conformity with the stipulations of the Contract except those claims for which the insurance company or the owners of the vessel are liable, the Buyers, on the strength of the Inspection Certificate issued by the China Commodity Inspection Bureau, have the right to claim for replacement with new goods, or for compensation, and all the expenses (such as inspection charges, freight for returning the goods and for sending the replacement, insurance premium, storage and loading and unloading charges etc.) shall be borne by the Sellers."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Insurance",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Insurance\" that should be reviewed by a lawyer. Details: Is there a requirement for insurance that must be maintained by one party for the benefit of the counterparty?",
+    "gold_answers": [
+      "To be covered by the Seller for 110% invoice value against All Risks and War Risk."
+    ],
+    "is_impossible": false,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Covenant Not To Sue",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Covenant Not To Sue\" that should be reviewed by a lawyer. Details: Is a party restricted from contesting the validity of the counterparty’s ownership of intellectual property or otherwise bringing a claim against the counterparty for matters unrelated to the contract?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  },
+  {
+    "id": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement__Third Party Beneficiary",
+    "contract": "LohaCompanyltd_20191209_F-1_EX-10.16_11917878_EX-10.16_Supply Agreement",
+    "question": "Highlight the parts (if any) of this contract related to \"Third Party Beneficiary\" that should be reviewed by a lawyer. Details: Is there a non-contracting party who is a beneficiary to some or all of the clauses in the contract and therefore can enforce its rights against a contracting party?",
+    "gold_answers": [],
+    "is_impossible": true,
+    "predicted": "TREE_BUILD_FAILED",
+    "f1": 0.0,
+    "em": 0.0
+  }
+]

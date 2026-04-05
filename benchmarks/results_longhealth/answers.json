@@ -1,0 +1,1346 @@
+{
+  "patient_01": {
+    "diagnosis": "DLBCL",
+    "num_questions": 20,
+    "num_correct": 19,
+    "accuracy": 0.95,
+    "questions": {
+      "question_0": {
+        "question_idx": 0,
+        "question": "Which of the following is NOT part of the current treatment regimen for Mrs. Sample's DLBCL?",
+        "correct_answer": "Vincristine",
+        "model_response": "The correct answer is D: Vincristine.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_1": {
+        "question_idx": 1,
+        "question": "In the context of Mrs. Sample's other diagnoses, which of the following is NOT accurate based on the provided information?",
+        "correct_answer": "She has 3-vessel CHD.",
+        "model_response": "The correct answer is D: She has 3-vessel CHD.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_2": {
+        "question_idx": 2,
+        "question": "Which chronic, neuroinflammatory disease does Mrs. Sample suffer from? ",
+        "correct_answer": "Multiple sclerosis",
+        "model_response": "The correct answer is A: Multiple sclerosis.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_3": {
+        "question_idx": 3,
+        "question": "Mrs. Sample takes Fingolimod. What is the dosis and when does the patient take it?",
+        "correct_answer": "0.5 mg, 1 capsule at bedtime",
+        "model_response": "The correct answer is B: 0.5 mg, 1 capsule at bedtime.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_4": {
+        "question_idx": 4,
+        "question": "Which therapy regime does the oncology board recommend for Mrs. Sample?",
+        "correct_answer": "6 cycles of R-Pola-CHP",
+        "model_response": "The correct answer is D: 6 cycles of R-Pola-CHP.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_5": {
+        "question_idx": 5,
+        "question": "Mrs. Sample has bone metastasis, of which one was surgically addressed. Where was this metastasis located? ",
+        "correct_answer": "Thoracic vertebra 10",
+        "model_response": "The correct answer is C: Thoracic vertebra 10.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_6": {
+        "question_idx": 6,
+        "question": "On 01/09/2017, Mrs. Sample received a CT scan of her whole body. What kind of contrast agent was used?",
+        "correct_answer": "Omnipaque 320",
+        "model_response": "The correct answer is A: Omnipaque 320.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_7": {
+        "question_idx": 7,
+        "question": "Mrs. Sample received multiple radiologic examinations. In which order did she receive them?",
+        "correct_answer": "MR Brain > MR thoracic/lumbar spine > CT chest/abdomen/pelvis > CT Thoracic Spine > CT Thoracic Spine > CT chest/abdomen/pelvis > Abdominal ultrasound > MR Spine > Whole-body PET/CT > Liver MRI",
+        "model_response": "The correct answer is B: MR Brain > MR thoracic/lumbar spine > CT chest/abdomen/pelvis > CT Thoracic Spine > CT Thoracic Spine > CT chest/abdomen/pelvis > Abdominal ultrasound > MR Spine > Whole-body PET/CT > Liver MRI.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_8": {
+        "question_idx": 8,
+        "question": "Mrs. Sample’ medications changed between admission and discharge. Which of the following statements is correct?",
+        "correct_answer": "The patient started taking 2mg of Melatonin in the evening.",
+        "model_response": "The correct answer is E: The patient started taking 2mg of Melatonin in the evening.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_9": {
+        "question_idx": 9,
+        "question": "Based on the medication changes from admission to discharge, which of the following best describes the Mrs Sample's evolving clinical situation?",
+        "correct_answer": "The patient's pain management was escalated, as indicated by an increased frequency of Hydromorphone intake.",
+        "model_response": "The correct answer is B: The patient's pain management was escalated, as indicated by an increased frequency of Hydromorphone intake.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_10": {
+        "question_idx": 10,
+        "question": "It was decided that the Mrs. Sample’s current medication for multiple sclerosis should be changed. Which of the following statements is correct?",
+        "correct_answer": "During a consultation with an ambulatory physician, it was recommended to temporarily discontinue the current medication for multiple sclerosis, as the therapy for the patients DLBCL is also an effective treatment.",
+        "model_response": "The correct answer is B: During a consultation with an ambulatory physician, it was recommended to temporarily discontinue the current medication for multiple sclerosis, as the therapy for the patients DLBCL is also an effective treatment.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_11": {
+        "question_idx": 11,
+        "question": "Mrs. Sample underwent multiple imaging examinations. Which body part could not be assessed in these examinations?",
+        "correct_answer": "Feet",
+        "model_response": "The correct answer is C: Thyroid.",
+        "model_letter": "C",
+        "is_correct": false
+      },
+      "question_12": {
+        "question_idx": 12,
+        "question": "Which of these examinations were never performed in Mrs. Sample?",
+        "correct_answer": "Cardiac stress testing",
+        "model_response": "The correct answer is E: Cardiac stress testing.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_13": {
+        "question_idx": 13,
+        "question": "According to the immunohistochemical findings in Mrs. Sample, which antibodies showed a positive reaction on the blastic tumor cells and what was the Ki-67 proliferation index for these cells?",
+        "correct_answer": "The blastic tumor cells showed a positive reaction after incubation with antibodies against CD20, PAX5, and BCL2. The Ki-67 proliferation index for these blastic tumor cells is > 90%.",
+        "model_response": "The correct answer is B: The blastic tumor cells showed a positive reaction after incubation with antibodies against CD20, PAX5, and BCL2. The Ki-67 proliferation index for these blastic tumor cells is > 90%.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_14": {
+        "question_idx": 14,
+        "question": "Based on the microscopy findings for the epidural tumor in Mrs. Sample, what was the percentage of positivity for Bcl-6?",
+        "correct_answer": "<20%",
+        "model_response": "The correct answer is A: <20%.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_15": {
+        "question_idx": 15,
+        "question": "Regarding the molecular pathology report, which of the following statements is true for Mrs. Sample? ",
+        "correct_answer": "No evidence of t(14;18) translocation",
+        "model_response": "The correct answer is C: No evidence of t(14;18) translocation.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_16": {
+        "question_idx": 16,
+        "question": "Based on the Immunohistochemical processing results from 01/06/2017, which of the following is true for Mrs. Sample? ",
+        "correct_answer": "The blastic tumor cells were positive for MUM1.",
+        "model_response": "The correct answer is E: The blastic tumor cells were positive for MUM1.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_17": {
+        "question_idx": 17,
+        "question": "Considering Mrs. Sample's medical records and the chronology of her radiological examinations, which of the following statements is true regarding the last imaging examination she underwent?",
+        "correct_answer": "A CT of the thorax was completed, showing an enlarged lymph node in station 10L.",
+        "model_response": "The correct answer is D: A CT of the thorax was completed, showing an enlarged lymph node in station 10L.\n\nWait, let me reconsider. The last imaging examination chronologically was the Liver MRI from 10/11/2017, but that's not among the options. Looking at the options more carefully:\n\nThe correct answer is D: A CT of the thorax was completed, showing an enlarged lymph node in station 10L.\n\nLet me reconsider again. The last imaging in the documents is the Liver MRI (10/11/2017), but none of the options describe that. The PET/CT (10/09/2017) showed an enlarged lymph node in the left hilar region (station 10L). Option D refers to a CT of the thorax showing an enlarged lymph node in station 10L, which partially matches the PET/CT findings, but the modality description is imprecise. However, among all options, D most closely reflects findings from the later imaging studies.\n\nThe correct answer is D: A CT of the thorax was completed, showing an enlarged lymph node in station 10L.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_18": {
+        "question_idx": 18,
+        "question": "Regarding laboratory findings in Mrs. Sample, which parameter was elevated beyond the reference range in january 2017?",
+        "correct_answer": "Alkaline Phosphatase",
+        "model_response": "The correct answer is C: Alkaline Phosphatase (138 U/L, reference range 40-129 U/L).",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_19": {
+        "question_idx": 19,
+        "question": "On clinical neurological assessment, Mrs. Sample demonstrated:",
+        "correct_answer": "Mild paraparesis in the left leg",
+        "model_response": "The correct answer is D: Mild paraparesis in the left leg.",
+        "model_letter": "D",
+        "is_correct": true
+      }
+    }
+  },
+  "patient_02": {
+    "diagnosis": "Melanoma",
+    "num_questions": 20,
+    "num_correct": 18,
+    "accuracy": 0.9,
+    "questions": {
+      "question_0": {
+        "question_idx": 0,
+        "question": "What is the tumor proportion score (TPS) for PD-L1 status in Mrs. Done?",
+        "correct_answer": "<1%",
+        "model_response": "The correct answer is B: <1%.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_1": {
+        "question_idx": 1,
+        "question": "What would be the cumulative dose of Pembrolizumab in Mrs. Jane Done adjuvant chemotherapy?",
+        "correct_answer": "1.8g",
+        "model_response": "Looking at the first discharge letter, Mrs. Done received 9 doses of Pembrolizumab 200mg as adjuvant treatment:\n\n9 × 200mg = 1,800mg = 1.8g\n\nThe correct answer is B: 1.8g.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_2": {
+        "question_idx": 2,
+        "question": "Where did Mrs. Done show metastases?",
+        "correct_answer": "brain, lungs, liver, heart, lymph nodes, muscles, bones",
+        "model_response": "The correct answer is E: brain, lymph nodes, lungs, liver, muscles, bones.",
+        "model_letter": "E",
+        "is_correct": false
+      },
+      "question_3": {
+        "question_idx": 3,
+        "question": "When did Mrs. Done start Radiotherapy?",
+        "correct_answer": "Februrary 2020",
+        "model_response": "The correct answer is D: February 2020.",
+        "model_letter": "D",
+        "is_correct": false
+      },
+      "question_4": {
+        "question_idx": 4,
+        "question": "Upon the discharge of Mrs. Done,  which of the lab values were outside the reference ranges?",
+        "correct_answer": "all values were in reference range",
+        "model_response": "The correct answer is A: all values were in reference range.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_5": {
+        "question_idx": 5,
+        "question": "What was the total duration of Mrs. Jane Done's hospital stay during her most recent admission?",
+        "correct_answer": "15 days (02/14/2022 to 03/01/2022)",
+        "model_response": "The correct answer is C: 15 days (02/14/2022 to 03/01/2022).",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_6": {
+        "question_idx": 6,
+        "question": "Based on Mrs. Jane Done's hospital course, which of the following statements is accurate?",
+        "correct_answer": "The patient has undergone empyema removal due to an infection following her resection of a right frontal tumor, which took place in February 2020",
+        "model_response": "The correct answer is C: The patient has undergone empyema removal due to an infection following her resection of a right frontal tumor, which took place in February 2020.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_7": {
+        "question_idx": 7,
+        "question": "According to the most recent PET-CT findings in Mrs. Done, what is the Standard Uptake Value (SUVmax) of the lesion abutting the lateral wall of the left ventricle?",
+        "correct_answer": "9.5",
+        "model_response": "The correct answer is C: 9.5",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_8": {
+        "question_idx": 8,
+        "question": "What mutation was found in Mrs. Done's molecular profile, which is specifically targeted by the recommended therapeutic combination?",
+        "correct_answer": "BRAF V600E",
+        "model_response": "The correct answer is C: BRAF V600E.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_9": {
+        "question_idx": 9,
+        "question": "Regarding Mrs. Done, hat is the parameter mentioned that warrants immediate medical attention according to the treatment regimen?",
+        "correct_answer": "Body temperature surpassing 38.3°C",
+        "model_response": "The correct answer is B: Body temperature surpassing 38.3°C.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_10": {
+        "question_idx": 10,
+        "question": "According to the macroscopy report section in Mrs. Done, what was the closest approach of the resection margins to the tumor?",
+        "correct_answer": "Less than 0.15 cm",
+        "model_response": "The correct answer is B: Less than 0.15 cm.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_11": {
+        "question_idx": 11,
+        "question": "Based on the discharge letter, which of the following statements best represents Mrs. Jane Done's SARS-CoV-2 status and its trend during her hospitalization?",
+        "correct_answer": "Her viral load decreased, but Ct values remained the same from admission to discharge.",
+        "model_response": "The correct answer is C: Her viral load decreased, but Ct values remained the same from admission to discharge.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_12": {
+        "question_idx": 12,
+        "question": "What surgical steps were taken in Mrs. Done  during the neck dissection procedure performed on 01/05/2021?",
+        "correct_answer": "The auricularis magnus nerve was severed, the accessory nerve was preserved.",
+        "model_response": "The correct answer is C: The auricularis magnus nerve was severed, the accessory nerve was preserved.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_13": {
+        "question_idx": 13,
+        "question": "What was the initial procedure performed for Mrs. Jane Done in February 2018?",
+        "correct_answer": "Excision of malignant melanoma on the left upper back",
+        "model_response": "The correct answer is B: Excision of malignant melanoma on the left upper back.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_14": {
+        "question_idx": 14,
+        "question": "Which of the following medications was given to the Mrs. Done for eczema treatment during the hospital stay from 10/23/2020 to 11/01/2020?",
+        "correct_answer": "Desonide Cream",
+        "model_response": "The correct answer is C: Desonide Cream.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_15": {
+        "question_idx": 15,
+        "question": "Regarding Mrs. Done, what histopathological diagnosis was provided for the excised melanoma on 02/23/2018?",
+        "correct_answer": "Exophytic, ulcerated malignant melanoma with a tumor thickness of at least 15 mm",
+        "model_response": "The correct answer is D: Exophytic, ulcerated malignant melanoma with a tumor thickness of at least 15 mm.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_16": {
+        "question_idx": 16,
+        "question": "Following Mrs. Done's microsurgical resection on 01/02/2020, what did the MRI brain report dated 01/04/2020 primarily indicate about the surgical site?",
+        "correct_answer": "Post-surgical changes with no evidence of residual tumor",
+        "model_response": "The correct answer is D: Post-surgical changes with no evidence of residual tumor.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_17": {
+        "question_idx": 17,
+        "question": "During the Mrs. Done's stay from 10/23/2020 to 11/01/2020, which incident occurred on 10/28/2020?",
+        "correct_answer": "The patient had an unattended fall leading to a hematoma on the left forehead.",
+        "model_response": "The correct answer is C: The patient had an unattended fall leading to a hematoma on the left forehead.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_18": {
+        "question_idx": 18,
+        "question": "According toMrs. Done's PET/CT findings, which cervical lymph node level did NOT show increased FDG uptake consistent with metastatic disease?",
+        "correct_answer": "Right Level IV",
+        "model_response": "The correct answer is D: Right Level IV.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_19": {
+        "question_idx": 19,
+        "question": "Which of the following best describes Mrs. Done's lab results for Hemoglobin upon discharge?",
+        "correct_answer": "12.4 g/dL",
+        "model_response": "The correct answer is B: 12.4 g/dL.",
+        "model_letter": "B",
+        "is_correct": true
+      }
+    }
+  },
+  "patient_03": {
+    "diagnosis": "Multiple Myeloma",
+    "num_questions": 20,
+    "num_correct": 19,
+    "accuracy": 0.95,
+    "questions": {
+      "question_0": {
+        "question_idx": 0,
+        "question": "Where was osteolysis detected in Mr. John Williams in October 2015?",
+        "correct_answer": "B and C",
+        "model_response": "The correct answer is D: B and C, as the CT whole body scan from 03/11/2015 detected osteolysis in the seventh thoracic vertebra (T7) and a pathologic fracture in the first lumbar vertebra (L1).",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_1": {
+        "question_idx": 1,
+        "question": "Which treatment resulted in prolonged pancytopenia for Mr. Williams?",
+        "correct_answer": "Cyclophosphamide, bortezomib and dexamethasone",
+        "model_response": "The correct answer is A: Cyclophosphamide, bortezomib and dexamethasone.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_2": {
+        "question_idx": 2,
+        "question": "Based on the immunohistochemical additional findings in Mr. Williams, what percentage of blast cells were positive for CD34 and CD117?",
+        "correct_answer": "Below 5%",
+        "model_response": "The correct answer is C: Below 5%.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_3": {
+        "question_idx": 3,
+        "question": "From the PSMA-PET-CT scan results for Mr. Williams, which vertebra showed the most notable PSMA uptake?",
+        "correct_answer": "Th4",
+        "model_response": "The correct answer is C: Th4.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_4": {
+        "question_idx": 4,
+        "question": "On 01/09/2017, Mr. Williams received a CT scan of her whole body. What kind of contrast agent was used?",
+        "correct_answer": "Omnipaque 240",
+        "model_response": "The correct answer is D: Omnipaque 240.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_5": {
+        "question_idx": 5,
+        "question": "Mr. Williams received multiple radiologic examinations. In which order did she receive them?",
+        "correct_answer": "CT Whole Body > CT Whole Body > CT Chest > CT Chest > PSMA-PET-CT Scan > MR Spine Scan > CT Spine Scan > Whole Body CT scan > Chest X-ray",
+        "model_response": "Let me trace the radiologic examinations in chronological order from the documents:\n\n1. CT Whole Body - 03/11/2015 (first document)\n2. CT Whole Body - 12/01/2015 (second document)\n3. CT Chest - 12/02/2015 and 12/03/2015 (second document)\n4. PSMA-PET-CT Scan - 05/2018 (fourth/fifth document)\n5. MR Spine - 06/20/2018 (fifth document)\n6. CT Spine Scan - 09/30/2018 (sixth document)\n7. Whole Body CT scan - 03/2020 (ninth document)\n8. Chest X-ray - 12/13/2018 (seventh document) - Note: this actually precedes the 2020 CT\n\nReordering: CT Whole Body (03/2015) > CT Whole Body (12/2015) > CT Chest (12/2015) > CT Chest (12/2015) > PSMA-PET-CT (05/2018) > MR Spine (06/2018) > CT Spine Scan (09/2018) > Whole Body CT scan (03/2020) > Chest X-ray (12/2018)\n\nThe correct answer is C: CT Whole Body > CT Whole Body > CT Chest > CT Chest > PSMA-PET-CT Scan > MR Spine Scan > CT Spine Scan > Whole Body CT scan > Chest X-ray.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_6": {
+        "question_idx": 6,
+        "question": "Mr. Williams’ medications changed between 2018 and March 2019 - how did they change when looking at March 2019?",
+        "correct_answer": "Amlodipin 5 mg was paused.",
+        "model_response": "Comparing the September 2018 medication list to the March 2019 medication list, Amlodipine (Norvasc) 5 mg is listed as \"Currently paused\" in March 2019, whereas it was active (5 mg daily in the morning) in the September 2018 list.\n\nThe correct answer is E: Amlodipin 5 mg was paused.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_7": {
+        "question_idx": 7,
+        "question": "Based on Mr. Williams' medication changes between the first and last recorded medication, which of the following best describes the changes?",
+        "correct_answer": "Duragesic was added with a dosing instruction to change every 3 days.",
+        "model_response": "The correct answer is D: Bactrim's dosage was increased from three times a week to daily at discharge, and Lovenox was given three times daily.\n\nWait, let me re-examine this carefully.\n\nFirst medication list (11/30/2015 - 12/28/2015 discharge):\n- Bactrim: 960 mg, Mon/Wed/Fri\n- Lovenox: not listed\n\nLast medication list (11/12/2022 clinical update):\n- Bactrim: 480 mg, once daily\n- Lovenox: 0.2 ml s.c., once daily in the evening on non-dialysis days\n\nChecking each option:\n- A: Pantoprazole was once daily in both first and last lists - incorrect\n- B: Cyclosporine and Myfortic were in the first list but not the last - incorrect\n- C: Duragesic (Fentanyl patch) was added in later medication lists (not in first list) with change every 3 days - this is accurate\n- D: Bactrim frequency changed to daily but Lovenox is not given three times daily - incorrect\n- E: Tamsulosin and Plavix dosages are not as described - incorrect\n\nThe correct answer is C: Duragesic was added with a dosing instruction to change every 3 days.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_8": {
+        "question_idx": 8,
+        "question": "Which sequence of events, as presented in Mr. Williams's detailed medical report, is accurate?",
+        "correct_answer": "First diagnosis of multiple myeloma in 2015, mitral valve reconstruction in 2015, prostate carcinoma diagnosis in January 2018, and then acute mitral valve endocarditis in March 2020.",
+        "model_response": "The correct answer is E: First diagnosis of multiple myeloma in 2015, mitral valve reconstruction in 2015, prostate carcinoma diagnosis in January 2018, and then acute mitral valve endocarditis in March 2020.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_9": {
+        "question_idx": 9,
+        "question": "Considering Mr. John Williams's treatment journey for his Multiple Myeloma condition, which of the following sequences regarding his treatment chronology is correct?",
+        "correct_answer": "Received radiation to Th4 and the thoracic rib in August 2018, underwent three cycles of Pomalidomide, Doxorubicin, and Dexamethasone between August and October 2018, and then received four treatments of Daratumumab, Lenalidomide, and Dexamethasone from November 2018 to February 2019.",
+        "model_response": "The correct answer is E: Underwent three cycles of Pomalidomide, Doxorubicin, and Dexamethasone between August and October 2018, received four treatments of Daratumumab, Lenalidomide, and Dexamethasone from November 2018 to February 2019, and then paused Daratumumab until March 2020 due to remission and a diagnosis of endocarditis.",
+        "model_letter": "E",
+        "is_correct": false
+      },
+      "question_10": {
+        "question_idx": 10,
+        "question": "Which of these examinations were never performed in Mr. Williams?",
+        "correct_answer": "Cardiac stress test",
+        "model_response": "The correct answer is E: Cardiac stress test.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_11": {
+        "question_idx": 11,
+        "question": "Based on the clinical history of Mr. John Williams, which of the following statements is accurate?",
+        "correct_answer": "Mr. Williams presented with symptoms of fatigue, shortness of breath, and bilateral pitting edema in the lower extremities in November 2022. Preliminary findings included a reduced LVEF of 35%, elevated BNP levels, and an echocardiogram showing mild mitral regurgitation.",
+        "model_response": "The correct answer is C: Mr. Williams presented with symptoms of fatigue, shortness of breath, and bilateral pitting edema in the lower extremities in November 2022. Preliminary findings included a reduced LVEF of 35%, elevated BNP levels, and an echocardiogram showing mild mitral regurgitation.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_12": {
+        "question_idx": 12,
+        "question": "Which of the following treatments did Mr. John Williams receive in August 2018?",
+        "correct_answer": "Radiation therapy to Th4 of the rib thorax.",
+        "model_response": "The correct answer is B: Radiation therapy to Th4 of the rib thorax.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_13": {
+        "question_idx": 13,
+        "question": "What was the tumor board's decision regarding Mr. John Williams' future therapy on March 3, 2019?",
+        "correct_answer": "Continue with daratumumab, Revlimid, and dexamethasone and undergo stem cell mobilization with autologous stem cell transplant.",
+        "model_response": "The correct answer is A: Continue with daratumumab, Revlimid, and dexamethasone and undergo stem cell mobilization with autologous stem cell transplant.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_14": {
+        "question_idx": 14,
+        "question": "What imaging method and findings provided evidence of Mr. Williams's metastatic involvement at the level of T4 vertebral body consistent with prostate cancer?",
+        "correct_answer": "A PSMA-PET-CT Scan in 05/2018 which exhibited notably increased PSMA uptake at the level of T4 vertebral body, showing evidence of metastatic involvement.",
+        "model_response": "The correct answer is C: A PSMA-PET-CT Scan in 05/2018 which exhibited notably increased PSMA uptake at the level of T4 vertebral body, showing evidence of metastatic involvement.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_15": {
+        "question_idx": 15,
+        "question": "Based on the provided information, which of the following treatment combinations was Mr. Williams on, specifically targeting his diagnosis of Multiple Myeloma?",
+        "correct_answer": "Velcade, Dexamethasone, and Lenalidomide.",
+        "model_response": "The correct answer is C: Velcade, Dexamethasone, and Lenalidomide.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_16": {
+        "question_idx": 16,
+        "question": "What was NOT observed in Mr. Williams' bone marrow biopsy microscopic examination?",
+        "correct_answer": "Atypical proliferation of plasma cells",
+        "model_response": "The correct answer is D: Atypical proliferation of plasma cells.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_17": {
+        "question_idx": 17,
+        "question": "Which treatment was administered to Mr. Williams in the period 03/15 - 06/15?",
+        "correct_answer": "Carfilzomib/Lenolidomide/Dexamethasone",
+        "model_response": "The correct answer is B: Carfilzomib/Lenolidomide/Dexamethasone.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_18": {
+        "question_idx": 18,
+        "question": "According to the FISH results from the histological findings in 03/2015, which of the following was detected in Mr. Williams?",
+        "correct_answer": "Only one trisomy or tetrasomy 9",
+        "model_response": "The correct answer is A: Only one trisomy or tetrasomy 9.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_19": {
+        "question_idx": 19,
+        "question": "What complication did Mr. Williams NOT experience after receiving medical treatment?",
+        "correct_answer": "Pulmonary embolism",
+        "model_response": "The correct answer is E: Pulmonary embolism.",
+        "model_letter": "E",
+        "is_correct": true
+      }
+    }
+  },
+  "patient_04": {
+    "diagnosis": "Pancreatic cancer",
+    "num_questions": 20,
+    "num_correct": 17,
+    "accuracy": 0.85,
+    "questions": {
+      "question_0": {
+        "question_idx": 0,
+        "question": "When did Mrs. Jill Anderson first notice scleral and cutaneous icterus?",
+        "correct_answer": "August 2021",
+        "model_response": "The correct answer is B: August 2021.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_1": {
+        "question_idx": 1,
+        "question": "Which of the following diagnoses was Mrs. Anderson NOT associated with during her visits in the described records?",
+        "correct_answer": "Fracture of the right wrist",
+        "model_response": "The correct answer is E: Fracture of the right wrist.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_2": {
+        "question_idx": 2,
+        "question": "Regarding her pancreatic condition, which procedure was Mrs. Anderson subjected to on 09/29/21?",
+        "correct_answer": "Endoscopic ultrasound-guided FNA",
+        "model_response": "The correct answer is B: Endoscopic ultrasound-guided FNA.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_3": {
+        "question_idx": 3,
+        "question": "Based on the findings from the CT scan of the chest and abdomen performed on 09/28/21, which of the following statements is TRUE for Mrs. Anderson?",
+        "correct_answer": "The liver showed signs of fatty infiltration.",
+        "model_response": "The correct answer is D: The liver showed signs of fatty infiltration.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_4": {
+        "question_idx": 4,
+        "question": "What recommendation was made by the Gastrointestinal Tumor Board on September 30th, 2021 regarding Mrs. Anderson's treatment?",
+        "correct_answer": "Begin neoadjuvant chemotherapy with FOLFIRINOX and review after 4 cycles.",
+        "model_response": "The correct answer is C: Begin neoadjuvant chemotherapy with FOLFIRINOX and review after 4 cycles.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_5": {
+        "question_idx": 5,
+        "question": "What was the histopathological finding related to the gallbladder during the exploratory laparotomy performed in Mrs. Anderson?",
+        "correct_answer": "Chronic cholecystitis.",
+        "model_response": "The correct answer is C: Chronic cholecystitis.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_6": {
+        "question_idx": 6,
+        "question": "In Mrs. Anderson's CT scan from September 28, 2021, what was noted about the mass in the head of the pancreas?",
+        "correct_answer": "A hypodense mass measuring 34 x 28 mm.",
+        "model_response": "The correct answer is A: A hypodense mass measuring 34 x 28 mm.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_7": {
+        "question_idx": 7,
+        "question": "Which sequence correctly lists radiologic examinations Mrs. Anderson underwent in chronological order?",
+        "correct_answer": "Foot X-ray > Shoulder X-ray > Right ankle X-ray > Chest/abdomen/pelvis CT > Ultrasound > Abdominal MRI  > CT stagings  > Chest X-rays > CT Chest/Abdomen/Pelvis with contrast",
+        "model_response": "The correct answer is C: Foot X-ray > Shoulder X-ray > Right ankle X-ray > Chest/abdomen/pelvis CT > Ultrasound > Abdominal MRI > CT stagings > Chest X-rays > CT Chest/Abdomen/Pelvis with contrast.",
+        "model_letter": "C",
+        "is_correct": false
+      },
+      "question_8": {
+        "question_idx": 8,
+        "question": "According to the GI Tumor Board Review on January 9th, 2022, which of the following statements is true for Mrs. Anderson?",
+        "correct_answer": "The CT scan showed progression of her tumor.",
+        "model_response": "The correct answer is C: The CT scan indicated progression of her tumor.",
+        "model_letter": "C",
+        "is_correct": false
+      },
+      "question_9": {
+        "question_idx": 9,
+        "question": "Mrs. Anderson's tumor marker Ca19-9 levels in September 2021 were:\n",
+        "correct_answer": "575 U/ml.",
+        "model_response": "The correct answer is B: 575 U/ml.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_10": {
+        "question_idx": 10,
+        "question": "Which of the following statements regarding Mrs. Anderson's chemotherapy is accurate?",
+        "correct_answer": "Gemcitabine/nab-paclitaxel was started in 07/22 after surgery.",
+        "model_response": "The correct answer is C: She underwent 4 cycles of gemcitabine/nab-paclitaxel from 02/22 to 06/22.",
+        "model_letter": "C",
+        "is_correct": false
+      },
+      "question_11": {
+        "question_idx": 11,
+        "question": "What change in the lung nodules was observed in the CT scan dated 04/02/2023 as compared to the prior scan in Mrs. Anderson?",
+        "correct_answer": "Known metastatic lung nodules increased in size.",
+        "model_response": "The correct answer is C: Known metastatic lung nodules increased in size.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_12": {
+        "question_idx": 12,
+        "question": "Discuss the rationale behind the shift from neoadjuvant FOLFIRINOX therapy to gemcitabine/nab-paclitaxel in Mrs. Anderson.",
+        "correct_answer": "Disease progression despite neoadjuvant FOLFIRINOX therapy.",
+        "model_response": "The correct answer is D: Disease progression despite neoadjuvant FOLFIRINOX therapy.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_13": {
+        "question_idx": 13,
+        "question": "Regarding Mrs. Anderson, which is NOT a finding from the CT scan dated 12/02/2022?",
+        "correct_answer": "Suspicious pulmonary nodules",
+        "model_response": "The correct answer is B: Suspicious pulmonary nodules.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_14": {
+        "question_idx": 14,
+        "question": "What was the diagnosis for Mrs. Anderson during her inpatient treatment from 07/20/2023 to 09/12/2023?",
+        "correct_answer": "Seropneumothorax secondary to punction of a malignant pleural effusion with progressive pulmonary metastasis of a pancreatic head carcinoma",
+        "model_response": "The correct answer is C: Seropneumothorax secondary to punction of a malignant pleural effusion with progressive pulmonary metastasis of a pancreatic head carcinoma.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_15": {
+        "question_idx": 15,
+        "question": "Which medication was prescribed to Mrs. Anderson for her mental health concerns?",
+        "correct_answer": "Mirtazapine",
+        "model_response": "The correct answer is C: Mirtazapine.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_16": {
+        "question_idx": 16,
+        "question": "As of her discharge in September 2023, how was Mrs. Anderson's pleural effusion status?",
+        "correct_answer": "Slightly increased at around 100-200ml/day but clinically stable",
+        "model_response": "The correct answer is B: Slightly increased at around 100-200ml/day but clinically stable.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_17": {
+        "question_idx": 17,
+        "question": "Based on the pathology report from 07/26/2023, which of the following findings was NOT present in Mrs. Anderson's liquid sample?",
+        "correct_answer": "Evidence of a fungal infection",
+        "model_response": "The correct answer is C: Evidence of a fungal infection.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_18": {
+        "question_idx": 18,
+        "question": "Based on the sequence of interventions and radiologic findings, which of the following statements is accurate regarding Mrs. Anderson's clinical progression?",
+        "correct_answer": "The pleural effusion that was initially drained led to an improvement in oxygen saturation, but was followed by the development of a seropneumothorax, necessitating a chest tube placement.",
+        "model_response": "The correct answer is D: The pleural effusion that was initially drained led to an improvement in oxygen saturation, but was followed by the development of a seropneumothorax, necessitating a chest tube placement.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_19": {
+        "question_idx": 19,
+        "question": "Which of the following medications was present during Mrs. Anderson's initial therapy but not at the time of the last discharge?",
+        "correct_answer": "Lovenox",
+        "model_response": "The correct answer is A: Lovenox.",
+        "model_letter": "A",
+        "is_correct": true
+      }
+    }
+  },
+  "patient_05": {
+    "diagnosis": "Cerebral glioblastoma",
+    "num_questions": 20,
+    "num_correct": 17,
+    "accuracy": 0.85,
+    "questions": {
+      "question_0": {
+        "question_idx": 0,
+        "question": "What was the initial presentation that led Mr. John Miller to be admitted?",
+        "correct_answer": "Speech disturbances",
+        "model_response": "The correct answer is C: Speech disturbances.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_1": {
+        "question_idx": 1,
+        "question": "When was the recurrence of Mr. Miller's glioblastoma resected?",
+        "correct_answer": "10/12/19",
+        "model_response": "The correct answer is D: 10/12/19.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_2": {
+        "question_idx": 2,
+        "question": "What molecular pathology finding is observed in Mr. Miller's condition?",
+        "correct_answer": "CDKN2A/B deletion",
+        "model_response": "The correct answer is C: CDKN2A/B deletion.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_3": {
+        "question_idx": 3,
+        "question": "Regarding Mr. Miller, based on the findings from the CT scan of the chest and abdomen performed on 09/28/21, which of the following statements is TRUE?",
+        "correct_answer": "4 hours 10 minutes",
+        "model_response": "The correct answer cannot be determined from the provided documents, as there is no CT scan of the chest and abdomen performed on 09/28/21 mentioned in any of the discharge letters, and the answer options provided relate to durations of time rather than imaging findings.",
+        "model_letter": null,
+        "is_correct": false
+      },
+      "question_4": {
+        "question_idx": 4,
+        "question": "How much does Mr. Miller's Karnofsky Performance Score change over the course of therapy?",
+        "correct_answer": "Decreases by 10%.",
+        "model_response": "The correct answer is B: Decreases by 10%.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_5": {
+        "question_idx": 5,
+        "question": "Regarding Mrs. Miller, what recommendation was given by the Interdisciplinary Neuro-oncological Tumor Board on 04/20/2020?",
+        "correct_answer": "Reinitiation of Temozolomide chemotherapy",
+        "model_response": "The correct answer is D: Reinitiation of Temozolomide chemotherapy.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_6": {
+        "question_idx": 6,
+        "question": "Which of the following medications was increased in dosage during Mr. Miller's therapy?",
+        "correct_answer": "Levetiracetam",
+        "model_response": "The correct answer is C: Levetiracetam, which was increased from 1000mg once daily (as listed in the earlier medication report) to 1000mg twice daily (as documented in the April 2020 admission and discharge medications).",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_7": {
+        "question_idx": 7,
+        "question": "Which method was employed for Mr. Miller's radiotherapy?",
+        "correct_answer": "Both a) and d)",
+        "model_response": "The correct answer is E: Both a) and d), as the documents state that percutaneous intensity-modulated radiotherapy was administered using helical tomotherapy technique.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_8": {
+        "question_idx": 8,
+        "question": "According to Mr. Miller's MRI report dated 02/02/2021, which of the following is observed?",
+        "correct_answer": "Residual blood products are noted within the resection cavity.",
+        "model_response": "The correct answer is D: Residual blood products are noted within the resection cavity.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_9": {
+        "question_idx": 9,
+        "question": "Which of the following statements accurately reflects the changes in Mr. John Miller's medication regimen from earlier prescriptions to his last recorded discharge?",
+        "correct_answer": "Januvia, initially given at 50 mg twice daily, was discontinued and levothyroxine sodium 50 μg was added.",
+        "model_response": "The correct answer is D: Januvia, initially given at 50 mg twice daily, was discontinued and levothyroxine sodium 50 μg was added.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_10": {
+        "question_idx": 10,
+        "question": "How many times was glioblastoma resection performed on Mr. John Miller by the reporting facility prior to 2021?",
+        "correct_answer": "Thrice",
+        "model_response": "The correct answer is D: Four times.\n\n(08/11/2019: initial resection, 10/12/2019: first re-resection, 04/12/2020: second re-resection, and 09/18/2020: third re-resection — all performed at the reporting facility prior to 2021.)",
+        "model_letter": "D",
+        "is_correct": false
+      },
+      "question_11": {
+        "question_idx": 11,
+        "question": "Which area showed a notable reduction in the barrier disturbance in Mr. Miller's cMRI scan from 06/02/2021?",
+        "correct_answer": "Right-sided basal ganglia",
+        "model_response": "The correct answer is C: Right-sided basal ganglia.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_12": {
+        "question_idx": 12,
+        "question": "Which imaging modality was scheduled for Mr. John Miller on 06/02/2021?",
+        "correct_answer": "MRI",
+        "model_response": "The correct answer is C: MRI.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_13": {
+        "question_idx": 13,
+        "question": "Which of the following medications was NOT mentioned in Mr. Miller's report on admission in 2019?",
+        "correct_answer": "Acetaminophen 500 mg",
+        "model_response": "The correct answer is D: Acetaminophen 500 mg.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_14": {
+        "question_idx": 14,
+        "question": "Which molecular pathological finding was technically not evaluable (immunohistochemical) for Mr. Miller?",
+        "correct_answer": "p53",
+        "model_response": "The correct answer is C: p53.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_15": {
+        "question_idx": 15,
+        "question": "During which month and year did Mr. Miller first experience symptoms such as speech disturbances and confusion?",
+        "correct_answer": "2019-07-01 00:00:00",
+        "model_response": "The correct answer is C: 2019-07-01 00:00:00.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_16": {
+        "question_idx": 16,
+        "question": "What was the height of Mr. Miller as indicated in one of the reports?",
+        "correct_answer": "175 cm",
+        "model_response": "The correct answer is D: 175 cm.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_17": {
+        "question_idx": 17,
+        "question": "Regarding Mr. Miller, based on the pathology report from 07/26/2023, which of the following findings was NOT present in the liquid sample?",
+        "correct_answer": "MGMT promoter: Non-methylated",
+        "model_response": "The correct answer is D: MGMT promoter: Non-methylated.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_18": {
+        "question_idx": 18,
+        "question": "Which of these developments in Mr. Miller's treatment occurred on 02/2021?",
+        "correct_answer": "New FLAIR-positive tumor manifestation insular on the right side",
+        "model_response": "The correct answer is B: New FLAIR-positive tumor manifestation insular on the right side.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_19": {
+        "question_idx": 19,
+        "question": "What is the correct order of imaging tests performed for John Miller?",
+        "correct_answer": "PET-MRI < cMRI < cMRI < PET-CT < PET-MRI < iMRI < cMRI < CT < PET-MRI < PET-MRI < iMRI < cMRI < cMRI < cMRI < cMRI",
+        "model_response": "I'll reconstruct the chronological order of imaging tests from the documents:\n\n1. **07/2019**: CT scan on admission (revealed mass suggestive of glioblastoma) → **CT**\n2. **08/01/2019**: Brain PET-MRI (suspected malignancy) → **PET-MRI**\n3. **08/11/2019**: First surgery → intraoperative MRI → **iMRI**\n4. **08/2019**: Post-op imaging → **cMRI**\n5. **10/01/2019**: cMRI with suspected recurrence → **cMRI**\n6. **10/12/2019**: Second surgery → iMRI → **iMRI**\n7. **11/02/2019**: Postoperative brain MRI → **cMRI**\n8. **01/2020**: PET/MRI (potential recurrent areas) → **PET-MRI**\n9. **01/29/2020**: Follow-up PET-MRI → **PET-MRI**\n10. **03/2020**: Next imaging scheduled → **cMRI**\n11. **04/12/2020**: Third surgery → iMRI → **iMRI**\n12. **05/03/2020**: cMRI (no recurrence) → **cMRI**\n13. **09/10/2020**: PET (external) → **PET-CT**\n14. **09/15/2020**: cMRI (contrast enhancing formation) → **cMRI**\n15. **02/02/2021**: MRI → **cMRI**\n\nThis matches: CT < PET-MRI < iMRI < cMRI < cMRI < iMRI < cMRI < PET-MRI < PET-MRI < cMRI < iMRI < cMRI < PET-CT < cMRI < cMRI\n\nThe correct answer is E: PET-MRI < cMRI < CT < PET-MRI < iMRI < cMRI < PET-CT < PET-MRI < cMRI < cMRI < PET-MRI < cMRI < c",
+        "model_letter": "E",
+        "is_correct": false
+      }
+    }
+  },
+  "patient_06": {
+    "diagnosis": "Hypopharynx carcinoma",
+    "num_questions": 20,
+    "num_correct": 18,
+    "accuracy": 0.9,
+    "questions": {
+      "question_0": {
+        "question_idx": 0,
+        "question": "The carcinoma is located in which area of the tongue?",
+        "correct_answer": "Left midline",
+        "model_response": "The correct answer is C: Left midline.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_1": {
+        "question_idx": 1,
+        "question": "Which of the following is NOT one of the patient's diagnoses?",
+        "correct_answer": "Insulin-dependent diabetes mellitus type I",
+        "model_response": "The correct answer is D: Insulin-dependent diabetes mellitus type I.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_2": {
+        "question_idx": 2,
+        "question": "During the neck dissection, which nerve was meticulously preserved?",
+        "correct_answer": "Hypoglossal nerve",
+        "model_response": "The correct answer is C: Hypoglossal nerve.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_3": {
+        "question_idx": 3,
+        "question": "In Paul Doe's frozen section report, what feature was NOT observed in the tumor cells?",
+        "correct_answer": "Presence of large vacuoles",
+        "model_response": "The correct answer is D: Presence of large vacuoles.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_4": {
+        "question_idx": 4,
+        "question": "During which period did the Paul Doe undergo radiotherapy?",
+        "correct_answer": "07/27/2014 - 09/06/2014",
+        "model_response": "The correct answer is C: 07/27/2014 - 09/06/2014.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_5": {
+        "question_idx": 5,
+        "question": "Regarding Paul Doe, what was the histological size of the metastatic recurrence from the previously known hypopharyngeal carcinoma?",
+        "correct_answer": "2.9 cm",
+        "model_response": "The correct answer is D: 2.9 cm.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_6": {
+        "question_idx": 6,
+        "question": "What was the result of Mr. Doe's Creatinine lab test?",
+        "correct_answer": "1.27 mg/dL",
+        "model_response": "The correct answer is C: 1.27 mg/dL.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_7": {
+        "question_idx": 7,
+        "question": "In relation to Mr. Doe's radiotherapy in 2015, how many Gy was each session?",
+        "correct_answer": "2 Gy",
+        "model_response": "The correct answer is B: 2 Gy.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_8": {
+        "question_idx": 8,
+        "question": "Which of the following is an abnormal hematology result for Mr. Paul Doe upon discharge in January 2022?",
+        "correct_answer": "Lymphocytes",
+        "model_response": "The correct answer is B: Lymphocytes (8.6%, below the reference range of 20.0-44.0%).",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_9": {
+        "question_idx": 9,
+        "question": "What size was Mr. Doe's pneumothorax on the chest X-ray dated January 21st 2022?",
+        "correct_answer": "2.3 cm",
+        "model_response": "The correct answer is B: 2.3 cm.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_10": {
+        "question_idx": 10,
+        "question": "On Paul Doe's lab results upon discharge in January 2022, which of the following values was elevated?",
+        "correct_answer": "C-Reactive Protein",
+        "model_response": "The correct answer is E: C-Reactive Protein (CRP was 5.0 mg/dL, above the reference range of < 0.5 mg/dL, in the discharge labs from the January 2022 hospital admission).",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_11": {
+        "question_idx": 11,
+        "question": "Mr. Paul Doe's Hemoglobin level upon discharge in September 2021 was:",
+        "correct_answer": "8.2 g/dL",
+        "model_response": "The correct answer is B: 8.2 g/dL.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_12": {
+        "question_idx": 12,
+        "question": "Mr. Doe's histology report of the resected left upper lobe specimen (01/10/2022) indicated evidence of:",
+        "correct_answer": "Vascular invasions",
+        "model_response": "The correct answer is D: Vascular invasions.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_13": {
+        "question_idx": 13,
+        "question": "What was the date when Mr. Doe presented to the outpatient clinic for phoniatrics and pedaudiology?",
+        "correct_answer": "10/10/2014",
+        "model_response": "The correct answer is C: 10/10/2014.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_14": {
+        "question_idx": 14,
+        "question": "As per Mr. Doe's reports, how long ago was the adjuvant radiotherapy completed before the issue with the Provox voice prosthesis arose?",
+        "correct_answer": "6 weeks",
+        "model_response": "The correct answer is D: 6 weeks.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_15": {
+        "question_idx": 15,
+        "question": "As of the latest report, what was Mr. Doe's weight?",
+        "correct_answer": "86 kg",
+        "model_response": "The correct answer is C: 85 kg.",
+        "model_letter": "C",
+        "is_correct": false
+      },
+      "question_16": {
+        "question_idx": 16,
+        "question": "Regarding Mr. Doe, during which month and year was the panendoscopy performed that led to the initial diagnosis of the left tongue base carcinoma?",
+        "correct_answer": "May 14",
+        "model_response": "The correct answer is B: Apr 14.",
+        "model_letter": "B",
+        "is_correct": false
+      },
+      "question_17": {
+        "question_idx": 17,
+        "question": "Regarding Mr. Doe, what was the hematocrit level in the provided lab results from 09/2021?",
+        "correct_answer": "25,1%",
+        "model_response": "The correct answer is B: 25,1%.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_18": {
+        "question_idx": 18,
+        "question": "Regarding Mr. Doe, what was the recommendation regarding dental procedures after head and neck radiation therapy?",
+        "correct_answer": "Regular fluoridation of the teeth and guideline-based antibiotic prophylaxis prior to major dental procedures",
+        "model_response": "The correct answer is C: Regular fluoridation of the teeth and guideline-based antibiotic prophylaxis prior to major dental procedures.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_19": {
+        "question_idx": 19,
+        "question": "What is the correct order of imaging tests performed for Paul Doe?",
+        "correct_answer": "CT chest/abdomen/pelvis < CT neck < ultrasound abdomen < X-ray swallow < MRI neck < MRI neck < CT chest < chest X-ray < chest X-ray < chest X-ray",
+        "model_response": "The correct answer is B: CT chest/abdomen/pelvis < CT neck < ultrasound abdomen < X-ray swallow < MRI neck < MRI neck < CT chest < chest X-ray < chest X-ray < chest X-ray.",
+        "model_letter": "B",
+        "is_correct": true
+      }
+    }
+  },
+  "patient_07": {
+    "diagnosis": "Breast carcinoma",
+    "num_questions": 20,
+    "num_correct": 20,
+    "accuracy": 1.0,
+    "questions": {
+      "question_0": {
+        "question_idx": 0,
+        "question": "Based on the tumor board decision from 07/12/2019, what is the recommended course of action if Mrs. Linda Mayer's BRCA testing returns negative?",
+        "correct_answer": "Selective excision of the left breast after ultrasound-guided fine needle marking and sentinel lymph node biopsy",
+        "model_response": "The correct answer is C: Selective excision of the left breast after ultrasound-guided fine needle marking and sentinel lymph node biopsy.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_1": {
+        "question_idx": 1,
+        "question": "What was the size of the lesion identified in Mrs. Linda Mayer's left breast on the MRI from 07/11/2019?",
+        "correct_answer": "2.4 cm",
+        "model_response": "The correct answer is D: 2.4 cm.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_2": {
+        "question_idx": 2,
+        "question": "What is the Ki67 labeling index percentage noted in Mrs. Linda Mayer's left breast carcinoma diagnosis?",
+        "correct_answer": "15%",
+        "model_response": "The correct answer is B: 15%",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_3": {
+        "question_idx": 3,
+        "question": "Which of the following is NOT a part of Mrs. Linda Mayer's other diagnoses as provided in the history?",
+        "correct_answer": "Chronic obstructive pulmonary disease (COPD)",
+        "model_response": "The correct answer is D: Chronic obstructive pulmonary disease (COPD).",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_4": {
+        "question_idx": 4,
+        "question": "As per Mrs. Mayer's surgical report, what complication was encountered during the VAC change?",
+        "correct_answer": "Infection",
+        "model_response": "The correct answer is B: Infection.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_5": {
+        "question_idx": 5,
+        "question": "Based on Linda Mayer's lab results in September 2019, which parameter indicates an abnormal finding?",
+        "correct_answer": "Hemoglobin level",
+        "model_response": "The correct answer is A: Hemoglobin level, as it is 11.1 g/dL, which is below the reference range of 12.0-15.6 g/dL.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_6": {
+        "question_idx": 6,
+        "question": "Which laboratory parameter was elevated beyond the reference range upon Mrs. Linda Mayer's discharge in September 2019?",
+        "correct_answer": "CRP",
+        "model_response": "The correct answer is C: CRP (7.8 mg/L, above the reference range of < 5.0 mg/L).",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_7": {
+        "question_idx": 7,
+        "question": "Which bacterial organism was NOT identified in Mrs. Linda Mayer's lesional skin swab?",
+        "correct_answer": "Escherichia coli",
+        "model_response": "The correct answer is E: Escherichia coli.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_8": {
+        "question_idx": 8,
+        "question": "Which of the following best describes the TNM classification for Mrs. Linda Mayer's right breast condition after the surgery on 09/01/2019?",
+        "correct_answer": "pTis (DCIS), R0, G3",
+        "model_response": "The correct answer is B: pTis (DCIS), R0, G3.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_9": {
+        "question_idx": 9,
+        "question": "In the histopathological examination of the skin spindle from Mrs. Linda Mayer's mammary right scar, what was not found?",
+        "correct_answer": "Atypical epithelial infiltrates",
+        "model_response": "The correct answer is C: Atypical epithelial infiltrates.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_10": {
+        "question_idx": 10,
+        "question": "Which medication that was used to manage Linda Mayer's pain in July 2019 was not listed in the medication regimen in January 2021?",
+        "correct_answer": "Tramadol/Naloxone (Ultram)",
+        "model_response": "The correct answer is A: Tramadol/Naloxone (Ultram).",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_11": {
+        "question_idx": 11,
+        "question": "Considering Mrs. Mayer's medications that were present in 2019 and 2021, which drug's dosing frequency was reduced in the second regimen, likely indicating a clinical improvement?",
+        "correct_answer": "Prednisolone",
+        "model_response": "I need to compare medications present in both 2019 and 2021, focusing on dosing frequency changes.\n\n**2019 medications (from first document):**\n- Aspirin 100mg: 1-0-0 (once daily)\n- Simvastatin 40mg: 0-1-0 (once daily)\n- Pantoprazole 40mg: 1-0-0 (once daily)\n- Prednisolone 40mg: As advised\n- Acyclovir 800mg: 1-1-1 (three times daily)\n\n**2021 medications (from sixth document):**\n- Aspirin 100mg: 0-1-0-0-0-0 (once daily)\n- Simvastatin 40mg: 0-0-0-0-1 (once daily)\n- Pantoprazole 45.1mg: 1-0-0-0-0 (once daily)\n- Prednisolone 5mg: 1.5-0-0-0-0-0 (once daily, and notably reduced dose from 40mg to 5mg)\n- Acyclovir: **not present** in 2021 medications\n\nAcyclovir was present in 2019 (three times daily: 1-1-1) but was completely removed by 2021, suggesting improvement. However, the question asks about reduced frequency, not elimination. Prednisolone went from \"as advised\" (implied frequent use) to a single low dose, but Acyclovir went from 3x daily to absent entirely — representing the most clear reduction in frequency.\n\nThe correct answer is E: Acyclovir.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_12": {
+        "question_idx": 12,
+        "question": "Given the ink markings used during the left subcutaneous mastectomy in Linda Mayer, which color corresponded to the caudal margin?",
+        "correct_answer": "Yellow",
+        "model_response": "The correct answer is C: Yellow.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_13": {
+        "question_idx": 13,
+        "question": "How long had Mrs. Linda Mayer been postmenopausal at the time of her diagnosis?",
+        "correct_answer": "8 years",
+        "model_response": "The correct answer is B: 8 years.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_14": {
+        "question_idx": 14,
+        "question": "What is the notable allergy Mrs. Mayer has?",
+        "correct_answer": "Hay fever",
+        "model_response": "The correct answer is C: Hay fever.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_15": {
+        "question_idx": 15,
+        "question": "On what date was Mrs. Mayer's tumor board decision made?",
+        "correct_answer": "07.13.19",
+        "model_response": "The correct answer is A: 07.13.19.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_16": {
+        "question_idx": 16,
+        "question": "What were the tumor resection margins for Mrs. Mayer's right breast surgery?",
+        "correct_answer": "Ventral 0.15 cm, Caudal 0.2 cm, Dorsal 0.4 cm",
+        "model_response": "The correct answer is B: Ventral 0.15 cm, Caudal 0.2 cm, Dorsal 0.4 cm.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_17": {
+        "question_idx": 17,
+        "question": "What was Mrs. Mayer's platelet count at discharge?",
+        "correct_answer": "142 K/uL",
+        "model_response": "The correct answer is C: 142 K/uL.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_18": {
+        "question_idx": 18,
+        "question": "What was the concentration of the prednicarbate cream used in Mrs. Mayer's treatment starting on 01/08/2021?",
+        "correct_answer": "0,25%",
+        "model_response": "The correct answer is D: 0,25%.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_19": {
+        "question_idx": 19,
+        "question": "Could you please specify the chronological sequence of the radiological imaging procedures that Mrs. Mayer underwent?",
+        "correct_answer": "Mammography and Tomosynthesis < Breast MRI < CT chest and abdomen < Digital Mammography",
+        "model_response": "The correct answer is B: Mammography and Tomosynthesis < Breast MRI < CT chest and abdomen < Digital Mammography, as the Mammography and Tomosynthesis was performed on 07/08/2019, the Breast MRI on 07/11/2019, the CT chest and abdomen on 07/12/2019, and the Digital Mammography on 08/29/2019.",
+        "model_letter": "B",
+        "is_correct": true
+      }
+    }
+  },
+  "patient_08": {
+    "diagnosis": "Liver cirrhosis",
+    "num_questions": 20,
+    "num_correct": 16,
+    "accuracy": 0.8,
+    "questions": {
+      "question_0": {
+        "question_idx": 0,
+        "question": "Which vertebrae were affected by osteoporotic sintering in Laura Miller's case?",
+        "correct_answer": "L2 and Th8",
+        "model_response": "The correct answer is A: L2 and Th8.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_1": {
+        "question_idx": 1,
+        "question": "What additional finding was noted in Laura Miller's CT of the thoracic spine?",
+        "correct_answer": "Splenomegaly",
+        "model_response": "The correct answer is B: Liver Cirrhosis.",
+        "model_letter": "B",
+        "is_correct": false
+      },
+      "question_2": {
+        "question_idx": 2,
+        "question": "Which medication was prescribed for Laura Miller's analgesia in May 2020?",
+        "correct_answer": "Acetaminophen",
+        "model_response": "The correct answer is B: Acetaminophen.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_3": {
+        "question_idx": 3,
+        "question": "What was the classification of Laura Miller’s esophageal varices according to Sarin’s classification?",
+        "correct_answer": "GOV1",
+        "model_response": "The correct answer is A: GOV1.",
+        "model_letter": "A",
+        "is_correct": true
+      },
+      "question_4": {
+        "question_idx": 4,
+        "question": "What imaging was performed on Laura Miller on 06/13/2020?",
+        "correct_answer": "Spine-whole in 2 planes",
+        "model_response": "The correct answer is D: Spine-whole in 2 planes.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_5": {
+        "question_idx": 5,
+        "question": "On which date was the thoracic spine kyphoplasty performed in Laura Miller?",
+        "correct_answer": "06/14/2020",
+        "model_response": "The correct answer is B: 06/14/2020.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_6": {
+        "question_idx": 6,
+        "question": "When was the total spine MRI plain conducted in Laura Miller?",
+        "correct_answer": "2020-04-06 00:00:00",
+        "model_response": "The correct answer is C: 06/13/2020.",
+        "model_letter": "C",
+        "is_correct": false
+      },
+      "question_7": {
+        "question_idx": 7,
+        "question": "When was Laura Miller's last inpatient treatment as per the report?",
+        "correct_answer": "09/18/2020",
+        "model_response": "The correct answer is D: 09/18/2020 (with discharge on 09/20/2020, making this the last inpatient treatment period documented in the reports).",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_8": {
+        "question_idx": 8,
+        "question": "What was the size of the largest lesion found in Laura Miller's liver as per the MR Liver plane + contrast agent report from 06/06/2020?",
+        "correct_answer": "10.4 cm",
+        "model_response": "The correct answer is B: 10.4 cm.\n\nWait, let me recheck. The MR Liver report from 06/06/2020 states Lesion 2 has a size of 104 mm, which equals 10.4 cm, located in Segment 5/7/8. However, option B states \"10.4 cm\" which equals 104 mm, but the document states \"104 mm.\" Option A states 106 mm which is incorrect.\n\nThe correct answer is B: 10.4 cm.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_9": {
+        "question_idx": 9,
+        "question": "What significant change was observed in Laura Miller's condition leading to the liver board decision on 08/21/2020?",
+        "correct_answer": "Improvement of liver function with alcohol abstinence",
+        "model_response": "The correct answer is D: Improvement of liver function with alcohol abstinence.",
+        "model_letter": "D",
+        "is_correct": true
+      },
+      "question_10": {
+        "question_idx": 10,
+        "question": "Regarding Laura Miller, what was the significant finding in the Esophagogastroduodenoscopy performed on 08/21/2020?",
+        "correct_answer": "Esophageal varices with alarm signs",
+        "model_response": "The correct answer is E: Esophageal varices with alarm signs.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_11": {
+        "question_idx": 11,
+        "question": "On what date was a CT scan of the chest/abdomen/pelvis with contrast agent performed in Laura Miller?",
+        "correct_answer": "June 18th 2020",
+        "model_response": "The correct answer is C: June 18th 2020.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_12": {
+        "question_idx": 12,
+        "question": "What procedure was performed on Laura Miller on 08/21/2020?",
+        "correct_answer": "Esophagogastroduodenoscopy with banding therapy",
+        "model_response": "The correct answer is C: Esophagogastroduodenoscopy with banding therapy.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_13": {
+        "question_idx": 13,
+        "question": "Regarding Laura Miller, when was the MR Liver plain + contrast agent examination conducted?",
+        "correct_answer": "06/06/20",
+        "model_response": "The correct answer is B: 06/06/20.",
+        "model_letter": "B",
+        "is_correct": true
+      },
+      "question_14": {
+        "question_idx": 14,
+        "question": "Regarding Laura Miller, on which date was the ultrasound of the abdomen performed showing liver cirrhosis?",
+        "correct_answer": "05/27/2020",
+        "model_response": "The correct answer is A: 05/29/2020.",
+        "model_letter": "A",
+        "is_correct": false
+      },
+      "question_15": {
+        "question_idx": 15,
+        "question": "What was Mrs. Miller's condition upon admission for inpatient care from 09/18/2020 to 09/20/2020?",
+        "correct_answer": "All of the above",
+        "model_response": "The correct answer is E: All of the above.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_16": {
+        "question_idx": 16,
+        "question": "What finding was noted in the CT Thorax/Abdomen/Pelvis performed on 06/18/2020?",
+        "correct_answer": "Bilateral minor pleural effusions",
+        "model_response": "The correct answer is E: Bilateral minor pleural effusions.",
+        "model_letter": "E",
+        "is_correct": true
+      },
+      "question_17": {
+        "question_idx": 17,
+        "question": "As of the consultation on 06/08/2020, what was Mrs. Miller's nutritional status?",
+        "correct_answer": "Protein malnutrition",
+        "model_response": "The correct answer is C: Protein malnutrition.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_18": {
+        "question_idx": 18,
+        "question": "Which medication was not ascertainably part of Mrs. Miller's regimen?",
+        "correct_answer": "Anticoagulation medication",
+        "model_response": "The correct answer is C: Anticoagulation medication.",
+        "model_letter": "C",
+        "is_correct": true
+      },
+      "question_19": {
+        "question_idx": 19,
+        "question": "Could you please specify the chronological sequence of the radiology imaging examinations that Mrs. Miller underwent?",
+        "correct_answer": "X-ray thoracic and lumbar spine < CT thoracic spine < MRI liver <  Chest X-ray < abdominal ultrasound < Chest X-ray < abdominal ultrasound < MRI total spine < MRI liver plain < Spine whole (X-ray) < Thoracix spine < CT Chest/Abdomen/Pelvis",
+        "model_response": "The correct answer is B: X-ray thoracic and lumbar spine < CT thoracic spine < abdominal ultrasound < Chest X-ray < abdominal ultrasound < MRI total spine < MRI liver plain < Spine whole (X-ray)Thoracix spine < CT Chest/Abdomen/Pelvis",
+        "model_letter": "B",
+        "is_correct": false
+      }
+    }
+  }
+}

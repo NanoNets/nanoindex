@@ -1,0 +1,24 @@
+{
+  "total": 205,
+  "judged": 203,
+  "correct": 171,
+  "accuracy": 0.8423645320197044,
+  "errors": 2,
+  "by_type": {
+    "meta-data": {
+      "total": 71,
+      "judged": 70,
+      "correct": 48
+    },
+    "unanswerable": {
+      "total": 28,
+      "judged": 28,
+      "correct": 22
+    },
+    "text-only": {
+      "total": 106,
+      "judged": 105,
+      "correct": 101
+    }
+  }
+}

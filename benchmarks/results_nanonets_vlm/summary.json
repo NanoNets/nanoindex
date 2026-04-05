@@ -1,0 +1,103 @@
+[
+  {
+    "id": "financebench_id_03029",
+    "doc_name": "3M_2018_10K",
+    "question": "What is the FY2018 capital expenditure amount (in USD millions) for 3M? Give a response to the question by relying on the details shown in the cash flow statement.",
+    "gold_answer": "$1577.00",
+    "predicted": "To determine the FY2018 capital expenditure amount for 3M, we need to refer to the **Consolidated Statement of Cash Flows** for the year ended December 31, 2018. Capital expenditures are typically reported under the **\"Investing Activities\"** section of the cash flow statement.\n\nFrom the context provided:\n- The **Consolidated Statement of Cash Flows** is located on **page 60**.\n- The statement includes data for the years ended December 31, 2018, 2017, and 2016.\n\nHowever, the actual **Consolidated Statement of Cash Flows** is not included in the provided text. Therefore, we cannot directly extract the capital expenditure amount for FY2018.\n\nBut based on the **Note 9. Supplemental Cash Flow Information** (page 83), which may contain details about capital expenditures, we can infer that such information is likely included there. Unfortunately, the content of Note 9 is not provided in the context.\n\nSince the **Consolidated Statement of Cash Flows** (page 60) is the primary source for capital expenditures, and it is not included in the provided text, we cannot determine the exact amount.\n\n**Conclusion**: The FY2018 capital expenditure amount for 3M cannot be determined from the provided context because the **Consolidated Statement of Cash Flows** is not included.",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": false,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "3M COMPANY",
+        "doc_name": null,
+        "pages": [
+          2,
+          3
+        ]
+      }
+    ],
+    "reasoning_model": "nanonets-ocr-3",
+    "mode": "text"
+  },
+  {
+    "id": "financebench_id_04672",
+    "doc_name": "3M_2018_10K",
+    "question": "Assume that you are a public equities analyst. Answer the following question by primarily using information that is shown in the balance sheet: what is the year end FY2018 net PPNE for 3M? Answer in USD billions.",
+    "gold_answer": "$8.70",
+    "predicted": "To determine the year-end FY2018 net PP&E (Property, Plant, and Equipment) for 3M, we need to refer to the Consolidated Balance Sheet at December 31, 2018, which is located on page 58 of the document.\n\nThe relevant line item on the balance sheet is \"Property, plant and equipment, net.\" According to the balance sheet:\n\n- Property, plant and equipment, net at December 31, 2018: $10.1 billion\n\nTherefore, the year-end FY2018 net PP&E for 3M is $10.1 billion.",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": false,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "3M COMPANY",
+        "doc_name": null,
+        "pages": [
+          2,
+          3
+        ]
+      },
+      {
+        "title": "3M COMPANY",
+        "doc_name": null,
+        "pages": [
+          4,
+          5
+        ]
+      }
+    ],
+    "reasoning_model": "nanonets-ocr-3",
+    "mode": "text"
+  },
+  {
+    "id": "financebench_id_00499",
+    "doc_name": "3M_2022_10K",
+    "question": "Is 3M a capital-intensive business based on FY2022 data?",
+    "gold_answer": "No, the company is managing its CAPEX and Fixed Assets pretty efficiently, which is evident from below key metrics:\nCAPEX/Revenue Ratio: 5.1%\nFixed assets/Total Assets: 20%\nReturn on Assets= 12.4%",
+    "predicted": "No relevant sections were found in the document.",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": false,
+    "evidence_page_hit": false,
+    "citations": [],
+    "reasoning_model": "nanonets-ocr-3",
+    "mode": "text"
+  },
+  {
+    "id": "financebench_id_01226",
+    "doc_name": "3M_2022_10K",
+    "question": "What drove operating margin change as of FY2022 for 3M? If operating margin is not a useful metric for a company like this, then please state that and explain why.",
+    "gold_answer": "Operating Margin for 3M in FY2022 has decreased by 1.7% primarily due to: \n-Decrease in gross Margin\n-mostly one-off charges including Combat Arms Earplugs litigation, impairment related to exiting PFAS manufacturing, costs related to exiting Russia and divestiture-related restructuring\ncharges",
+    "predicted": "No relevant sections were found in the document.",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": false,
+    "evidence_page_hit": false,
+    "citations": [],
+    "reasoning_model": "nanonets-ocr-3",
+    "mode": "text"
+  },
+  {
+    "id": "financebench_id_01865",
+    "doc_name": "3M_2022_10K",
+    "question": "If we exclude the impact of M&A, which segment has dragged down 3M's overall growth in 2022?",
+    "gold_answer": "The consumer segment shrunk by 0.9% organically.",
+    "predicted": "No relevant sections were found in the document.",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": false,
+    "evidence_page_hit": false,
+    "citations": [],
+    "reasoning_model": "nanonets-ocr-3",
+    "mode": "text"
+  }
+]

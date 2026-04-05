@@ -1,0 +1,499 @@
+[
+  {
+    "id": "financebench_id_03029",
+    "doc_name": "3M_2018_10K",
+    "company": "3M",
+    "question": "What is the FY2018 capital expenditure amount (in USD millions) for 3M? Give a response to the question by relying on the details shown in the cash flow statement.",
+    "question_type": "metrics-generated",
+    "question_reasoning": "Information extraction",
+    "gold_answer": "$1577.00",
+    "predicted": "The FY2018 capital expenditure amount for 3M is $1,577 million. This information is found in the \"Cash Flows from Investing Activities\" table under the line item \"Purchases of property, plant and equipment (PP&E)\" for the year 2018.",
+    "heuristic_score": 0.75,
+    "exact_match": false,
+    "key_number_found": true,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "Cash Flows:",
+        "doc_name": null,
+        "pages": [
+          46
+        ]
+      },
+      {
+        "title": "Cash Flows from Investing Activities:",
+        "doc_name": null,
+        "pages": [
+          46
+        ]
+      },
+      {
+        "title": "Cash Flows from Financing Activities:",
+        "doc_name": null,
+        "pages": [
+          47
+        ]
+      },
+      {
+        "title": "Free Cash Flow (non-GAAP measure):",
+        "doc_name": null,
+        "pages": [
+          49
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_04672",
+    "doc_name": "3M_2018_10K",
+    "company": "3M",
+    "question": "Assume that you are a public equities analyst. Answer the following question by primarily using information that is shown in the balance sheet: what is the year end FY2018 net PPNE for 3M? Answer in USD billions.",
+    "question_type": "metrics-generated",
+    "question_reasoning": "Information extraction",
+    "gold_answer": "$8.70",
+    "predicted": "The year-end FY2018 net PPNE (Property, Plant and Equipment, Net) for 3M is $8,738 million, or $8.738 billion.\n\nI used the \"3M Company and Subsidiaries Consolidated Balance Sheet At December 31\" section, specifically the line item \"Property, plant and equipment — net\" for December 31, 2018.",
+    "heuristic_score": 0.75,
+    "exact_match": false,
+    "key_number_found": true,
+    "llm_judge": null,
+    "evidence_page_hit": true,
+    "citations": [
+      {
+        "title": "3M Company and Subsidiaries Consolidated Balance Sheet At December 31",
+        "doc_name": null,
+        "pages": [
+          58
+        ]
+      },
+      {
+        "title": "3M Company and Subsidiaries",
+        "doc_name": null,
+        "pages": [
+          59
+        ]
+      },
+      {
+        "title": "Consolidated Statement of Changes in Equity",
+        "doc_name": null,
+        "pages": [
+          59
+        ]
+      },
+      {
+        "title": "Years Ended December 31",
+        "doc_name": null,
+        "pages": [
+          59
+        ]
+      },
+      {
+        "title": "3M Company and Subsidiaries",
+        "doc_name": null,
+        "pages": [
+          60
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_00499",
+    "doc_name": "3M_2022_10K",
+    "company": "3M",
+    "question": "Is 3M a capital-intensive business based on FY2022 data?",
+    "question_type": "domain-relevant",
+    "question_reasoning": "Logical reasoning (based on numerical reasoning)",
+    "gold_answer": "No, the company is managing its CAPEX and Fixed Assets pretty efficiently, which is evident from below key metrics:\nCAPEX/Revenue Ratio: 5.1%\nFixed assets/Total Assets: 20%\nReturn on Assets= 12.4%",
+    "predicted": "Yes, 3M is a capital-intensive business based on FY2022 data. This is evidenced by the significant capital expenditures of $1,749 million in 2022, as reported in the \"Cash Flows from Investing Activities\" section. Additionally, the company's focus on investing in property, plant, and equipment to meet product demand and increase manufacturing efficiency, as mentioned in the same section, further supports this classification.",
+    "heuristic_score": 0.75,
+    "exact_match": false,
+    "key_number_found": true,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "Cash Flows from Investing Activities:",
+        "doc_name": null,
+        "pages": [
+          39,
+          40
+        ]
+      },
+      {
+        "title": "Dividends Paid to Shareholders:",
+        "doc_name": null,
+        "pages": [
+          41
+        ]
+      },
+      {
+        "title": "Free Cash Flow (non-GAAP measure):",
+        "doc_name": null,
+        "pages": [
+          41
+        ]
+      },
+      {
+        "title": "Material Cash Requirements from Known Contractual and Other Obligations:",
+        "doc_name": null,
+        "pages": [
+          41
+        ]
+      },
+      {
+        "title": "FINANCIAL INSTRUMENTS",
+        "doc_name": null,
+        "pages": [
+          42
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_01226",
+    "doc_name": "3M_2022_10K",
+    "company": "3M",
+    "question": "What drove operating margin change as of FY2022 for 3M? If operating margin is not a useful metric for a company like this, then please state that and explain why.",
+    "question_type": "domain-relevant",
+    "question_reasoning": "Logical reasoning (based on numerical reasoning) OR Numerical reasoning OR Logical reasoning",
+    "gold_answer": "Operating Margin for 3M in FY2022 has decreased by 1.7% primarily due to: \n-Decrease in gross Margin\n-mostly one-off charges including Combat Arms Earplugs litigation, impairment related to exiting PFAS manufacturing, costs related to exiting Russia and divestiture-related restructuring\ncharges",
+    "predicted": "The operating margin for 3M decreased by 1.7% in FY2022 compared to FY2021, as shown in the \"Operating Expenses\" table under the \"RESULTS OF OPERATIONS\" section. This change was driven by several factors:\n\n1. **Cost of Sales**: Increased by 3.0% of net sales due to special item costs for significant litigation related to PFAS matters, higher raw materials and logistics costs, manufacturing productivity headwinds, and investments in growth, productivity, and sustainability. These increases were partially offset by increases in selling prices.\n\n2. **Selling, General and Administrative Expenses (SG&A)**: Increased by 6.1% of net sales due to special item costs for significant litigation (including Combat Arms Earplugs litigation), impairment costs related to exiting PFAS manufacturing, costs related to exiting Russia, divestiture-related restructuring charges, and continued investment in key growth initiatives. These increases were partially offset by restructuring benefits and ongoing co",
+    "heuristic_score": 0.75,
+    "exact_match": false,
+    "key_number_found": true,
+    "llm_judge": null,
+    "evidence_page_hit": true,
+    "citations": [
+      {
+        "title": "RESULTS OF OPERATIONS",
+        "doc_name": null,
+        "pages": [
+          27
+        ]
+      },
+      {
+        "title": "Cost of Sales:",
+        "doc_name": null,
+        "pages": [
+          27
+        ]
+      },
+      {
+        "title": "Selling, General and Administrative Expenses:",
+        "doc_name": null,
+        "pages": [
+          27
+        ]
+      },
+      {
+        "title": "Goodwill Impairment Expense:",
+        "doc_name": null,
+        "pages": [
+          27
+        ]
+      },
+      {
+        "title": "Other Expense (Income), Net:",
+        "doc_name": null,
+        "pages": [
+          28
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_01865",
+    "doc_name": "3M_2022_10K",
+    "company": "3M",
+    "question": "If we exclude the impact of M&A, which segment has dragged down 3M's overall growth in 2022?",
+    "question_type": "novel-generated",
+    "question_reasoning": null,
+    "gold_answer": "The consumer segment shrunk by 0.9% organically.",
+    "predicted": "The Safety and Industrial Business segment has dragged down 3M's overall growth in 2022, excluding the impact of M&A.",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "Safety and Industrial Business (33.9% of consolidated sales):",
+        "doc_name": null,
+        "pages": [
+          30,
+          31,
+          32
+        ]
+      },
+      {
+        "title": "Year 2022 results:",
+        "doc_name": null,
+        "pages": [
+          30,
+          31,
+          32
+        ]
+      },
+      {
+        "title": "Year 2021 results:",
+        "doc_name": null,
+        "pages": [
+          30,
+          31,
+          32
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_00807",
+    "doc_name": "3M_2023Q2_10Q",
+    "company": "3M",
+    "question": "Does 3M have a reasonably healthy liquidity profile based on its quick ratio for Q2 of FY2023? If the quick ratio is not relevant to measure liquidity, please state that and explain why.",
+    "question_type": "domain-relevant",
+    "question_reasoning": "Logical reasoning (based on numerical reasoning) OR Logical reasoning",
+    "gold_answer": "No. The quick ratio for 3M was 0.96 by Jun'23 close, which needs a bit of an improvement to touch the 1x mark",
+    "predicted": "Yes, 3M has a reasonably healthy liquidity profile based on its quick ratio for Q2 of FY2023. The quick ratio is not explicitly mentioned in the provided text, but the company's liquidity profile is described as strong, with primary short-term liquidity needs met through cash on hand and U.S. commercial paper issuances. The company also has a $4.25 billion five-year revolving credit facility, which was undrawn at June 30, 2023, and a credit rating of A2, negative outlook from Moody's Investors Service, and a credit rating of A-, CreditWatch negative from S&P Global Ratings. Additionally, the company's net debt decreased from $12,023 million at December 31, 2022, to $11,650 million at June 30, 2023, indicating a strong financial position. The company's free cash flow was $1,932 million for the six months ended June 30, 2023, which is a positive indicator of liquidity.",
+    "heuristic_score": 0.75,
+    "exact_match": false,
+    "key_number_found": true,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "FINANCIAL CONDITION AND LIQUIDITY",
+        "doc_name": null,
+        "pages": [
+          70,
+          71
+        ]
+      },
+      {
+        "title": "Total debt:",
+        "doc_name": null,
+        "pages": [
+          70,
+          71
+        ]
+      },
+      {
+        "title": "Cash Flows:",
+        "doc_name": null,
+        "pages": [
+          72,
+          73,
+          74
+        ]
+      },
+      {
+        "title": "Cash Flows from Operating Activities:",
+        "doc_name": null,
+        "pages": [
+          72,
+          73,
+          74
+        ]
+      },
+      {
+        "title": "Cash Flows from Investing Activities:",
+        "doc_name": null,
+        "pages": [
+          72,
+          73,
+          74
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_00941",
+    "doc_name": "3M_2023Q2_10Q",
+    "company": "3M",
+    "question": "Which debt securities are registered to trade on a national securities exchange under 3M's name as of Q2 of 2023?",
+    "question_type": "domain-relevant",
+    "question_reasoning": "Information extraction",
+    "gold_answer": "Following debt securities registered under 3M's name are listed to trade on the New York Stock Exchange:\n-1.500% Notes due 2026 (Trading Symbol: MMM26)\n-1.750% Notes due 2030 (Trading Symbol: MMM30)\n-1.500% Notes due 2031 (Trading Symbol: MMM31)",
+    "predicted": "As of Q2 of 2023, the debt securities registered to trade on a national securities exchange under 3M's name are the fixed-rate registered notes and fixed-rate medium-term notes. The document mentions that 3M repaid $500 million aggregate principal amount of fixed-rate registered notes that matured in February 2023, and $650 million aggregate principal amount of fixed-rate medium-term notes that matured in March 2023. Additionally, 3M repaid 600 million euros aggregate principal amount of fixed-rate medium-term notes that matured in May 2023. The document also states that 3M had $1.8 billion in commercial paper outstanding at June 30, 2023, which is a type of debt security that is typically registered to trade on a national securities exchange. The information about the debt securities is found in the section \"NOTE 10. Long-Term Debt and Short-Term Borrowings\" and the section \"Future Maturities of Long-term Debt\".",
+    "heuristic_score": 0.75,
+    "exact_match": false,
+    "key_number_found": true,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "NOTE 10. Long-Term Debt and Short-Term Borrowings",
+        "doc_name": null,
+        "pages": [
+          19
+        ]
+      },
+      {
+        "title": "Future Maturities of Long-term Debt",
+        "doc_name": null,
+        "pages": [
+          19
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_01858",
+    "doc_name": "3M_2023Q2_10Q",
+    "company": "3M",
+    "question": "Does 3M maintain a stable trend of dividend distribution?",
+    "question_type": "novel-generated",
+    "question_reasoning": null,
+    "gold_answer": "Yes, not only they distribute the dividends on a routine basis, 3M has also been increasing the per share dividend for consecutive 65 years",
+    "predicted": "Yes, 3M maintains a stable trend of dividend distribution. The cash dividends declared and paid totaled $1.50 and $1.49 per share for the first and second quarters of 2023 and 2022, respectively, or $3.00 and $2.98 per share for the first six months of 2023 and 2022, respectively.",
+    "heuristic_score": 0.75,
+    "exact_match": false,
+    "key_number_found": true,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "NOTE 7. Supplemental Equity and Comprehensive Income (Loss) Information",
+        "doc_name": null,
+        "pages": [
+          14
+        ]
+      },
+      {
+        "title": "Consolidated Changes in Equity",
+        "doc_name": null,
+        "pages": [
+          14
+        ]
+      },
+      {
+        "title": "Three months ended June 30, 2023",
+        "doc_name": null,
+        "pages": [
+          14
+        ]
+      },
+      {
+        "title": "Three months ended June 30, 2022",
+        "doc_name": null,
+        "pages": [
+          14
+        ]
+      },
+      {
+        "title": "Six months ended June 30, 2023",
+        "doc_name": null,
+        "pages": [
+          15,
+          16
+        ]
+      },
+      {
+        "title": "Six months ended June 30, 2022",
+        "doc_name": null,
+        "pages": [
+          15,
+          16
+        ]
+      },
+      {
+        "title": "Six months ended June 30, 2022",
+        "doc_name": null,
+        "pages": [
+          17
+        ]
+      },
+      {
+        "title": "Reclassifications out of Accumulated Other Comprehensive Income (Loss) Attributable to 3M",
+        "doc_name": null,
+        "pages": [
+          17
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_02987",
+    "doc_name": "ACTIVISIONBLIZZARD_2019_10K",
+    "company": "Activision Blizzard",
+    "question": "What is the FY2019 fixed asset turnover ratio for Activision Blizzard? Fixed asset turnover ratio is defined as: FY2019 revenue / (average PP&E between FY2018 and FY2019). Round your answer to two decimal places. Base your judgments on the information provided primarily in the statement of income and the statement of financial position.",
+    "question_type": "metrics-generated",
+    "question_reasoning": "Numerical reasoning",
+    "gold_answer": "24.26",
+    "predicted": "ERROR: Text answer generation failed: LLM call failed after 5 attempts: Error code: 400 - {'error': {'message': \"This model's maximum context length is 45000 tokens. However, your request has 48391 input tokens. Please reduce the length of the input messages. (parameter=input_tokens, value=48391)\", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": []
+  },
+  {
+    "id": "financebench_id_07966",
+    "doc_name": "ACTIVISIONBLIZZARD_2019_10K",
+    "company": "Activision Blizzard",
+    "question": "What is the FY2017 - FY2019 3 year average of capex as a % of revenue for Activision Blizzard? Answer in units of percents and round to one decimal place. Calculate (or extract) the answer from the statement of income and the cash flow statement.",
+    "question_type": "metrics-generated",
+    "question_reasoning": "Numerical reasoning",
+    "gold_answer": "1.9%",
+    "predicted": "The FY2017 - FY2019 3 year average of capex as a % of revenue for Activision Blizzard is 1.5%.",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "Capital Expenditures",
+        "doc_name": null,
+        "pages": [
+          52
+        ]
+      }
+    ]
+  },
+  {
+    "id": "financebench_id_04735",
+    "doc_name": "ADOBE_2015_10K",
+    "company": "Adobe",
+    "question": "You are an investment banker and your only resource(s) to answer the following question is (are): the statement of financial position and the cash flow statement. Here's the question: what is the FY2015 operating cash flow ratio for Adobe? Operating cash flow ratio is defined as: cash from operations / total current liabilities. Round your answer to two decimal places.",
+    "question_type": "metrics-generated",
+    "question_reasoning": "Numerical reasoning",
+    "gold_answer": "0.66",
+    "predicted": "To calculate the FY2015 operating cash flow ratio for Adobe, we need the following information:\n\n1. Cash from operations for FY2015\n2. Total current liabilities for FY2015\n\nThe operating cash flow ratio is defined as: cash from operations / total current liabilities.\n\nFrom the provided context, we can find the necessary information in the \"Statement of Cash Flows\" section. However, the provided context does not include the \"Statement of Cash Flows\" section. It only includes the \"Statement of Financial Position\" and \"Cash Flow Statement\" sections.\n\nThe \"Statement of Financial Position\" section provides information about the company's assets, liabilities, and equity at a specific point in time. The \"Cash Flow Statement\" section provides information about the company's cash inflows and outflows during a specific period.\n\nSince the \"Statement of Cash Flows\" section is not provided, we cannot determine the cash from operations for FY2015. Therefore, we cannot calculate the operating cash fl",
+    "heuristic_score": 0.0,
+    "exact_match": false,
+    "key_number_found": false,
+    "llm_judge": null,
+    "evidence_page_hit": false,
+    "citations": [
+      {
+        "title": "Revenue (dollars in millions)",
+        "doc_name": null,
+        "pages": [
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ]
+      },
+      {
+        "title": "Segments",
+        "doc_name": null,
+        "pages": [
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ]
+      }
+    ]
+  }
+]
