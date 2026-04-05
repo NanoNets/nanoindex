@@ -28,14 +28,64 @@ def _is_anthropic_model(model: str) -> bool:
     return model.startswith("claude")
 
 
+# Auto-detect provider base URL from model name
+_PROVIDER_URLS: dict[str, str] = {
+    "gpt-":       "https://api.openai.com/v1",
+    "o1-":        "https://api.openai.com/v1",
+    "o3-":        "https://api.openai.com/v1",
+    "o4-":        "https://api.openai.com/v1",
+    "gemini-":    "https://generativelanguage.googleapis.com/v1beta/openai",
+    "deepseek-":  "https://api.deepseek.com/v1",
+    "mistral-":   "https://api.mistral.ai/v1",
+    "qwen-":      "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+    "llama-":     "https://api.groq.com/openai/v1",
+}
+
+_PROVIDER_KEY_ENV: dict[str, str] = {
+    "gpt-":       "OPENAI_API_KEY",
+    "o1-":        "OPENAI_API_KEY",
+    "o3-":        "OPENAI_API_KEY",
+    "o4-":        "OPENAI_API_KEY",
+    "claude":     "ANTHROPIC_API_KEY",
+    "gemini-":    "GOOGLE_API_KEY",
+    "deepseek-":  "DEEPSEEK_API_KEY",
+    "mistral-":   "MISTRAL_API_KEY",
+    "qwen-":      "DASHSCOPE_API_KEY",
+    "llama-":     "GROQ_API_KEY",
+}
+
+
+def _auto_detect_url(model: str, base_url: str | None) -> str:
+    """If no base_url given, guess from model name."""
+    if base_url:
+        return base_url
+    for prefix, url in _PROVIDER_URLS.items():
+        if model.startswith(prefix):
+            return url
+    return "https://extraction-api.nanonets.com/v1"
+
+
+def _auto_detect_key(model: str, api_key: str | None) -> str:
+    """If no api_key given, try the provider's env var."""
+    if api_key:
+        return api_key
+    import os
+    for prefix, env_var in _PROVIDER_KEY_ENV.items():
+        if model.startswith(prefix):
+            key = os.environ.get(env_var)
+            if key:
+                return key
+    return api_key or "no-key"
+
+
 class LLMClient:
     """Async wrapper around OpenAI-compatible or Anthropic chat completions."""
 
     def __init__(
         self,
-        api_key: str,
+        api_key: str | None = None,
         *,
-        base_url: str = "https://extraction-api.nanonets.com/v1",
+        base_url: str | None = None,
         model: str = "nanonets/Nanonets-OCR-s",
         temperature: float = 0.0,
         max_tokens: int = 4096,
@@ -45,6 +95,10 @@ class LLMClient:
         self._max_tokens = max_tokens
         self._is_anthropic = _is_anthropic_model(model)
 
+        # Auto-detect provider URL and API key from model name
+        resolved_key = _auto_detect_key(model, api_key)
+        resolved_url = _auto_detect_url(model, base_url)
+
         if self._is_anthropic:
             try:
                 from anthropic import AsyncAnthropic
@@ -52,10 +106,10 @@ class LLMClient:
                 raise ImportError(
                     "pip install anthropic  — required for Claude models"
                 )
-            self._anthropic = AsyncAnthropic(api_key=api_key)
+            self._anthropic = AsyncAnthropic(api_key=resolved_key)
             self._openai = None
         else:
-            self._openai = AsyncOpenAI(api_key=api_key, base_url=base_url)
+            self._openai = AsyncOpenAI(api_key=resolved_key, base_url=resolved_url)
             self._anthropic = None
 
     @property
@@ -111,6 +165,14 @@ class LLMClient:
             except Exception as exc:
                 last_exc = exc
                 err_str = str(exc)
+
+                # Clear error for bad API keys
+                if "401" in err_str or "authentication" in err_str.lower() or "invalid" in err_str.lower() and "key" in err_str.lower():
+                    raise RetrievalError(
+                        f"Invalid LLM API key for model '{model}'. "
+                        f"Check your API key environment variable. Error: {err_str[:100]}"
+                    ) from exc
+
                 is_transient = any(code in err_str for code in ("500", "502", "503", "429", "Server", "overloaded"))
                 if is_transient and attempt < _MAX_RETRIES:
                     wait = _RETRY_BACKOFF * (2 ** attempt)
@@ -197,10 +259,19 @@ class LLMClient:
         for attempt in range(_MAX_RETRIES + 1):
             try:
                 resp = await self._anthropic.messages.create(**kwargs)
+                if not resp.content:
+                    return ""  # Claude returned empty content (e.g., content filter)
                 return resp.content[0].text.strip()
             except Exception as exc:
                 last_exc = exc
                 err_str = str(exc)
+
+                # Clear error for bad API keys
+                if "401" in err_str or "authentication" in err_str.lower() or "invalid x-api-key" in err_str.lower():
+                    raise RetrievalError(
+                        "Invalid ANTHROPIC_API_KEY. Check your key at https://console.anthropic.com/"
+                    ) from exc
+
                 is_transient = any(tok in err_str for tok in ("500", "502", "503", "529", "overloaded", "rate"))
                 if is_transient and attempt < _MAX_RETRIES:
                     wait = _RETRY_BACKOFF * (2 ** attempt)

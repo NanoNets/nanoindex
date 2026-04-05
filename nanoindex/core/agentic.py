@@ -1311,11 +1311,15 @@ def _build_citations(
             list(range(rn.node.start_index, rn.node.end_index + 1))
             if rn.node.start_index else []
         )
-        bboxes: list[BoundingBox] = []
+        # Always propagate bounding boxes from the node itself
+        bboxes: list[BoundingBox] = list(rn.node.bounding_boxes)
         dims: list[PageDimensions] = []
         if include_metadata and pages and tree:
             page_set = set(pages)
-            bboxes = [bb for bb in tree.all_bounding_boxes if bb.page in page_set]
+            # Enrich with all bboxes for cited pages from the tree
+            tree_bboxes = [bb for bb in tree.all_bounding_boxes if bb.page in page_set]
+            if tree_bboxes:
+                bboxes = tree_bboxes
             dims = [pd for pd in tree.page_dimensions if pd.page in page_set]
         citations.append(Citation(
             node_id=rn.node.node_id,
