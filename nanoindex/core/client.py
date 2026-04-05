@@ -86,6 +86,12 @@ class NanonetsClient:
                         await asyncio.sleep(wait)
                         continue
 
+                if resp.status_code in (401, 403):
+                    raise ExtractionError(
+                        "Invalid or expired NANONETS_API_KEY. "
+                        "Get a free key at https://docstrange.nanonets.com/app"
+                    )
+
                 if resp.status_code == 400:
                     body = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
                     detail = body.get("detail", resp.text[:200])
@@ -94,14 +100,17 @@ class NanonetsClient:
                 resp.raise_for_status()
                 return resp
 
-            except (httpx.TimeoutException, httpx.ConnectError) as exc:
+            except (httpx.TimeoutException, httpx.ConnectError, httpx.ReadTimeout) as exc:
                 last_exc = exc
                 if attempt < _MAX_RETRIES - 1:
                     wait = _BACKOFF_BASE ** (attempt + 1)
-                    logger.warning("Connection error (%s), retrying in %.1fs …", exc, wait)
+                    logger.warning("Connection error: %s. Retrying in %.1fs …", type(exc).__name__, wait)
                     await asyncio.sleep(wait)
                     continue
-                raise ExtractionError(f"Connection failed after {_MAX_RETRIES} attempts: {exc}") from exc
+                raise ExtractionError(
+                    f"Connection to Nanonets API failed after {_MAX_RETRIES} attempts. "
+                    f"Check your internet connection. Error: {type(exc).__name__}"
+                ) from exc
 
         raise ExtractionError(f"Request failed after {_MAX_RETRIES} attempts") from last_exc
 

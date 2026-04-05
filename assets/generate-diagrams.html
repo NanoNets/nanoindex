@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>NanoIndex Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.min.js"></script>
+  <style>
+    body { background: #f8f8f8; margin: 0; padding: 40px; font-family: system-ui, -apple-system, sans-serif; }
+    .wrap { max-width: 920px; margin: 0 auto; }
+    h2 { color: #1a1a1a; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; margin: 50px 0 12px; }
+    canvas { display: block; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    p.hint { color: #999; font-size: 11px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+<h2>1. Ingestion Pipeline</h2>
+<canvas id="ingestion" width="880" height="520"></canvas>
+
+<h2>2. Query — Fast Mode (default)</h2>
+<canvas id="query_fast" width="880" height="480"></canvas>
+
+<h2>3. Query — Agentic Mode (highest accuracy)</h2>
+<canvas id="query_agentic" width="880" height="530"></canvas>
+
+<h2>4. FinanceBench Evaluation</h2>
+<canvas id="financebench" width="880" height="580"></canvas>
+
+</div>
+<script>
+const BLUE   = '#546FFF';
+const GREEN  = '#20C997';
+const AMBER  = '#E8A800';
+const RED    = '#FF6B6B';
+const VIOLET = '#7950F2';
+const BG     = '#ffffff';
+const BORDER = '#e0e0e0';
+const T1     = '#1a1a1a';
+const T2     = '#555';
+const T3     = '#999';
+const T4     = '#ccc';
+const ROUGH  = { roughness: 0, bowing: 0 };
+
+function box(rc, ctx, x, y, w, h, opts = {}) {
+  const { color = BORDER, label = '', sub = '', badge = '', highlight = false } = opts;
+  rc.rectangle(x, y, w, h, {
+    ...ROUGH, stroke: color, strokeWidth: highlight ? 2 : 1.5,
+    fill: color + (highlight ? '14' : '08'), fillStyle: 'solid',
+  });
+  if (label) {
+    ctx.fillStyle = color === BORDER ? T2 : color;
+    ctx.font = 'bold 13px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(label, x + w/2, y + (sub ? h/2 - 2 : h/2 + 5));
+  }
+  if (sub) {
+    ctx.fillStyle = T3; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(sub, x + w/2, y + h/2 + 14);
+  }
+  if (badge) {
+    const bw = ctx.measureText(badge).width + 14;
+    const bx = x + w + 8, by = y + h/2 - 9;
+    rc.rectangle(bx, by, bw, 18, { roughness: 0, bowing: 0, stroke: GREEN+'50', fill: GREEN+'0C', fillStyle: 'solid', strokeWidth: 1 });
+    ctx.fillStyle = GREEN; ctx.font = '9px system-ui'; ctx.textAlign = 'left';
+    ctx.fillText(badge, bx + 7, by + 13);
+  }
+}
+
+function arr(rc, ctx, x1, y1, x2, y2, label) {
+  rc.line(x1, y1, x2, y2, { ...ROUGH, stroke: T4, strokeWidth: 1.3 });
+  const a = Math.atan2(y2-y1, x2-x1);
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 7*Math.cos(a-0.35), y2 - 7*Math.sin(a-0.35));
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 7*Math.cos(a+0.35), y2 - 7*Math.sin(a+0.35));
+  ctx.strokeStyle = T4; ctx.lineWidth = 1.4; ctx.stroke();
+  if (label) {
+    ctx.fillStyle = T3; ctx.font = '9px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(label, (x1+x2)/2 + 14, (y1+y2)/2 - 5);
+  }
+}
+
+function pill(rc, ctx, x, y, text, color) {
+  const pw = ctx.measureText(text).width + 18;
+  rc.rectangle(x-pw/2, y-11, pw, 22, { roughness: 0, bowing: 0, stroke: color+'50', fill: color+'0C', fillStyle: 'solid', strokeWidth: 1 });
+  ctx.fillStyle = color; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
+  ctx.fillText(text, x, y + 4);
+}
+
+function stepN(ctx, x, y, n) {
+  ctx.fillStyle = T4; ctx.font = 'bold 20px system-ui'; ctx.textAlign = 'center';
+  ctx.fillText(n, x, y);
+}
+
+function titleBlock(ctx, w, y1, main, sub) {
+  ctx.fillStyle = T1; ctx.font = 'bold 16px system-ui'; ctx.textAlign = 'center';
+  ctx.fillText(main, w/2, y1);
+  ctx.fillStyle = T3; ctx.font = '11px system-ui';
+  ctx.fillText(sub, w/2, y1+18);
+}
+
+function footer(ctx, w, y, text, color) {
+  ctx.fillStyle = color || BLUE; ctx.font = 'bold 11px system-ui'; ctx.textAlign = 'center';
+  ctx.fillText(text, w/2, y);
+}
+
+// Draw the AI agent icon (robot face)
+function drawAgent(rc, ctx, cx, cy, size) {
+  const s = size;
+  // Head
+  rc.rectangle(cx - s, cy - s, s*2, s*2, { ...ROUGH, stroke: VIOLET, strokeWidth: 1.5, fill: VIOLET+'10', fillStyle: 'solid' });
+  // Eyes
+  rc.circle(cx - s*0.4, cy - s*0.15, s*0.35, { stroke: VIOLET, strokeWidth: 1.2, fill: VIOLET+'30', fillStyle: 'solid', roughness: 0 });
+  rc.circle(cx + s*0.4, cy - s*0.15, s*0.35, { stroke: VIOLET, strokeWidth: 1.2, fill: VIOLET+'30', fillStyle: 'solid', roughness: 0 });
+  // Pupils
+  ctx.fillStyle = VIOLET;
+  ctx.beginPath(); ctx.arc(cx - s*0.4, cy - s*0.15, s*0.08, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx + s*0.4, cy - s*0.15, s*0.08, 0, Math.PI*2); ctx.fill();
+  // Mouth
+  rc.line(cx - s*0.3, cy + s*0.4, cx + s*0.3, cy + s*0.4, { stroke: VIOLET, strokeWidth: 1.2, roughness: 0 });
+  // Antenna
+  rc.line(cx, cy - s, cx, cy - s*1.4, { stroke: VIOLET, strokeWidth: 1.2, roughness: 0 });
+  rc.circle(cx, cy - s*1.5, s*0.2, { stroke: VIOLET, strokeWidth: 1, fill: VIOLET+'40', fillStyle: 'solid', roughness: 0.4 });
+}
+
+// =============================================
+// ANIMATED INGESTION
+// =============================================
+(function() {
+  const c = document.getElementById('ingestion');
+  const ctx = c.getContext('2d');
+  const rc = rough.canvas(c);
+  const cx = c.width / 2;
+
+  let frame = 0;
+  const ANIM_FRAMES = 180; // 3s animation
+  const HOLD_FRAMES = 300; // 5s hold
+  const TOTAL = ANIM_FRAMES + HOLD_FRAMES;
+
+  function draw() {
+    const t = Math.min(1, (frame % TOTAL) / ANIM_FRAMES); // clamps at 1 during hold
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, c.width, c.height);
+
+    titleBlock(ctx, c.width, 32, 'Ingestion Pipeline', 'nanoindex.index("report.pdf")');
+
+    const fadeIn = (start, dur) => Math.min(1, Math.max(0, (t - start) / dur));
+    const f1 = fadeIn(0, 0.1);
+    const f2 = fadeIn(0.12, 0.1);
+    const f3 = fadeIn(0.28, 0.08);
+    const f4 = fadeIn(0.42, 0.1);
+    const f5 = fadeIn(0.58, 0.12);
+    const f6 = fadeIn(0.78, 0.1);
+
+    ctx.globalAlpha = f1;
+    stepN(ctx, 55, 92, '1');
+    box(rc, ctx, 80, 72, 160, 48, { label: 'Your PDF' });
+
+    ctx.globalAlpha = f2;
+    arr(rc, ctx, 240, 96, 290, 96);
+    stepN(ctx, 305, 92, '2');
+    box(rc, ctx, 320, 68, 240, 56, { color: BLUE, label: 'Nanonets OCR-3', sub: '1 API call', badge: '10K pages free' });
+
+    ctx.globalAlpha = f3;
+    arr(rc, ctx, cx, 124, cx, 158);
+    const py = 174;
+    pill(rc, ctx, 120, py, 'Markdown', BLUE);
+    pill(rc, ctx, 232, py, 'Hierarchy', BLUE);
+    pill(rc, ctx, 332, py, 'Tables', BLUE);
+    pill(rc, ctx, 448, py, 'Bounding Boxes', BLUE);
+    pill(rc, ctx, 578, py, 'Page Layouts', BLUE);
+    pill(rc, ctx, 700, py, 'TOC', BLUE);
+    pill(rc, ctx, 790, py, 'Images', BLUE);
+
+    ctx.globalAlpha = f4;
+    arr(rc, ctx, cx, 190, cx, 220);
+    stepN(ctx, 305, 240, '3');
+    box(rc, ctx, 320, 224, 240, 56, { color: GREEN, label: 'Tree Builder', sub: 'Deterministic · 0 LLM calls', badge: 'Free' });
+
+    ctx.globalAlpha = f5;
+    arr(rc, ctx, 380, 280, 170, 332);
+    arr(rc, ctx, cx, 280, cx, 332);
+    arr(rc, ctx, 500, 280, 710, 332);
+    ctx.font = '9px system-ui'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#7B8FFF'; ctx.fillText('+ LLM summaries', 170, 328);
+    ctx.fillStyle = VIOLET; ctx.fillText('+ LLM entity extraction', cx, 328);
+    ctx.fillStyle = AMBER; ctx.fillText('Local model · no API key', 710, 328);
+
+    stepN(ctx, 60, 358, '4');
+    box(rc, ctx, 65, 342, 210, 55, { color: '#7B8FFF', label: 'Document Tree', sub: 'Sections, headings, pages' });
+    box(rc, ctx, 335, 342, 210, 55, { color: VIOLET, label: 'Entity Graph', sub: 'Companies, metrics, relationships' });
+    box(rc, ctx, 605, 342, 210, 55, { color: AMBER, label: 'Embeddings', sub: 'Node summary vectors' });
+
+    ctx.globalAlpha = f6;
+    arr(rc, ctx, cx, 397, cx, 432);
+    rc.rectangle(320, 436, 240, 38, { ...ROUGH, stroke: GREEN, strokeWidth: 1.2, fill: GREEN+'08', fillStyle: 'solid' });
+    ctx.fillStyle = GREEN; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText('Ready for queries', cx, 460);
+    footer(ctx, c.width, 500, 'All built automatically by nanoindex.index()', T3);
+
+    ctx.globalAlpha = 1;
+    frame++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// =============================================
+// ANIMATED FAST MODE
+// =============================================
+(function() {
+  const c = document.getElementById('query_fast');
+  const ctx = c.getContext('2d');
+  const rc = rough.canvas(c);
+  let frame = 0;
+  const ANIM_F = 180, HOLD_F = 300, TOT_F = ANIM_F + HOLD_F;
+
+  function draw() {
+    const t = Math.min(1, (frame % TOT_F) / ANIM_F);
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, c.width, c.height);
+
+    titleBlock(ctx, c.width, 32, 'Query Pipeline — Fast Mode (default)', 'nanoindex.ask("What was the revenue?", tree)');
+
+    const f = (s, d) => Math.min(1, Math.max(0, (t - s) / d));
+
+    ctx.globalAlpha = f(0, 0.1);
+    stepN(ctx, 58, 90, '1');
+    box(rc, ctx, 72, 72, 155, 48, { label: 'Your Question' });
+
+    ctx.globalAlpha = f(0.1, 0.1);
+    arr(rc, ctx, 227, 96, 280, 96);
+    stepN(ctx, 293, 90, '2');
+    box(rc, ctx, 310, 72, 195, 48, { color: AMBER, label: 'Embed Query', sub: 'Local model · instant', badge: '0 LLM calls' });
+
+    ctx.globalAlpha = f(0.22, 0.1);
+    arr(rc, ctx, 407, 120, 407, 155);
+    stepN(ctx, 293, 176, '3');
+    box(rc, ctx, 310, 158, 195, 48, { color: AMBER, label: 'Cosine Search', sub: 'Top 20 candidates', badge: '0 LLM calls' });
+
+    ctx.globalAlpha = f(0.32, 0.1);
+    arr(rc, ctx, 505, 182, 558, 182);
+    box(rc, ctx, 560, 158, 195, 48, { color: VIOLET, label: 'Graph Expand', sub: 'Find related sections' });
+
+    ctx.globalAlpha = f(0.44, 0.1);
+    arr(rc, ctx, 407, 206, 407, 248);
+    stepN(ctx, 293, 269, '4');
+    box(rc, ctx, 310, 252, 195, 48, { color: RED, label: 'LLM Selection', sub: 'Picks ~10 from ~25', badge: '1 LLM call' });
+
+    ctx.globalAlpha = f(0.58, 0.1);
+    arr(rc, ctx, 407, 300, 407, 338);
+    stepN(ctx, 293, 359, '5');
+    box(rc, ctx, 310, 342, 195, 48, { color: GREEN, label: 'Answer + Citations', sub: '1 LLM call' });
+
+    ctx.globalAlpha = f(0.72, 0.12);
+    arr(rc, ctx, 505, 366, 558, 366);
+    box(rc, ctx, 560, 342, 260, 48, { label: 'Cited answer', sub: 'Page numbers + bounding boxes' });
+
+    ctx.globalAlpha = f(0.86, 0.12);
+    footer(ctx, c.width, 435, 'Total: 2 LLM calls  ·  3x cheaper than agentic mode', BLUE);
+    footer(ctx, c.width, 455, '~20s per question', T3);
+
+    ctx.globalAlpha = 1;
+    frame++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// =============================================
+// ANIMATED AGENTIC MODE
+// =============================================
+(function() {
+  const c = document.getElementById('query_agentic');
+  const ctx = c.getContext('2d');
+  const rc = rough.canvas(c);
+  let frame = 0;
+  const ANIM_A = 240, HOLD_A = 300, TOT_A = ANIM_A + HOLD_A;
+
+  function draw() {
+    const t = Math.min(1, (frame % TOT_A) / ANIM_A);
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, c.width, c.height);
+
+    titleBlock(ctx, c.width, 32, 'Query Pipeline — Agentic Mode (highest accuracy)', 'nanoindex.ask("...", tree, mode="agentic_vision")');
+
+    const f = (s, d) => Math.min(1, Math.max(0, (t - s) / d));
+
+    ctx.globalAlpha = f(0, 0.08);
+    stepN(ctx, 58, 90, '1');
+    box(rc, ctx, 72, 72, 155, 48, { label: 'Your Question' });
+
+    ctx.globalAlpha = f(0.08, 0.08);
+    arr(rc, ctx, 227, 96, 280, 96);
+    stepN(ctx, 293, 90, '2');
+    box(rc, ctx, 310, 72, 240, 48, { color: RED, label: 'Decompose Query', sub: 'Extract data points needed', badge: '1 LLM call' });
+
+    ctx.globalAlpha = f(0.18, 0.08);
+    arr(rc, ctx, 430, 120, 430, 160);
+
+    // Agent box — the big one with the robot
+    ctx.globalAlpha = f(0.26, 0.08);
+    stepN(ctx, 293, 182, '3');
+
+    // Large agent container
+    rc.rectangle(310, 165, 350, 165, {
+      ...ROUGH, stroke: VIOLET, strokeWidth: 1.8,
+      fill: VIOLET + '06', fillStyle: 'solid',
+    });
+
+    // Agent icon
+    drawAgent(rc, ctx, 620, 218, 20);
+    ctx.fillStyle = VIOLET; ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText('AI Agent', 620, 255);
+
+    // Inside the agent box: three sub-steps
+    ctx.globalAlpha = f(0.30, 0.06);
+    box(rc, ctx, 325, 175, 260, 38, { color: RED, label: 'Read Full Tree Outline', sub: '~300 nodes' });
+
+    ctx.globalAlpha = f(0.38, 0.06);
+    arr(rc, ctx, 455, 213, 455, 228);
+    box(rc, ctx, 325, 230, 260, 38, { color: RED, label: 'Select Sections → Read Content', sub: '' });
+
+    ctx.globalAlpha = f(0.46, 0.06);
+    arr(rc, ctx, 455, 268, 455, 283);
+    box(rc, ctx, 325, 285, 260, 38, { color: RED, label: 'Need More?  →  Select Again', sub: '' });
+
+    // Loop indicator
+    ctx.globalAlpha = f(0.46, 0.06);
+    // Curved arrow going back up
+    ctx.beginPath();
+    ctx.moveTo(590, 304);
+    ctx.quadraticCurveTo(608, 270, 590, 240);
+    ctx.strokeStyle = VIOLET + '80'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); ctx.stroke();
+    ctx.setLineDash([]);
+    // Arrowhead
+    ctx.beginPath(); ctx.moveTo(590, 240); ctx.lineTo(586, 248); ctx.moveTo(590, 240); ctx.lineTo(594, 248);
+    ctx.strokeStyle = VIOLET + '80'; ctx.lineWidth = 1.5; ctx.stroke();
+
+    ctx.globalAlpha = f(0.46, 0.06);
+    ctx.fillStyle = VIOLET; ctx.font = '9px system-ui'; ctx.textAlign = 'left';
+    ctx.fillText('2-5 rounds', 610, 275);
+
+    // Badge for total LLM calls
+    ctx.globalAlpha = f(0.26, 0.08);
+    const bw = ctx.measureText('3-5 LLM calls').width + 14;
+    rc.rectangle(668, 170, bw, 18, { roughness: 0, bowing: 0, stroke: RED+'50', fill: RED+'0C', fillStyle: 'solid', strokeWidth: 1 });
+    ctx.fillStyle = RED; ctx.font = '9px system-ui'; ctx.textAlign = 'left';
+    ctx.fillText('3-5 LLM calls', 675, 183);
+
+    // Step 4: Answer
+    ctx.globalAlpha = f(0.58, 0.08);
+    arr(rc, ctx, 430, 330, 430, 365);
+    stepN(ctx, 293, 386, '4');
+    box(rc, ctx, 310, 370, 240, 48, { color: GREEN, label: 'Answer + Vision + Verify', sub: 'Page images + calculation check', badge: '2 LLM calls' });
+
+    ctx.globalAlpha = f(0.70, 0.1);
+    arr(rc, ctx, 550, 394, 605, 394);
+    box(rc, ctx, 607, 370, 220, 48, { label: 'Cited answer', sub: 'Page numbers + bounding boxes' });
+
+    ctx.globalAlpha = f(0.84, 0.12);
+    footer(ctx, c.width, 460, 'Total: 6-8 LLM calls  ·  Highest accuracy  ·  ~60s per question', RED);
+    footer(ctx, c.width, 480, '94.5% on FinanceBench 10-K with Claude Sonnet 4.6', T3);
+    footer(ctx, c.width, 505, 'Use agentic for complex multi-step questions. Use fast for everything else.', T3);
+
+    ctx.globalAlpha = 1;
+    frame++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// =============================================
+// FINANCEBENCH (static, no animation)
+// =============================================
+(function() {
+  const c = document.getElementById('financebench');
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = BG; ctx.fillRect(0, 0, c.width, c.height);
+  const rc = rough.canvas(c);
+
+  titleBlock(ctx, c.width, 32, 'FinanceBench Evaluation Architecture', '150 questions across 84 SEC filings  ·  Avg 143 pages per document');
+
+  ctx.fillStyle = BLUE; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'left';
+  ctx.fillText('PHASE 1: INDEX (one-time)', 50, 75);
+  box(rc, ctx, 50, 85, 140, 48, { label: '84 SEC PDFs', sub: '10-K, 10-Q, 8-K' });
+  arr(rc, ctx, 190, 109, 240, 109);
+  box(rc, ctx, 240, 82, 180, 55, { color: BLUE, label: 'Nanonets OCR-3', sub: 'Extract all 84 docs' });
+  arr(rc, ctx, 420, 109, 470, 109);
+  box(rc, ctx, 470, 82, 170, 55, { color: GREEN, label: 'Build Trees', sub: '86 tree indexes' });
+  arr(rc, ctx, 640, 109, 690, 109);
+  box(rc, ctx, 690, 85, 140, 48, { color: VIOLET, label: 'Entity Graphs', sub: '+ Embeddings' });
+
+  ctx.fillStyle = RED; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'left';
+  ctx.fillText('PHASE 2: EVALUATE (per question)', 50, 175);
+  box(rc, ctx, 50, 188, 160, 55, { label: '150 Questions', sub: 'Gold answers + evidence' });
+  arr(rc, ctx, 210, 215, 265, 215);
+  box(rc, ctx, 265, 188, 190, 55, { color: RED, label: 'Agentic Retrieval', sub: 'Claude Sonnet 4.6', highlight: true });
+
+  // Agent icon next to retrieval
+  drawAgent(rc, ctx, 478, 208, 14);
+
+  arr(rc, ctx, 455, 215, 510, 215);
+  box(rc, ctx, 510, 188, 170, 55, { color: GREEN, label: 'Answer Generation', sub: 'Vision + text + KB' });
+  arr(rc, ctx, 680, 215, 730, 215);
+  box(rc, ctx, 730, 188, 110, 55, { label: 'Predicted', sub: 'Answer' });
+
+  ctx.fillStyle = VIOLET; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'left';
+  ctx.fillText('PHASE 3: JUDGE', 50, 280);
+  box(rc, ctx, 50, 293, 140, 55, { label: 'Gold Answer', sub: 'Ground truth' });
+  box(rc, ctx, 220, 293, 140, 55, { label: 'Predicted', sub: 'Our answer' });
+  arr(rc, ctx, 190, 320, 400, 320);
+  arr(rc, ctx, 360, 320, 400, 320);
+  box(rc, ctx, 400, 293, 200, 55, { color: VIOLET, label: 'LLM-as-Judge', sub: 'Claude Sonnet 4.6' });
+  arr(rc, ctx, 600, 320, 660, 320);
+  box(rc, ctx, 660, 300, 80, 40, { color: GREEN, label: 'True' });
+  box(rc, ctx, 760, 300, 80, 40, { color: RED, label: 'False' });
+
+  ctx.fillStyle = T1; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'left';
+  ctx.fillText('RESULTS', 50, 395);
+
+  const ty = 410;
+  const cols = [50, 280, 440, 600];
+  ctx.fillStyle = T3; ctx.font = 'bold 10px system-ui';
+  ['Filing Type', 'Questions', 'Judge Accuracy', 'Page Recall'].forEach((h, i) => {
+    ctx.textAlign = 'left'; ctx.fillText(h, cols[i], ty);
+  });
+  rc.line(50, ty+5, 750, ty+5, { ...ROUGH, stroke: T4, strokeWidth: 0.8 });
+
+  const rows = [
+    ['10-K Annual Reports', '112', '94.5%', '94.6%'],
+    ['10-Q Quarterly', '15', '71.4%', '86.7%'],
+    ['8-K Current Reports', '9', '88.9%', '88.9%'],
+    ['Earnings Releases', '14', '78.6%', '92.9%'],
+  ];
+  rows.forEach((row, ri) => {
+    const ry = ty + 20 + ri * 22;
+    row.forEach((cell, ci) => {
+      ctx.fillStyle = ci === 2 ? GREEN : T2;
+      ctx.font = ci === 2 ? 'bold 11px system-ui' : '11px system-ui';
+      ctx.textAlign = 'left'; ctx.fillText(cell, cols[ci], ry);
+    });
+  });
+  const totY = ty + 20 + rows.length * 22 + 4;
+  rc.line(50, totY-8, 750, totY-8, { ...ROUGH, stroke: T4, strokeWidth: 0.8 });
+  ctx.font = 'bold 12px system-ui'; ctx.fillStyle = T1; ctx.textAlign = 'left';
+  ctx.fillText('Overall', 50, totY+6);
+  ctx.fillText('150', 280, totY+6);
+  ctx.fillStyle = GREEN; ctx.fillText('90.4%', 440, totY+6);
+  ctx.fillStyle = BLUE; ctx.fillText('93.3%', 600, totY+6);
+
+  footer(ctx, c.width, 560, '94.5% on 10-K  ·  90.4% overall  ·  3.7x faster with fast mode', GREEN);
+})();
+</script>
+</body>
+</html>
