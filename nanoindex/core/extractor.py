@@ -192,6 +192,7 @@ async def _extract_single_page(
             page_bytes,
             filename=f"page_{page_num}.pdf",
             output_format="markdown",
+            include_metadata="confidence_score,bounding_boxes",
         )
         return page_num, resp
 
@@ -228,6 +229,7 @@ async def _extract_small(
         file_path,
         output_format="markdown,json",
         json_options="table-of-contents",
+        include_metadata="confidence_score,bounding_boxes",
     )
 
     markdown, bboxes, page_dims = _parse_markdown_response(resp)

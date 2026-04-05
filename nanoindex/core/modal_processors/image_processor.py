@@ -6,7 +6,6 @@ import base64
 import logging
 import mimetypes
 import os
-import uuid
 
 from nanoindex.core.llm import LLMClient
 from nanoindex.core.modal_processors.base import BaseModalProcessor, ModalProcessorResult
@@ -77,7 +76,6 @@ class ImageModalProcessor(BaseModalProcessor):
         if not name:
             name = os.path.basename(item.image_path)
 
-        entity_id = f"img-{uuid.uuid4().hex[:8]}"
 
         entity = Entity(
             name=name,

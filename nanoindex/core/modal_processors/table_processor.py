@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import uuid
 
 from nanoindex.core.llm import LLMClient
 from nanoindex.core.modal_processors.base import BaseModalProcessor, ModalProcessorResult
