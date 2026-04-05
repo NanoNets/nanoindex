@@ -40,7 +40,7 @@ class NanoIndexConfig(BaseModel):
     nanonets_api_key: str | None = None
     llm_base_url: str = "https://extraction-api.nanonets.com/v1"
     llm_api_key: str | None = None
-    llm_model: str = "nanonets-ocr-3"
+    llm_model: str = "nanonets/Nanonets-OCR-s"
 
     # Reasoning LLM — used for retrieval + answer generation.
     # When None, falls back to the default LLM above.
@@ -53,6 +53,8 @@ class NanoIndexConfig(BaseModel):
     max_node_tokens: int = Field(default=20_000, ge=100)
     max_node_pages: int = Field(default=10, ge=1)
     parser: str = "nanonets"  # "nanonets" or "pymupdf"
+    use_v2_api: bool = False  # V1 is default (better tree structure). V2 adds bboxes but weaker hierarchy.
+    doc_mode: str = "auto"    # "auto", "tree", "table", "form" — auto-detects by default
     split_strategy: str = "hybrid"  # "heuristic", "llm", or "hybrid"
 
     add_summaries: bool = True
@@ -60,13 +62,15 @@ class NanoIndexConfig(BaseModel):
     add_node_text: bool = False
     summary_model: str | None = None
 
-    # Graph + embedding settings (for fast retrieval mode)
-    build_graph: bool = False         # Extract entities at index time
-    build_embeddings: bool = False    # Embed node summaries at index time
-    embedding_model: str = "text-embedding-3-small"
+    # Graph + embedding settings
+    # Graph requires a reasoning LLM (set reasoning_llm_model to enable)
+    # Embeddings use a local model (no API key needed)
+    build_graph: bool = True          # Extracts entities with reasoning LLM
+    build_embeddings: bool = False    # Enable for fast mode retrieval
+    embedding_model: str = "local:all-MiniLM-L6-v2"
     embedding_api_key: str | None = None
     embedding_base_url: str = "https://api.openai.com/v1"
-    graph_hops: int = 1               # Expansion depth for graph traversal
+    graph_hops: int = 2               # Expansion depth for graph traversal
     fast_top_k_embed: int = 20        # Tier 1: embedding candidates
     fast_top_k_final: int = 10        # Tier 2: LLM final selection
 
@@ -74,6 +78,9 @@ class NanoIndexConfig(BaseModel):
     def _resolve_defaults(self) -> "NanoIndexConfig":
         if self.llm_api_key is None and self.nanonets_api_key is not None:
             self.llm_api_key = self.nanonets_api_key
+        # Auto-enable graph when a reasoning LLM is configured
+        if self.reasoning_llm_model and not self.build_graph:
+            self.build_graph = True
         return self
 
     def require_nanonets_key(self) -> str:
