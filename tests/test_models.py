@@ -104,3 +104,16 @@ class TestRetrievedNode:
         rn = RetrievedNode(node=node, text="Sample text")
         assert rn.text == "Sample text"
         assert rn.page_images == []
+
+
+def test_kb_document():
+    from nanoindex.models import KBDocument
+    doc = KBDocument(doc_id="abc", doc_name="test", source_path="/tmp/test.pdf", added_at="2026-01-01", tree_path="trees/test.json")
+    assert doc.doc_name == "test"
+
+
+def test_kb_config():
+    from nanoindex.models import KBConfig
+    config = KBConfig(created_at="2026-01-01")
+    assert config.version == "1"
+    assert config.documents == []
