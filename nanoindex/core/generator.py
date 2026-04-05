@@ -85,16 +85,18 @@ def _build_citations(
             if rn.node.start_index else []
         )
 
-        bboxes: list[BoundingBox] = []
+        # Always propagate bounding boxes from the node itself
+        bboxes: list[BoundingBox] = list(rn.node.bounding_boxes)
         dims: list[PageDimensions] = []
 
         if include_metadata and pages:
             page_set = set(pages)
             if tree:
-                bboxes = [bb for bb in tree.all_bounding_boxes if bb.page in page_set]
+                # Enrich with all bboxes for cited pages from the tree
+                tree_bboxes = [bb for bb in tree.all_bounding_boxes if bb.page in page_set]
+                if tree_bboxes:
+                    bboxes = tree_bboxes
                 dims = [pd for pd in tree.page_dimensions if pd.page in page_set]
-            if not bboxes:
-                bboxes = [bb for bb in rn.node.bounding_boxes if bb.page in page_set]
 
         citations.append(Citation(
             node_id=rn.node.node_id,
@@ -133,6 +135,9 @@ async def generate_text_answer(
         content = await llm.chat(messages, max_tokens=2048)
     except Exception as exc:
         raise GenerationError(f"Text answer generation failed: {exc}") from exc
+
+    if not content:
+        content = "Unable to generate an answer from the provided context."
 
     return Answer(
         content=content,

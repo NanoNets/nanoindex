@@ -1,11 +1,13 @@
-"""Fast retrieval: embedding search + graph expansion + LLM selection.
+"""Fast retrieval: graph-based navigation + LLM selection.
 
-Three-tier retrieval that dramatically reduces LLM token usage:
-  Tier 1: Embedding cosine similarity → top-K candidate nodes (1 embed call)
-  Tier 1b: Entity keyword match + graph expansion → additional candidates (zero cost)
-  Tier 2: LLM picks final nodes from ~25 candidates (1 small LLM call, not 300+)
+No vectors. No embeddings. Pure graph traversal.
 
-Cost: 1 embed + 1 small LLM + 1 answer = ~3 calls vs 6+ in agentic mode.
+  1. Extract entity keywords from the question
+  2. Look up matching entities in the graph → find source tree nodes
+  3. Expand via graph relationships → add related nodes
+  4. LLM picks final nodes from the candidates (1 small LLM call)
+
+Cost: 1 LLM call for selection + 1 for answer = 2 calls total.
 """
 
 from __future__ import annotations
@@ -15,7 +17,6 @@ import logging
 import re
 
 from nanoindex.config import NanoIndexConfig
-from nanoindex.core.embedder import cosine_search, embed_query
 from nanoindex.core.graph_builder import (
     build_entity_to_nodes,
     build_nx_graph,
@@ -90,43 +91,28 @@ async def fast_search(
     llm: LLMClient,
     config: NanoIndexConfig,
     *,
-    node_embeddings: dict[str, list[float]] | None = None,
+    node_embeddings: dict | None = None,  # Kept for backward compat, ignored
     graph: DocumentGraph | None = None,
 ) -> list[RetrievedNode]:
-    """Fast retrieval: embed → graph expand → LLM select.
+    """Fast retrieval using graph navigation. No embeddings.
 
-    If node_embeddings is None, falls back to graph-only or direct LLM.
-    If graph is None, falls back to embedding-only.
-    Either or both can be provided.
+    If a graph is available: entity keyword match → graph expand → LLM select.
+    If no graph: falls back to full tree outline (same as agentic round 1).
     """
     candidate_ids: set[str] = set()
     all_node_ids = {n.node_id for n in iter_nodes(tree.structure)}
 
-    # --- Tier 1a: Embedding search ---
-    if node_embeddings:
-        embed_key = config.embedding_api_key or config.require_llm_key()
-        query_vec = await embed_query(
-            query,
-            api_key=embed_key,
-            model=config.embedding_model,
-            base_url=config.embedding_base_url,
-        )
-        embed_results = cosine_search(query_vec, node_embeddings, top_k=config.fast_top_k_embed)
-        embed_ids = {nid for nid, _ in embed_results}
-        candidate_ids |= embed_ids
-        logger.info("Embedding search: %d candidates", len(embed_ids))
-
-    # --- Tier 1b: Entity keyword match + graph expansion ---
-    if graph:
+    # --- Graph-based retrieval ---
+    if graph and graph.entities:
         entity_to_nodes = build_entity_to_nodes(graph)
 
-        # Direct keyword match
+        # Step 1: Direct keyword match — find entities mentioned in the question
         keyword_ids = entity_keyword_match(query, entity_to_nodes)
         candidate_ids |= keyword_ids
         if keyword_ids:
             logger.info("Entity keyword match: %d nodes", len(keyword_ids))
 
-        # Graph expansion from all candidates so far
+        # Step 2: Graph expansion — follow relationships to related nodes
         if candidate_ids and config.graph_hops > 0:
             nx_graph = build_nx_graph(graph)
             expanded = graph_expand(nx_graph, candidate_ids, entity_to_nodes, hops=config.graph_hops)
@@ -135,20 +121,19 @@ async def fast_search(
             if new_from_graph:
                 logger.info("Graph expansion: +%d nodes", len(new_from_graph))
 
-    # --- Fallback: if no embeddings or graph, use all nodes (degrade to current behavior) ---
+    # --- Fallback: no graph → use all nodes ---
     if not candidate_ids:
-        logger.warning("No embeddings or graph available — falling back to full tree")
+        logger.info("No graph available — using full tree for selection")
         candidate_ids = all_node_ids
 
     # Filter to valid nodes
     candidate_ids &= all_node_ids
-    logger.info("Total candidates before LLM selection: %d / %d nodes", len(candidate_ids), len(all_node_ids))
+    logger.info("Candidates: %d / %d nodes", len(candidate_ids), len(all_node_ids))
 
-    # --- Tier 2: LLM selection from candidates ---
+    # --- LLM selection from candidates ---
     top_k = min(config.fast_top_k_final, len(candidate_ids))
 
     if len(candidate_ids) <= top_k:
-        # Already small enough — skip LLM call
         selected_ids = list(candidate_ids)
     else:
         outline = _build_candidate_outline(tree, candidate_ids)
@@ -160,18 +145,16 @@ async def fast_search(
                 max_tokens=512,
             )
             selected_ids = _parse_node_ids(resp)
-            # Filter to valid candidates
             selected_ids = [nid for nid in selected_ids if nid in candidate_ids]
             if not selected_ids:
-                # LLM didn't return valid IDs — fall back to top embedding scores
                 selected_ids = list(candidate_ids)[:top_k]
         except Exception:
-            logger.warning("LLM selection failed, using top embedding candidates", exc_info=True)
+            logger.warning("LLM selection failed, using top candidates", exc_info=True)
             selected_ids = list(candidate_ids)[:top_k]
 
     logger.info("Fast retrieval: selected %d nodes", len(selected_ids))
 
-    # --- Build RetrievedNode results ---
+    # --- Build results ---
     results: list[RetrievedNode] = []
     for nid in selected_ids:
         node = find_node(tree.structure, nid)
