@@ -5,7 +5,7 @@ nanonets_api_key: null          # Required — or set NANONETS_API_KEY env var
 
 llm_base_url: "https://extraction-api.nanonets.com/v1"
 llm_api_key: null               # Defaults to nanonets_api_key
-llm_model: "nanonets-ocr-3"
+llm_model: "nanonets/Nanonets-OCR-s"
 
 # Reasoning LLM — used for retrieval + answer generation.
 # Set these to use a more capable model (GPT-4o, Claude, Gemini, etc.)

@@ -37,7 +37,8 @@ benchmarks/mmlongbench_extraction_cache/
 benchmarks/docbench_tree_cache/
 benchmarks/docbench_legal_tree_cache/
 benchmarks/mmlongbench_tree_cache/
-benchmarks/results_*/
+# Benchmark raw outputs (large, per-sample predictions)
+benchmarks/results_*/answers.jsonl
 benchmarks/*.jsonl
 benchmarks/*_results.json
 benchmarks/failure_diagnostics.json
@@ -60,3 +61,7 @@ viz/node_modules/
 viz/.next/
 viz/.uploads/
 viz/tsconfig.tsbuildinfo
+
+# Assets build artifacts
+assets/node_modules/
+assets/package-lock.json

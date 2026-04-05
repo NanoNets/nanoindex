@@ -308,5 +308,94 @@ def _count_nodes(nodes) -> int:
     return count
 
 
+
+
+# ------------------------------------------------------------------
+# kb (Knowledge Base commands)
+# ------------------------------------------------------------------
+
+@main.group()
+def kb():
+    """Knowledge Base commands."""
+    pass
+
+
+@kb.command("create")
+@click.argument("path", type=click.Path())
+@_common_llm_options
+def kb_create(path, nanonets_api_key, llm_base_url, llm_api_key, llm_model):
+    """Create a new knowledge base."""
+    from nanoindex.kb import KnowledgeBase
+    kwargs = _build_kwargs(nanonets_api_key, llm_base_url, llm_api_key, llm_model)
+    kb_inst = KnowledgeBase(path, **kwargs)
+    console.print(f"[green]Created knowledge base at {path}[/green]")
+    stats = kb_inst.status()
+    console.print(f"  Documents: {stats['documents']}  Concepts: {stats['concepts']}")
+
+
+@kb.command("add")
+@click.argument("pdf_path", type=click.Path(exists=True))
+@click.option("--wiki", "-w", type=click.Path(), default=".", help="Wiki directory")
+@_common_llm_options
+def kb_add(pdf_path, wiki, nanonets_api_key, llm_base_url, llm_api_key, llm_model):
+    """Add a document to the knowledge base."""
+    from nanoindex.kb import KnowledgeBase
+    kwargs = _build_kwargs(nanonets_api_key, llm_base_url, llm_api_key, llm_model)
+    kb_inst = KnowledgeBase(wiki, **kwargs)
+    with console.status("[bold green]Indexing and compiling..."):
+        doc = kb_inst.add(pdf_path)
+    console.print(f"[green]Added:[/green] {doc.doc_name}")
+    stats = kb_inst.status()
+    console.print(f"  Documents: {stats['documents']}  Concepts: {stats['concepts']}")
+
+
+@kb.command("ask")
+@click.argument("question")
+@click.option("--wiki", "-w", type=click.Path(), default=".", help="Wiki directory")
+@click.option("--mode", default="fast", help="Query mode: fast or agentic")
+@_common_llm_options
+def kb_ask(question, wiki, mode, nanonets_api_key, llm_base_url, llm_api_key, llm_model):
+    """Ask a question across the knowledge base."""
+    from nanoindex.kb import KnowledgeBase
+    kwargs = _build_kwargs(nanonets_api_key, llm_base_url, llm_api_key, llm_model)
+    kb_inst = KnowledgeBase(wiki, **kwargs)
+    with console.status("[bold green]Searching..."):
+        answer = kb_inst.ask(question, mode=mode)
+    console.print(Panel(answer.content, title="Answer", border_style="green"))
+    if answer.citations:
+        for c in answer.citations:
+            console.print(f"  [dim]{c.title} (pp. {c.pages})[/dim]")
+
+
+@kb.command("status")
+@click.option("--wiki", "-w", type=click.Path(), default=".", help="Wiki directory")
+def kb_status(wiki):
+    """Show knowledge base statistics."""
+    from nanoindex.kb import KnowledgeBase
+    kb_inst = KnowledgeBase(wiki)
+    stats = kb_inst.status()
+    console.print(f"[bold]Knowledge Base:[/bold] {wiki}")
+    console.print(f"  Documents:     {stats['documents']}")
+    console.print(f"  Concepts:      {stats['concepts']}")
+    console.print(f"  Queries:       {stats['queries']}")
+    console.print(f"  Entities:      {stats['entities']}")
+    console.print(f"  Relationships: {stats['relationships']}")
+
+
+@kb.command("lint")
+@click.option("--wiki", "-w", type=click.Path(), default=".", help="Wiki directory")
+def kb_lint(wiki):
+    """Find inconsistencies in the knowledge base."""
+    from nanoindex.kb import KnowledgeBase
+    kb_inst = KnowledgeBase(wiki)
+    warnings = kb_inst.lint()
+    if warnings:
+        for w in warnings:
+            console.print(f"  [yellow]⚠[/yellow] {w}")
+        console.print(f"\n[yellow]{len(warnings)} warnings[/yellow]")
+    else:
+        console.print("[green]No issues found[/green]")
+
+
 if __name__ == "__main__":
     main()

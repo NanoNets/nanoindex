@@ -1,257 +1,243 @@
+<div align="center">
+
+<img src="assets/Nanoindex.png" alt="NanoIndex" width="200"/>
+
 # NanoIndex
 
-**Turn any PDF into a searchable tree. Ask questions, get answers with page citations.**
+**Open-source GraphRAG that actually works on real documents.**
+**Karpathy-inspired knowledge bases. Self-correcting extraction. Cited answers down to the pixel.**
 
-NanoIndex reads your document, understands its structure (headings, sections, tables, figures), and builds a tree you can search with plain English. No vector databases. No chunk tuning. No embeddings.
+<p>
+  <a href="https://github.com/nanonets/nanoindex"><img src="https://img.shields.io/badge/GitHub-NanoIndex-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
+  <a href="https://nanonets.com/research/nanonets-ocr-3"><img src="https://img.shields.io/badge/Built%20on-Nanonets%20OCR--3-546FFF?style=for-the-badge" /></a>
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-20C997?style=for-the-badge" /></a>
+</p>
 
-Built on [Nanonets OCR-3](https://nanonets.com) for extraction. Fully open source.
-
----
-
-## Get Started in 3 Steps
-
-### 1. Install
-
-```bash
-pip install nanoindex
-```
-
-### 2. Get your free API key
-
-Go to [docstrange.nanonets.com/app](https://docstrange.nanonets.com/app) and create an API key.
-
-Extract first 10,000 pages for free. After that, $0.01 per page.
-
-```bash
-export NANONETS_API_KEY=your_key_here
-```
-
-### 3. Ask a question
-
-```python
-import nanoindex
-
-tree = nanoindex.index("report.pdf")
-answer = nanoindex.ask("What was the revenue?", tree)
-
-print(answer.content)
-print(answer.citations)  # page numbers + section references
-```
-
-That's it. Three lines to go from PDF to cited answer.
-
----
-
-## What Happens Under the Hood
-
-```
-Your PDF
-   |
-   v
-Nanonets OCR-3 reads the document (1 API call)
-   |  Extracts: text, headings, tables, page layouts, bounding boxes
-   v
-Tree builder creates a navigable index (zero LLM calls)
-   |  Sections become tree nodes with titles, summaries, page ranges
-   v
-You ask a question
-   |
-   v
-LLM searches the tree, finds the right sections, gives you an answer
-   |  with page numbers and citations
-   v
-Done.
-```
-
----
-
-## What Can You Do With It
-
-### Ask questions about documents
-
-```python
-answer = nanoindex.ask("What was Q3 gross margin?", tree)
-print(answer.content)    # "Gross margin was 42.3% in Q3..."
-print(answer.citations)  # [Citation(title="Income Statement", pages=[45, 46])]
-```
-
-### Use the command line
-
-```bash
-nanoindex ask report.pdf "What was the revenue?"
-nanoindex index report.pdf -o tree.json
-nanoindex search tree.json "capital expenditure"
-```
-
-### Save and reuse trees
-
-```python
-from nanoindex.utils.tree_ops import save_tree, load_tree
-
-save_tree(tree, "my_tree.json")
-tree = load_tree("my_tree.json")  # instant, no re-extraction
-```
-
-### Visualize your tree
-
-```python
-nanoindex.visualize(tree)  # opens interactive dashboard in browser
-```
-
-Or from the command line:
-
-```bash
-nanoindex viz tree.json
-```
-
-### Use any LLM for answering
-
-NanoIndex uses Nanonets OCR-3 for extraction but you can use any LLM for the reasoning step:
-
-```python
-from nanoindex import NanoIndex
-
-ni = NanoIndex(
-    nanonets_api_key="your_key",
-    reasoning_llm_model="gpt-4o",
-    reasoning_llm_api_key="sk-...",
-    reasoning_llm_base_url="https://api.openai.com/v1",
-)
-
-tree = ni.index("report.pdf")
-answer = ni.ask("What was the revenue?", tree, mode="agentic_vision")
-```
-
-Works with OpenAI, Anthropic, Ollama, or any OpenAI-compatible endpoint.
-
-### Search across multiple documents
-
-```python
-from nanoindex import NanoIndex, DocumentStore
-
-ni = NanoIndex(nanonets_api_key="...")
-store = DocumentStore()
-
-for pdf in ["q1.pdf", "q2.pdf", "q3.pdf"]:
-    tree = ni.index(pdf)
-    store.add(tree)
-
-answer = ni.multi_ask("Compare revenue across quarters", store)
-```
-
----
-
-## Retrieval Modes
-
-| Mode | What it does | Best for |
-|---|---|---|
-| `text` | LLM searches the tree, answers from text | Simple questions |
-| `vision` | Same, but also sees page images | Charts, figures, layouts |
-| `agentic_vision` | Multi-round search with page images | Complex questions, highest accuracy |
-| `fast` | Embedding pre-filter + entity graph, then LLM | High volume, 3x cheaper |
-
-```python
-# Simple and fast
-answer = ni.ask("What was revenue?", tree, mode="text")
-
-# Best accuracy
-answer = ni.ask("What was revenue?", tree, mode="agentic_vision", pdf_path="report.pdf")
-
-# Cheapest at scale
-answer = ni.ask("What was revenue?", tree, mode="fast")
-```
-
----
-
-## Fast Mode: Entity Graph
-
-For high-volume use, NanoIndex can build an entity graph alongside the tree. This pre-filters candidates before the LLM sees anything, cutting costs by 3x.
-
-```python
-# Build graph + embeddings (one-time, at index time)
-graph = await ni.async_build_graph(tree)
-embeddings = await ni.async_build_embeddings(tree)
-
-# Queries are now 3x cheaper
-answer = ni.ask("What was revenue?", tree, mode="fast")
-```
-
-The graph extracts entities (companies, metrics, dates, people) and their relationships from every section. At query time: embedding search finds candidate nodes, the graph expands to related sections, and the LLM only reads 20 nodes instead of 300.
-
----
-
-## Open-Source Mode (No API Key for Parsing)
-
-NanoIndex can also work without Nanonets OCR-3, using PyMuPDF for extraction:
-
-```python
-ni = NanoIndex(parser="pymupdf")
-tree = ni.index("report.pdf")  # no API key needed for parsing
-```
-
-PyMuPDF gives you basic text and table extraction. The tree will be simpler (no heading detection, no hierarchy), but it works for quick experiments. For production quality, use Nanonets OCR-3.
-
----
-
-## Benchmarks
-
-Tested on real-world documents with LLM-as-judge evaluation:
+<p>
+  <a href="https://docstrange.nanonets.com/app"><img src="https://img.shields.io/badge/Get%20API%20Key-Free%2010K%20Pages-FCC419?style=for-the-badge" /></a>
+  <a href="https://colab.research.google.com/github/NanoNets/nanoindex/blob/main/examples/nanoindex_quickstart.ipynb"><img src="https://img.shields.io/badge/Try%20in-Google%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" /></a>
+</p>
 
 | Benchmark | Documents | Avg Pages | Accuracy |
 |---|---|---|---|
 | FinanceBench (SEC 10-K filings) | 84 | 143 | **94.5%** |
 | DocBench Legal (court filings, legislation) | 51 | 54 | **96.0%** |
 
-Evidence page retrieval accuracy: **93.3%**
+</div>
+
+Most RAG systems throw away the thing that makes documents useful: their structure. They chop PDFs into chunks, embed them, and hope the right chunk floats to the top. It works for simple lookups. It fails for anything that requires actually understanding the document.
+
+NanoIndex does what a careful reader would do. It reads the headings. It sees the table of contents. It understands that section 3.2 is part of section 3. Then it builds two things: a tree (the document's hierarchy) and a knowledge graph (entities, relationships, communities). When you ask a question, the LLM navigates the tree to find the right section and cites the exact page and coordinates. When you ask a broad question like "what are the main themes?", it reasons across community summaries.
+
+Extraction is self-correcting. Think insurance loss runs: document says "Total Claims: 35" but extraction found 38? NanoIndex spots the 3 duplicates, removes them, and validates again until the numbers match.
+
+The knowledge base is inspired by [Karpathy's LLM wiki approach](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): documents compile into interlinked markdown pages that grow smarter with every query. Open the folder in Obsidian and browse it like a wiki.
+
+Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3). Fully open source.
 
 ---
 
-## How It Compares
+## What Makes NanoIndex Different
 
-| | Traditional RAG | NanoIndex |
+| | Vector RAG | Graph RAG | PageIndex | NanoIndex |
+|---|---|---|---|---|
+| **Indexing** | Chunk + embed | LLM extracts from chunks | LLM builds tree from pages | OCR-3 extracts structure + entities |
+| **Cost per doc** | Low (embedding) | High (LLM per chunk) | High (LLM per page) | Low (1 API call + free local NER) |
+| **Structure** | Lost | Lost | Preserved (tree) | Preserved (tree + graph) |
+| **Knowledge graph** | None | Yes (LLM-only) | None | Yes (GLiNER + spaCy + optional LLM) |
+| **Entity resolution** | N/A | Basic | None | Fuzzy (suffix, substring, Levenshtein) |
+| **Communities** | None | Leiden | None | Louvain + auto summaries |
+| **Global queries** | Cannot answer | Map-reduce | Cannot answer | Map-reduce communities |
+| **Tables** | Poor | Not supported | Not supported | Natively extracted |
+| **Vision** | No | No | No | Page images to LLM |
+| **Citations** | Chunk-level | None | Page-level | Pixel-level (bounding boxes) |
+| **Knowledge Base** | None | None | None | Obsidian wiki with [[backlinks]] |
+| **Self-correction** | None | None | None | Validates against doc totals |
+| **Open source** | Varies | Yes | Yes | Yes |
+
+---
+
+## Quick Start
+
+```bash
+pip install nanoindex
+```
+
+```bash
+export NANONETS_API_KEY=your_key    # Get free at docstrange.nanonets.com/app (10K pages free)
+export ANTHROPIC_API_KEY=your_key   # Or OPENAI_API_KEY, GOOGLE_API_KEY, GROQ_API_KEY
+```
+
+```python
+from nanoindex import NanoIndex
+
+ni = NanoIndex()
+tree = ni.index("report.pdf")
+answer = ni.ask("What was the revenue?", tree)
+print(answer.content)
+```
+
+3 lines. Keys auto-detected. LLM auto-selected.
+
+---
+
+## Everything It Can Do
+
+### Document Q&A with cited answers
+
+```python
+answer = ni.ask("What was Q3 gross margin?", tree)
+print(answer.content)     # "Gross margin was 42.3% in Q3..."
+print(answer.citations)   # [Citation(title="Income Statement", pages=[45, 46])]
+```
+
+### Knowledge graph (built automatically)
+
+Every document gets an entity graph with zero extra API calls:
+
+```python
+graph = ni.get_graph(tree)
+print(f"{len(graph.entities)} entities, {len(graph.relationships)} relationships")
+
+for e in graph.entities[:5]:
+    print(f"  [{e.entity_type}] {e.name}")
+for r in graph.relationships[:5]:
+    print(f"  {r.source} --{r.keywords}--> {r.target}")
+```
+
+Entity extraction pipeline:
+1. **GLiNER zero-shot NER** with domain-adaptive labels (financial, legal, medical, insurance)
+2. **spaCy dependency parsing** for subject-verb-object relationships
+3. **Entity resolution** merges duplicates (fuzzy matching, suffix stripping, Levenshtein)
+4. **Community detection** groups related entities (Louvain algorithm)
+5. **LLM enhancement** adds domain-specific entities (optional, when reasoning LLM available)
+
+### Global queries (community-based)
+
+Answer questions about the entire document, not just specific facts:
+
+```python
+answer = ni.ask("What are the main themes in this document?", tree, mode="global")
+```
+
+Uses map-reduce across community summaries.
+
+### Structured data extraction (self-correcting)
+
+Extract tables and forms with self-correcting validation:
+
+```python
+result = ni.extract("invoice.pdf")
+print(result.fields)      # {'vendor': 'Acme', 'total': '$15,260'}
+
+result = ni.extract("claims.pdf")
+print(result.rows)         # [{'claim_no': 'WC-001', 'paid': 15000}, ...]
+print(result.validation)   # ValidationResult(passed=True, row_count_match=True)
+result.to_csv("output.csv")
+```
+
+Self-correcting loop: extract, validate against document totals, fix mismatches, repeat.
+
+### Knowledge Base (wiki-based)
+
+Documents compile into an Obsidian-compatible wiki that grows with every query:
+
+```python
+from nanoindex import KnowledgeBase
+
+kb = KnowledgeBase("./my-research")
+kb.add("report1.pdf")
+kb.add("report2.pdf")
+answer = kb.ask("How do these compare?")  # answer filed back into wiki
+kb.lint()                                  # find contradictions, stale data
+```
+
+Open `my-research/` in Obsidian. Browse concept pages with `[[backlinks]]`, entity graphs, activity logs.
+
+### Bounding box citations
+
+Every answer includes pixel-level coordinates:
+
+```python
+for citation in answer.citations:
+    for bb in citation.bounding_boxes:
+        print(f"Page {bb.page}: ({bb.x:.2f}, {bb.y:.2f}) text: {bb.text}")
+```
+
+### Pick your LLM
+
+```python
+ni = NanoIndex(llm="anthropic:claude-sonnet-4-6")
+ni = NanoIndex(llm="openai:gpt-5.4")
+ni = NanoIndex(llm="gemini:gemini-2.5-flash")
+ni = NanoIndex(llm="groq:llama-3.3-70b-versatile")
+ni = NanoIndex(llm="ollama:llama3")        # local, no API key
+```
+
+### CLI
+
+```bash
+nanoindex index report.pdf -o tree.json
+nanoindex ask report.pdf "What was the revenue?"
+nanoindex viz tree.json
+nanoindex kb create ./my-wiki
+nanoindex kb add report.pdf --wiki ./my-wiki
+nanoindex kb ask "What are the key findings?" --wiki ./my-wiki
+```
+
+### Open-source mode (no API key for parsing)
+
+```python
+ni = NanoIndex(parser="pymupdf")
+tree = ni.index("report.pdf")  # fully local, no API calls
+```
+
+---
+
+## Query Modes
+
+| Mode | How it works | Best for |
 |---|---|---|
-| Indexing | Chunk + embed + vector DB | Extract + build tree |
-| Retrieval | Similarity search | LLM reasons over structure |
-| Tables | Poorly handled | Natively extracted |
-| Figures | Not supported | Vision mode |
-| Scanned docs | Needs separate OCR | Built-in |
-| Structure-aware | No | Yes |
-| Citations | Approximate | Exact page + bounding box |
+| `agentic_vision` (default) | LLM navigates full tree + reads page images | Highest accuracy |
+| `agentic` | Same without images | Text-heavy docs |
+| `fast` | Graph entity lookup, LLM sees ~20 nodes | Cheapest, fastest |
+| `fast_vision` | Same + page images | Charts and figures |
+| `global` | Map-reduce across community summaries | "What are the main themes?" |
 
 ---
 
-## Project Structure
+## How It Works
 
-```
-nanoindex/
-  __init__.py         # Public API: index(), search(), ask(), visualize()
-  cli.py              # Command line interface
-  models.py           # Data models (TreeNode, DocumentTree, Entity, etc.)
-  config.py           # Configuration
+### Indexing
 
-  core/
-    extractor.py      # Nanonets OCR-3 extraction
-    tree_builder.py   # Deterministic tree construction
-    enricher.py       # LLM summary generation
-    retriever.py      # Tree search
-    generator.py      # Answer generation (text + vision)
-    agentic.py        # Multi-round retrieval
-    fast_retriever.py # Embedding + graph retrieval
-    entity_extractor.py   # Entity/relationship extraction
-    graph_builder.py      # NetworkX graph operations
-    embedder.py           # Node embedding + cosine search
-    parsers/              # Pluggable parsers (nanonets, pymupdf)
-    modal_processors/     # Image + table processing for graph
+<p align="center">
+  <img src="assets/ingestion-pipeline.gif" alt="Ingestion Pipeline" width="800"/>
+</p>
 
-  utils/
-    tree_ops.py       # Save, load, traverse trees
-    tokens.py         # Token counting
-    pdf.py            # PDF page rendering
+### Querying
 
-viz/                  # Interactive visualization dashboard (Next.js)
-examples/             # Usage examples
-benchmarks/           # Evaluation scripts
-```
+<p align="center">
+  <img src="assets/query-agentic.gif" alt="Query Pipeline - Agentic Mode" width="800"/>
+</p>
+
+<p align="center">
+  <img src="assets/query-fast.gif" alt="Query Pipeline - Fast Mode" width="800"/>
+</p>
+
+---
+
+## Benchmarks
+
+| Benchmark | Documents | Avg Pages | Accuracy |
+|---|---|---|---|
+| FinanceBench (SEC 10-K filings) | 84 | 143 | **94.5%** |
+| DocBench Legal (court filings, legislation) | 51 | 54 | **96.0%** |
+
+Evidence page retrieval: **93.3%**
+
+<p align="center">
+  <img src="assets/financebench-architecture.png" alt="FinanceBench Architecture" width="800"/>
+</p>
 
 ---
 
@@ -261,11 +247,13 @@ benchmarks/           # Evaluation scripts
 git clone https://github.com/nanonets/nanoindex.git
 cd nanoindex
 pip install -e ".[dev]"
-pytest
+pytest   # 144 tests
 ```
+
+Optional: `pip install gliner` for better entity extraction.
 
 ---
 
 ## License
 
-MIT
+Apache 2.0 — see [LICENSE](LICENSE).
