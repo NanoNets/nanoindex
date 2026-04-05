@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 # ---------------------------------------------------------------------------
@@ -104,7 +104,20 @@ class ModalContent(BaseModel):
 class ParsedDocument(BaseModel):
     """Universal output from any document parser."""
 
-    markdown: str = ""
+    markdown: Any = ""
+
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce_markdown(cls, data: Any) -> Any:
+        """Ensure markdown is always a string, even if API returns a dict."""
+        if isinstance(data, dict):
+            md = data.get("markdown", "")
+            while isinstance(md, dict):
+                md = md.get("content", "") or md.get("markdown", "") or md.get("text", "") or ""
+            if not isinstance(md, str):
+                md = str(md) if md else ""
+            data["markdown"] = md
+        return data
     pages: list[str] = Field(default_factory=list)  # per-page text
     page_count: int = 0
     modal_contents: list[ModalContent] = Field(default_factory=list)
@@ -219,3 +232,96 @@ class DocumentGraph(BaseModel):
     doc_name: str = ""
     entities: list[Entity] = Field(default_factory=list)
     relationships: list[Relationship] = Field(default_factory=list)
+
+
+class ExtractedTable(BaseModel):
+    """A structured table extracted from a document."""
+
+    name: str = ""
+    columns: list[str] = Field(default_factory=list)
+    rows: list[dict[str, Any]] = Field(default_factory=list)
+    source_pages: list[int] = Field(default_factory=list)
+    totals: dict[str, float] = Field(default_factory=dict)
+    validation: dict[str, Any] = Field(default_factory=dict)
+
+
+class ExtractedForm(BaseModel):
+    """Key-value fields extracted from a form/template document."""
+
+    schema_name: str = ""
+    fields: dict[str, Any] = Field(default_factory=dict)
+    source_pages: list[int] = Field(default_factory=list)
+    confidence: float = 0.0
+
+
+# ---------------------------------------------------------------------------
+# Knowledge Base models
+# ---------------------------------------------------------------------------
+
+class KBDocument(BaseModel):
+    """Metadata for a document tracked by the KnowledgeBase."""
+
+    doc_id: str
+    doc_name: str
+    source_path: str
+    added_at: str  # ISO timestamp
+    tree_path: str
+    graph_path: str | None = None
+    embeddings_path: str | None = None
+    content_hash: str = ""  # MD5 of tree JSON at time of ingestion
+
+
+class KBConfig(BaseModel):
+    """Persistent configuration for a wiki directory."""
+
+    version: str = "1"
+    created_at: str = ""
+    documents: list[KBDocument] = Field(default_factory=list)
+    concept_index: dict[str, list[str]] = Field(default_factory=dict)
+
+
+# ---------------------------------------------------------------------------
+# Self-correcting extraction models
+# ---------------------------------------------------------------------------
+
+class ValidationResult(BaseModel):
+    """Result of validating extracted data against document anchors."""
+
+    passed: bool = False
+    row_count_match: bool | None = None
+    row_count_expected: int | None = None
+    row_count_actual: int | None = None
+    total_mismatches: list[dict[str, Any]] = Field(default_factory=list)
+    messages: list[str] = Field(default_factory=list)
+
+
+class ExtractionResult2(BaseModel):
+    """Result of structured extraction (table or form mode)."""
+
+    rows: list[dict[str, Any]] = Field(default_factory=list)
+    fields: dict[str, Any] = Field(default_factory=dict)
+    columns: list[str] = Field(default_factory=list)
+    validation: ValidationResult = Field(default_factory=ValidationResult)
+    corrections: list[str] = Field(default_factory=list)
+    confidence: float = 0.0
+    mode: str = ""  # "table" or "form"
+    source_pages: list[int] = Field(default_factory=list)
+    doc_name: str = ""
+
+    def to_csv(self, path: str) -> None:
+        """Write extracted rows to a CSV file."""
+        import csv
+
+        with open(path, "w", newline="") as f:
+            if self.rows:
+                fieldnames = self.columns or list(self.rows[0].keys())
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(self.rows)
+
+    def to_json(self, path: str) -> None:
+        """Write the full extraction result to a JSON file."""
+        import json
+
+        with open(path, "w") as f:
+            json.dump(self.model_dump(), f, indent=2)
