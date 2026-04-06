@@ -5,9 +5,11 @@
 # NanoIndex
 
 **Open-source GraphRAG that actually works on real documents.**
-**Karpathy-inspired knowledge bases. Self-correcting extraction. Cited answers down to the pixel.**
+**Karpathy-inspired knowledge bases. Self-validating trees. Agentic retrieval. Cited answers down to the pixel.**
 
 <p>
+  <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/v/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI" /></a>
+  <a href="https://github.com/astral-sh/uv"><img src="https://img.shields.io/badge/uv-compatible-DE5FE9?style=for-the-badge&logo=uv&logoColor=white" /></a>
   <a href="https://github.com/nanonets/nanoindex"><img src="https://img.shields.io/badge/GitHub-NanoIndex-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
   <a href="https://nanonets.com/research/nanonets-ocr-3"><img src="https://img.shields.io/badge/Built%20on-Nanonets%20OCR--3-546FFF?style=for-the-badge" /></a>
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-20C997?style=for-the-badge" /></a>
@@ -27,9 +29,13 @@
 
 Most RAG systems throw away the thing that makes documents useful: their structure. They chop PDFs into chunks, embed them, and hope the right chunk floats to the top. It works for simple lookups. It fails for anything that requires actually understanding the document.
 
-NanoIndex does what a careful reader would do. It reads the headings. It sees the table of contents. It understands that section 3.2 is part of section 3. Then it builds two things: a tree (the document's hierarchy) and a knowledge graph (entities, relationships, communities). When you ask a question, the LLM navigates the tree to find the right section and cites the exact page and coordinates. When you ask a broad question like "what are the main themes?", it reasons across community summaries.
+NanoIndex does what a careful reader would do. It reads the headings. It sees the table of contents. It understands that section 3.2 is part of section 3. Then it builds two things: a **tree** (the document's hierarchy) and a **knowledge graph** (entities, relationships, communities).
 
-Extraction is self-correcting. Think insurance loss runs: document says "Total Claims: 35" but extraction found 38? NanoIndex spots the 3 duplicates, removes them, and validates again until the numbers match.
+**Self-validating trees.** After building the tree, NanoIndex validates it — checks page coverage, node depth, empty sections, duplicate IDs, and bounding box integrity. If a 160-page 10-K has gaps in page coverage or a flat structure where hierarchy should exist, you know before you query. The tree is the foundation; if it's wrong, everything downstream is wrong.
+
+**Agentic retrieval.** When you ask a question, the LLM doesn't just search — it reasons. It decomposes the question into data points needed, navigates the tree across multiple rounds, requests more sections when the first pass isn't sufficient, runs sufficiency checks against its own plan, and verifies calculations before returning. For financial documents, it knows income statements live in different nodes than balance sheets and automatically retrieves both when computing ratios. For general documents, it uses clean domain-neutral prompts. The `agentic_graph` mode combines this with entity graph seeding — the graph narrows the search space, then the agent reasons from there.
+
+When you ask a broad question like "what are the main themes?", it reasons across community summaries using map-reduce.
 
 The knowledge base is inspired by [Karpathy's LLM wiki approach](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): documents compile into interlinked markdown pages that grow smarter with every query. Open the folder in Obsidian and browse it like a wiki.
 
@@ -52,7 +58,8 @@ Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3). Fully o
 | **Vision** | No | No | No | Page images to LLM |
 | **Citations** | Chunk-level | None | Page-level | Pixel-level (bounding boxes) |
 | **Knowledge Base** | None | None | None | Obsidian wiki with [[backlinks]] |
-| **Self-correction** | None | None | None | Validates against doc totals |
+| **Self-validation** | None | None | None | Tree integrity + page coverage checks |
+| **Agentic retrieval** | No | No | No | Multi-round reasoning with graph seeding |
 | **Open source** | Varies | Yes | Yes | Yes |
 
 ---

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "nanoindex"
 version = "0.3.1"
-description = "Turn any PDF into searchable trees and knowledge graphs. No vectors, no chunks."
+description = "Open-source GraphRAG with self-validating trees, agentic retrieval, and pixel-level citations."
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
