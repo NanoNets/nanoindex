@@ -39,7 +39,7 @@ Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3). Fully o
 
 ## What Makes NanoIndex Different
 
-| | Vector RAG | Graph RAG | PageIndex | NanoIndex |
+| | Vector RAG | Microsoft Graph RAG | PageIndex | NanoIndex |
 |---|---|---|---|---|
 | **Indexing** | Chunk + embed | LLM extracts from chunks | LLM builds tree from pages | OCR-3 extracts structure + entities |
 | **Cost per doc** | Low (embedding) | High (LLM per chunk) | High (LLM per page) | Low (1 API call + free local NER) |
@@ -61,6 +61,12 @@ Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3). Fully o
 
 ```bash
 pip install nanoindex
+```
+
+Or with [uv](https://docs.astral.sh/uv/) (recommended):
+
+```bash
+uv add nanoindex
 ```
 
 ```bash
@@ -200,6 +206,8 @@ tree = ni.index("report.pdf")  # fully local, no API calls
 |---|---|---|
 | `agentic_vision` (default) | LLM navigates full tree + reads page images | Highest accuracy |
 | `agentic` | Same without images | Text-heavy docs |
+| `agentic_graph` | Graph seeds initial nodes, agent reasons + expands | Best accuracy/cost balance |
+| `agentic_graph_vision` | Same + page images | Graph precision + visual reasoning |
 | `fast` | Graph entity lookup, LLM sees ~20 nodes | Cheapest, fastest |
 | `fast_vision` | Same + page images | Charts and figures |
 | `global` | Map-reduce across community summaries | "What are the main themes?" |
@@ -246,11 +254,23 @@ Evidence page retrieval: **93.3%**
 ```bash
 git clone https://github.com/nanonets/nanoindex.git
 cd nanoindex
+
+# With uv (recommended)
+uv sync --extra dev
+uv run pytest
+
+# Or with pip
 pip install -e ".[dev]"
-pytest   # 144 tests
+pytest
 ```
 
-Optional: `pip install gliner` for better entity extraction.
+For entity extraction with GLiNER2 (zero-shot NER, domain-adaptive labels):
+
+```bash
+uv sync --extra gliner    # or: pip install nanoindex[gliner]
+```
+
+GLiNER2 auto-detects GPU (CUDA) and uses batch inference for speed. On GPU: ~2 min per 150-page document. On CPU: ~8 min.
 
 ---
 

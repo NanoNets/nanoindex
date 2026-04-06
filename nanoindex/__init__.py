@@ -364,12 +364,16 @@ class NanoIndex:
         """Search + generate an answer in one step.
 
         Retrieval modes (how candidates are found):
-          - ``"fast"`` (default): embedding + entity graph pre-filter, then LLM
-            picks from ~20 candidates. Cheapest, works when graph is built.
+          - ``"fast"``: entity graph pre-filter, then LLM picks from ~20
+            candidates. Cheapest, works when graph is built.
           - ``"fast_vision"``: same retrieval, answer uses page images too.
           - ``"agentic"``: LLM navigates the full tree outline in multiple rounds.
             Most thorough, highest accuracy, most expensive.
           - ``"agentic_vision"``: agentic retrieval + page images for answering.
+          - ``"agentic_graph"``: graph-seeded agentic — uses entity graph to find
+            seed nodes, then agent reasons and expands. Best of both worlds:
+            graph precision + agentic depth, fewer LLM calls than pure agentic.
+          - ``"agentic_graph_vision"``: same + page images.
           - ``"global"``: community-based map-reduce over entity graph.
             Best for broad questions like "What are the main themes?"
           - ``"text"``: alias for ``"fast"`` (backward compat).
@@ -454,11 +458,14 @@ Final comprehensive answer:"""
         elif mode.startswith("agentic"):
             from nanoindex.core.agentic import agentic_ask
             llm = self._get_reasoning_llm()
+            # For agentic_graph modes, pass the graph for graph-seeded retrieval
+            graph = self._graphs.get(tree.doc_name) if "graph" in mode else None
             answer = await agentic_ask(
                 query, tree, llm, self.config,
                 pdf_path=pdf_path,
                 use_vision="vision" in mode,
                 include_metadata=include_metadata,
+                graph=graph,
             )
         else:
             from nanoindex.core.generator import generate_answer
@@ -583,18 +590,18 @@ Final comprehensive answer:"""
         """Extract entities and relationships from a tree.
 
         Uses a hybrid approach:
-          1. GLiNER zero-shot NER (if installed), else spaCy NLP for base extraction
+          1. GLiNER2 zero-shot NER (if installed), else spaCy NLP for base extraction
           2. Entity resolution to merge duplicates
           3. If a reasoning LLM is available, enhances with LLM extraction
 
         When *parsed* is supplied and contains ``modal_contents``,
         multimodal entities (images, tables, etc.) are also extracted.
         """
-        # Step 1: Try GLiNER first, fall back to spaCy
+        # Step 1: Try GLiNER2 first, fall back to spaCy
         try:
             from nanoindex.core.gliner_extractor import extract_entities_gliner
             graph = extract_entities_gliner(tree)
-            logger.info("GLiNER graph: %d entities, %d relationships", len(graph.entities), len(graph.relationships))
+            logger.info("GLiNER2 graph: %d entities, %d relationships", len(graph.entities), len(graph.relationships))
         except ImportError:
             from nanoindex.core.spacy_extractor import extract_entities_spacy
             graph = extract_entities_spacy(tree)
