@@ -15,22 +15,65 @@ from nanoindex.utils.tree_ops import iter_nodes
 
 logger = logging.getLogger(__name__)
 
-# Domain label presets
+# Domain label presets — tuned for real document types
 DOMAIN_LABELS = {
-    "financial": ["Company", "Revenue", "Metric", "FiscalYear", "Segment", "ExecutiveName", "FinancialStatement"],
-    "legal": ["Party", "Court", "CaseNumber", "Statute", "Jurisdiction", "Damages", "LegalTerm"],
-    "medical": ["Patient", "Diagnosis", "Drug", "Procedure", "Dosage", "Symptom", "LabTest"],
-    "insurance": ["Insurer", "PolicyNumber", "ClaimNumber", "CoverageType", "Premium", "Deductible"],
-    "generic": ["Organization", "Person", "Location", "Date", "Product", "Event", "Money", "Percentage"],
+    "financial": [
+        "Company", "Person", "Revenue", "NetIncome", "OperatingIncome",
+        "GrossProfit", "EPS", "Segment", "FiscalPeriod", "FinancialMetric",
+        "CashFlow", "Debt", "Dividend", "Acquisition", "Location",
+    ],
+    "sec_10k": [
+        "Company", "ExecutiveName", "Revenue", "NetIncome", "OperatingIncome",
+        "GrossMargin", "EPS", "BusinessSegment", "FiscalYear", "FinancialMetric",
+        "CapitalExpenditure", "WorkingCapital", "TotalAssets", "TotalDebt",
+        "SharesOutstanding", "Dividend", "Acquisition", "Restructuring",
+    ],
+    "sec_10q": [
+        "Company", "Revenue", "NetIncome", "EPS", "BusinessSegment",
+        "FiscalQuarter", "FinancialMetric", "CashFlow", "WorkingCapital",
+        "QuickRatio", "InventoryTurnover", "DebtSecurity", "Location",
+    ],
+    "earnings": [
+        "Company", "ExecutiveName", "Revenue", "EPS", "Guidance",
+        "BusinessSegment", "FiscalQuarter", "GrowthRate", "FinancialMetric",
+        "AdjustedEPS", "FreeCashFlow", "ARR", "NetRevenueRetention",
+    ],
+    "legal": [
+        "Party", "Court", "CaseNumber", "Statute", "Jurisdiction",
+        "Damages", "LegalTerm", "Judge", "FilingDate", "Attorney",
+    ],
+    "medical": [
+        "Patient", "Diagnosis", "Drug", "Procedure", "Dosage",
+        "Symptom", "LabTest", "Physician", "Hospital", "InsuranceCode",
+    ],
+    "insurance": [
+        "Insurer", "PolicyNumber", "ClaimNumber", "CoverageType",
+        "Premium", "Deductible", "LossAmount", "ReserveAmount", "ClaimDate",
+    ],
+    "generic": [
+        "Organization", "Person", "Location", "Date", "Product",
+        "Event", "Money", "Percentage", "Document",
+    ],
 }
 
 
-def _detect_domain(text: str) -> str:
-    """Heuristic domain detection from content."""
+def _detect_domain(text: str, doc_name: str = "") -> str:
+    """Detect domain from document name and content."""
+    name_lower = doc_name.lower()
+
+    # SEC filing type detection from doc name
+    if "_10K" in doc_name or "_10k" in doc_name or "10-K" in doc_name:
+        return "sec_10k"
+    if "_10Q" in doc_name or "_10q" in doc_name or "10-Q" in doc_name:
+        return "sec_10q"
+    if "EARNINGS" in doc_name or "earnings" in name_lower:
+        return "earnings"
+
+    # Content-based detection
     text_lower = text[:5000].lower()
     scores = {
-        "financial": sum(1 for w in ["revenue", "earnings", "fiscal", "eps", "ebitda", "sec", "10-k", "margin"] if w in text_lower),
-        "legal": sum(1 for w in ["court", "plaintiff", "defendant", "statute", "jurisdiction", "filing", "verdict"] if w in text_lower),
+        "financial": sum(1 for w in ["revenue", "earnings", "fiscal", "eps", "ebitda", "sec", "10-k", "margin", "operating income", "net income"] if w in text_lower),
+        "legal": sum(1 for w in ["court", "plaintiff", "defendant", "statute", "jurisdiction", "filing", "verdict", "case no"] if w in text_lower),
         "medical": sum(1 for w in ["patient", "diagnosis", "treatment", "clinical", "dosage", "symptom", "hospital"] if w in text_lower),
         "insurance": sum(1 for w in ["policy", "claim", "premium", "coverage", "deductible", "insured", "loss run"] if w in text_lower),
     }
@@ -54,9 +97,9 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
     all_nodes = list(iter_nodes(tree.structure))
     full_text = " ".join(n.text or "" for n in all_nodes[:5])
 
-    # Detect domain and get labels
-    domain = _detect_domain(full_text)
-    labels = DOMAIN_LABELS[domain]
+    # Detect domain from doc name + content, get labels
+    domain = _detect_domain(full_text, doc_name=tree.doc_name)
+    labels = DOMAIN_LABELS.get(domain, DOMAIN_LABELS["generic"])
 
     model = _load_gliner()
 
