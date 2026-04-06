@@ -314,6 +314,11 @@ class NanoIndex:
         # Split oversized leaf nodes (heuristic + optional LLM)
         tree = await refine_tree(tree, llm, self.config)
 
+        # Validate tree quality
+        from nanoindex.core.tree_validator import validate_tree
+        validation = validate_tree(tree)
+        tree._validation = validation  # type: ignore[attr-defined]
+
         should_summarise = add_summaries if add_summaries is not None else self.config.add_summaries
         should_describe = (
             add_doc_description if add_doc_description is not None else self.config.add_doc_description
