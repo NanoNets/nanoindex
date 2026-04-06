@@ -9,7 +9,6 @@
 
 <p>
   <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/v/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI" /></a>
-  <a href="https://github.com/astral-sh/uv"><img src="https://img.shields.io/badge/uv-compatible-DE5FE9?style=for-the-badge&logo=uv&logoColor=white" /></a>
   <a href="https://github.com/nanonets/nanoindex"><img src="https://img.shields.io/badge/GitHub-NanoIndex-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
   <a href="https://nanonets.com/research/nanonets-ocr-3"><img src="https://img.shields.io/badge/Built%20on-Nanonets%20OCR--3-546FFF?style=for-the-badge" /></a>
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-20C997?style=for-the-badge" /></a>
