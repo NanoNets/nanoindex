@@ -170,12 +170,12 @@ class TestLevenshtein:
 
 
 # ---------------------------------------------------------------------------
-# GLiNER integration tests (skip if gliner not installed)
+# GLiNER2 integration tests (skip if gliner2 not installed)
 # ---------------------------------------------------------------------------
 
 def _gliner_available() -> bool:
     try:
-        import gliner  # noqa: F401
+        import gliner2  # noqa: F401
         return True
     except ImportError:
         return False

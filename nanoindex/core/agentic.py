@@ -48,7 +48,7 @@ _REFUSAL_PATTERNS = re.compile(
 # Prompts — all user-role only, no system prompt (following PageIndex pattern)
 # ---------------------------------------------------------------------------
 
-_DECOMPOSE = """\
+_DECOMPOSE_FINANCIAL = """\
 You are a financial analyst. Given a question about a financial document, \
 identify exactly what data points are needed to answer it.
 
@@ -69,7 +69,23 @@ Be exhaustive — if a ratio requires two inputs, list BOTH. \
 If multi-year data is needed, list EACH year separately.
 Directly return the JSON. Do not output anything else."""
 
-_ROUND1 = """\
+_DECOMPOSE_GENERAL = """\
+You are a document analysis expert. Given a question about a document, \
+identify exactly what information is needed to answer it.
+
+Question: {query}
+
+Reply in JSON:
+{{
+    "data_points": ["<specific fact or data point needed>", ...],
+    "statements_needed": ["<document section or type of content>", ...]
+}}
+
+Be exhaustive — if the answer requires combining multiple pieces of \
+information, list ALL of them.
+Directly return the JSON. Do not output anything else."""
+
+_ROUND1_FINANCIAL = """\
 You are given a question and a tree structure of a document.
 Each node contains a node_id, title, and a corresponding summary.
 Your task is to find all nodes that are likely to contain the data needed to \
@@ -87,6 +103,31 @@ Consolidated Balance Sheets
 Financial Statements (often deep sub-nodes)
 - Ratios often require data from MULTIPLE statements — select all of them
 - Short documents (8-K, earnings) may have flat structures; select broadly
+
+Question: {query}
+
+Document tree structure:
+{outline}
+
+Please reply in the following JSON format:
+{{
+    "thinking": "<Your reasoning about which nodes contain the answer>",
+    "node_list": ["node_id_1", "node_id_2", ...]
+}}
+Directly return the final JSON structure. Do not output anything else."""
+
+_ROUND1_GENERAL = """\
+You are given a question and a tree structure of a document.
+Each node contains a node_id, title, and a corresponding summary.
+Your task is to find all nodes that are likely to contain the information \
+needed to answer the question.
+
+{decomposition}
+
+Tips:
+- Select broadly — it's better to include extra sections than miss relevant ones.
+- Look at both top-level sections and their children for specific details.
+- If the question requires combining information from multiple parts, select all.
 
 Question: {query}
 
@@ -155,6 +196,31 @@ If everything is covered, reply:
     "action": "done"
 }}
 Directly return the JSON. Do not output anything else."""
+
+_ANSWER_GENERAL = """\
+Answer the question based on the context below. \
+Show your reasoning step by step when the question involves \
+numbers, comparisons, or multi-part analysis.
+
+TEMPORAL CONTEXT: {temporal_context}
+
+Question: {query}
+
+Context:
+{context}
+
+{kb_reference}
+
+RULES:
+1. Answer ONLY from information in the context. Do not use outside knowledge.
+2. If specific data is available in the context, provide a precise answer \
+with exact values. Do not say "cannot be determined" if the data is there.
+3. For comparative questions, list all candidates with their values before \
+identifying the answer.
+4. Quote or reference specific sections when possible.
+
+Provide a clear, specific answer. Never refuse to answer if the data \
+is available in the context."""
 
 _ANSWER = """\
 Answer the question based on the context below. \
@@ -263,14 +329,33 @@ Do not include meta-commentary about the verification process."""
 
 _HAS_NUMBERS = re.compile(r"\d+[\d,]*\.?\d*\s*[%$BMKbmk]|\$\s*\d|ratio|margin|ROA|ROE|EPS", re.IGNORECASE)
 
+# Financial document indicators
+_FINANCIAL_KEYWORDS = {
+    "10-k", "10-q", "8-k", "10k", "10q", "8k", "sec filing",
+    "income statement", "balance sheet", "cash flow", "revenue",
+    "earnings", "fiscal", "eps", "ebitda", "net income", "operating income",
+    "gross margin", "roe", "roa", "working capital", "dividend",
+    "shareholders", "consolidated statements",
+}
+
+
+def _is_financial_doc(doc_name: str, query: str = "") -> bool:
+    """Detect if the document/query is financial in nature."""
+    combined = (doc_name + " " + query).lower()
+    matches = sum(1 for kw in _FINANCIAL_KEYWORDS if kw in combined)
+    return matches >= 2 or any(
+        tag in doc_name.upper() for tag in ("10K", "10Q", "8K", "10-K", "10-Q", "EARNINGS")
+    )
+
 
 # ------------------------------------------------------------------
 # Query decomposition
 # ------------------------------------------------------------------
 
-async def _decompose_query(query: str, llm: LLMClient) -> dict:
-    """Break the query into required data points and financial statements."""
-    messages = [{"role": "user", "content": _DECOMPOSE.format(query=query)}]
+async def _decompose_query(query: str, llm: LLMClient, *, financial: bool = True) -> dict:
+    """Break the query into required data points and statements."""
+    template = _DECOMPOSE_FINANCIAL if financial else _DECOMPOSE_GENERAL
+    messages = [{"role": "user", "content": template.format(query=query)}]
     try:
         resp = await llm.chat(messages, temperature=0.0, max_tokens=512)
         data = _parse_agent_response(resp)
@@ -519,6 +604,7 @@ async def _run_retrieval(
     use_vision: bool = False,
     max_rounds: int = _MAX_ROUNDS,
     decomposition: dict | None = None,
+    financial: bool = True,
 ) -> tuple[list[RetrievedNode], list[int]]:
     """Multi-round retrieval.  Returns (retrieved_nodes, page_numbers)."""
 
@@ -531,7 +617,8 @@ async def _run_retrieval(
     decomp_text = _format_decomposition(decomposition or {})
 
     # ---- Round 1: show outline, ask for selection ----
-    round1_msg = _ROUND1.format(query=query, outline=outline, decomposition=decomp_text)
+    round1_template = _ROUND1_FINANCIAL if financial else _ROUND1_GENERAL
+    round1_msg = round1_template.format(query=query, outline=outline, decomposition=decomp_text)
     conversation.append({"role": "user", "content": round1_msg})
 
     resp_text = await llm.chat(conversation, temperature=0.0, max_tokens=1024)
@@ -708,6 +795,7 @@ async def _generate_answer(
     page_numbers: list[int] | None = None,
     kb_reference: str = "",
     temporal_context: str = "Answer based only on information in the document.",
+    financial: bool = True,
 ) -> str:
     """Generate a final answer from gathered context.
 
@@ -715,7 +803,8 @@ async def _generate_answer(
     to text-only mode.
     """
     section_text = _build_section_text(nodes)
-    prompt = _ANSWER.format(
+    answer_template = _ANSWER if financial else _ANSWER_GENERAL
+    prompt = answer_template.format(
         query=query,
         context=section_text[:200000],
         kb_reference=kb_reference,
@@ -1139,6 +1228,165 @@ def _infer_temporal_context(doc_name: str) -> str:
 
 
 # ------------------------------------------------------------------
+# Graph-seeded agentic retrieval (skip Round 1, start from graph nodes)
+# ------------------------------------------------------------------
+
+async def _run_graph_seeded_retrieval(
+    query: str,
+    tree: DocumentTree,
+    llm: LLMClient,
+    *,
+    seed_nodes: list[RetrievedNode],
+    seen_ids: set[str],
+    pdf_path: str | Path | None = None,
+    use_vision: bool = False,
+    max_rounds: int = 4,
+    decomposition: dict | None = None,
+) -> tuple[list[RetrievedNode], list[int]]:
+    """Agentic retrieval starting from graph-seeded nodes instead of full tree.
+
+    Skips the expensive Round 1 (full tree outline → LLM selection) since the
+    graph already identified relevant nodes. Goes straight to review rounds
+    where the agent can request additional sections.
+    """
+    all_retrieved = list(seed_nodes)
+    all_page_numbers: list[int] = _collect_page_numbers(seed_nodes, limit=_MAX_TOTAL_PAGES)
+    conversation: list[dict] = []
+    new_nodes = seed_nodes
+
+    logger.info(
+        "Graph-seeded retrieval: starting with %d seed nodes",
+        len(seed_nodes),
+    )
+
+    decomp_text = _format_decomposition(decomposition or {})
+    sufficiency_checked = False
+
+    for round_num in range(1, max_rounds + 1):
+        content_parts: list[dict] = []
+
+        if use_vision and pdf_path:
+            new_pages = _collect_page_numbers(
+                new_nodes,
+                limit=_MAX_TOTAL_PAGES - len(all_page_numbers),
+            )
+            deduped = [p for p in new_pages if p not in set(all_page_numbers)]
+            all_page_numbers.extend(deduped)
+
+            if deduped:
+                from nanoindex.utils.pdf import render_pages
+                image_uris = render_pages(pdf_path, deduped)
+                for uri in image_uris:
+                    content_parts.append({
+                        "type": "image_url",
+                        "image_url": {"url": uri},
+                    })
+
+        section_text = _build_section_text(new_nodes)
+        remaining = _remaining_outline_json(tree, seen_ids)
+
+        if round_num == 1:
+            # First review: show seed content + context about how we got here
+            review_msg = f"""These sections were identified via entity graph matching for your question.
+
+{decomp_text}
+
+{_REVIEW.format(
+    content=section_text[:120000],
+    query=query,
+    remaining=remaining[:20000] if remaining else "All sections have been read.",
+)}"""
+        else:
+            review_msg = _REVIEW.format(
+                content=section_text[:120000],
+                query=query,
+                remaining=remaining[:20000] if remaining else "All sections have been read.",
+            )
+
+        content_parts.append({"type": "text", "text": review_msg})
+
+        if len(content_parts) == 1 and content_parts[0]["type"] == "text":
+            conversation.append({"role": "user", "content": content_parts[0]["text"]})
+        else:
+            conversation.append({"role": "user", "content": content_parts})
+
+        resp_text = await llm.chat(conversation, temperature=0.0, max_tokens=1024)
+        conversation.append({"role": "assistant", "content": resp_text})
+        logger.info("Graph-seeded round %d response: %s", round_num, resp_text[:200])
+
+        data = _parse_agent_response(resp_text)
+        action = data.get("action", "")
+
+        if action == "done":
+            if not sufficiency_checked and decomposition and decomposition.get("data_points"):
+                sufficiency_checked = True
+                remaining_outline = _remaining_outline_json(tree, seen_ids)
+                if remaining_outline:
+                    checklist = "\n".join(
+                        f"  - {dp}" for dp in decomposition["data_points"]
+                    )
+                    retrieved_titles = "\n".join(
+                        f"  - [{rn.node.node_id}] {rn.node.title}"
+                        for rn in all_retrieved
+                    )
+                    suf_msg = _SUFFICIENCY.format(
+                        checklist=checklist,
+                        query=query,
+                        retrieved_titles=retrieved_titles,
+                        remaining=remaining_outline[:20000],
+                    )
+                    conversation.append({"role": "user", "content": suf_msg})
+                    suf_resp = await llm.chat(conversation, temperature=0.0, max_tokens=1024)
+                    conversation.append({"role": "assistant", "content": suf_resp})
+
+                    suf_data = _parse_agent_response(suf_resp)
+                    if suf_data.get("action") in ("select_more", "select"):
+                        suf_ids = _parse_node_ids(suf_data)
+                        if suf_ids:
+                            new_nodes = _resolve_nodes(
+                                tree.structure, suf_ids, seen_ids,
+                                thinking=suf_data.get("thinking", ""),
+                            )
+                            all_retrieved.extend(new_nodes)
+                            if new_nodes:
+                                continue
+            logger.info("Graph-seeded agent done after round %d", round_num)
+            break
+
+        if action in ("select_more", "select", "request_more_sections"):
+            more_ids = _parse_node_ids(data)
+            thinking = data.get("thinking", "")
+            if not more_ids:
+                fallback_ids = re.findall(r"\b(\d{4}(?:\.\d{4})*)\b", thinking)
+                if fallback_ids:
+                    more_ids = fallback_ids
+                else:
+                    break
+            new_nodes = _resolve_nodes(tree.structure, more_ids, seen_ids, thinking=thinking)
+            all_retrieved.extend(new_nodes)
+            logger.info(
+                "Graph-seeded round %d: +%d nodes",
+                round_num, len(new_nodes),
+            )
+            if not new_nodes:
+                break
+            continue
+
+        extra_ids = _parse_node_ids(data)
+        if extra_ids:
+            new_nodes = _resolve_nodes(tree.structure, extra_ids, seen_ids)
+            all_retrieved.extend(new_nodes)
+            if new_nodes:
+                continue
+        break
+
+    if not all_page_numbers:
+        all_page_numbers = _collect_page_numbers(all_retrieved, limit=_MAX_TOTAL_PAGES)
+
+    return all_retrieved, all_page_numbers
+
+
+# ------------------------------------------------------------------
 # Public entry point
 # ------------------------------------------------------------------
 
@@ -1152,6 +1400,7 @@ async def agentic_ask(
     use_vision: bool = False,
     max_rounds: int = _MAX_ROUNDS,
     include_metadata: bool = False,
+    graph: "DocumentGraph | None" = None,
 ) -> Answer:
     """Multi-round agentic retrieval then answer generation.
 
@@ -1166,8 +1415,12 @@ async def agentic_ask(
     Phase 4: Self-evaluation — if the answer looks like a refusal, retry with
               keyword fallback retrieval and/or full-content dump.
     """
+    # Detect if this is a financial document (affects prompts)
+    financial = _is_financial_doc(tree.doc_name, query)
+    logger.info("Domain: %s", "financial" if financial else "general")
+
     # Phase 0: Query decomposition
-    decomposition = await _decompose_query(query, llm)
+    decomposition = await _decompose_query(query, llm, financial=financial)
     if decomposition:
         logger.info(
             "Query decomposition: %d data points, %d statements",
@@ -1188,14 +1441,88 @@ async def agentic_ask(
         for rn in nodes:
             seen_ids.add(rn.node.node_id)
         page_numbers = _collect_page_numbers(nodes, limit=_MAX_TOTAL_PAGES)
+    elif graph and graph.entities:
+        # Phase 1b-graph: Graph-seeded agentic retrieval
+        # Use graph to find seed nodes (skips expensive Round 1 full-tree LLM call),
+        # then let the agentic review loop reason and expand from there.
+        from nanoindex.core.graph_builder import (
+            build_entity_to_nodes, build_nx_graph,
+            entity_keyword_match, graph_expand,
+        )
+        entity_to_nodes = build_entity_to_nodes(graph)
+        seed_ids = entity_keyword_match(query, entity_to_nodes)
+
+        if decomposition:
+            for dp in decomposition.get("data_points", []):
+                seed_ids |= entity_keyword_match(dp, entity_to_nodes)
+
+        if seed_ids:
+            nx_graph = build_nx_graph(graph)
+            seed_ids |= graph_expand(nx_graph, seed_ids, entity_to_nodes, hops=2)
+
+            # Cap seed nodes — if graph matching returns too many (>50% of doc),
+            # it's not being selective enough. Fall back to standard agentic.
+            all_node_ids = {n.node_id for n in iter_nodes(tree.structure)}
+            seed_ids &= all_node_ids
+            max_seeds = max(30, len(all_node_ids) // 3)  # cap at 1/3 of doc
+
+            if len(seed_ids) > max_seeds:
+                logger.info(
+                    "Graph-seeded agentic: %d seeds too broad (max %d), falling back to standard agentic",
+                    len(seed_ids), max_seeds,
+                )
+                seed_ids = set()  # trigger fallback below
+            else:
+                logger.info("Graph-seeded agentic: %d seed nodes from entity graph", len(seed_ids))
+
+            seed_node_ids = sorted(seed_ids)
+            seed_nodes = _resolve_nodes(tree.structure, seed_node_ids, seen_ids) if seed_ids else []
+
+            if seed_nodes:
+                # Run agentic review rounds starting from graph-seeded content
+                nodes, page_numbers = await _run_graph_seeded_retrieval(
+                    query, tree, llm,
+                    seed_nodes=seed_nodes,
+                    seen_ids=seen_ids,
+                    pdf_path=pdf_path,
+                    use_vision=use_vision,
+                    max_rounds=max_rounds - 1,  # save a round since we skip Round 1
+                    decomposition=decomposition,
+                )
+            else:
+                # Graph seeds didn't resolve, fall back to standard agentic
+                nodes, page_numbers = await _run_retrieval(
+                    query, tree, llm,
+                    pdf_path=pdf_path,
+                    use_vision=use_vision,
+                    max_rounds=max_rounds,
+                    decomposition=decomposition,
+                    financial=financial,
+                )
+                for rn in nodes:
+                    seen_ids.add(rn.node.node_id)
+        else:
+            # No graph matches, fall back to standard agentic
+            logger.info("Graph-seeded agentic: no entity matches, falling back to standard")
+            nodes, page_numbers = await _run_retrieval(
+                query, tree, llm,
+                pdf_path=pdf_path,
+                use_vision=use_vision,
+                max_rounds=max_rounds,
+                decomposition=decomposition,
+                financial=financial,
+            )
+            for rn in nodes:
+                seen_ids.add(rn.node.node_id)
     else:
-        # Phase 1b: Standard agentic retrieval
+        # Phase 1b: Standard agentic retrieval (no graph available)
         nodes, page_numbers = await _run_retrieval(
             query, tree, llm,
             pdf_path=pdf_path,
             use_vision=use_vision,
             max_rounds=max_rounds,
             decomposition=decomposition,
+            financial=financial,
         )
         for rn in nodes:
             seen_ids.add(rn.node.node_id)
@@ -1211,34 +1538,38 @@ async def agentic_ask(
         logger.info("Keyword fallback rescued retrieval with %d nodes", len(nodes))
         page_numbers = _collect_page_numbers(nodes, limit=_MAX_TOTAL_PAGES)
 
-    # Phase 1c: Statement completeness guard (Fix 5)
-    guard_nodes = _check_statement_coverage(decomposition, nodes, tree, seen_ids)
-    if guard_nodes:
-        nodes.extend(guard_nodes)
-        page_numbers = _collect_page_numbers(nodes, limit=_MAX_TOTAL_PAGES)
+    # Phase 1c-1e: Financial-specific completeness guards (only for financial docs)
+    if financial:
+        # Phase 1c: Statement completeness guard (Fix 5)
+        guard_nodes = _check_statement_coverage(decomposition, nodes, tree, seen_ids)
+        if guard_nodes:
+            nodes.extend(guard_nodes)
+            page_numbers = _collect_page_numbers(nodes, limit=_MAX_TOTAL_PAGES)
 
-    # Phase 1d: Targeted Notes-to-FS retrieval (Fix 6)
-    notes_nodes = _targeted_notes_retrieval(query, decomposition, nodes, tree, seen_ids)
-    if notes_nodes:
-        nodes.extend(notes_nodes)
-        page_numbers = _collect_page_numbers(nodes, limit=_MAX_TOTAL_PAGES)
+        # Phase 1d: Targeted Notes-to-FS retrieval (Fix 6)
+        notes_nodes = _targeted_notes_retrieval(query, decomposition, nodes, tree, seen_ids)
+        if notes_nodes:
+            nodes.extend(notes_nodes)
+            page_numbers = _collect_page_numbers(nodes, limit=_MAX_TOTAL_PAGES)
 
-    # Phase 1e: Multi-year data completeness check (Fix 7)
-    year_nodes = _check_multi_year_coverage(query, decomposition, nodes, tree, seen_ids)
-    if year_nodes:
-        nodes.extend(year_nodes)
-        page_numbers = _collect_page_numbers(nodes, limit=_MAX_TOTAL_PAGES)
+        # Phase 1e: Multi-year data completeness check (Fix 7)
+        year_nodes = _check_multi_year_coverage(query, decomposition, nodes, tree, seen_ids)
+        if year_nodes:
+            nodes.extend(year_nodes)
+            page_numbers = _collect_page_numbers(nodes, limit=_MAX_TOTAL_PAGES)
 
     logger.info(
         "Agentic retrieval complete: %d nodes, %d pages",
         len(nodes), len(page_numbers),
     )
 
-    # Phase 1f: Knowledge base lookup — inject canonical definitions
-    from nanoindex.knowledge import lookup_relevant_terms
-    kb_ref = lookup_relevant_terms(query, decomposition, max_results=4)
-    if kb_ref:
-        logger.info("KB injected %d chars of financial reference", len(kb_ref))
+    # Phase 1f: Knowledge base lookup — inject canonical definitions (financial only)
+    kb_ref = ""
+    if financial:
+        from nanoindex.knowledge import lookup_relevant_terms
+        kb_ref = lookup_relevant_terms(query, decomposition, max_results=4)
+        if kb_ref:
+            logger.info("KB injected %d chars of financial reference", len(kb_ref))
 
     # Phase 2: Answer generation (with temporal context + KB reference)
     answer_text = await _generate_answer(
@@ -1248,6 +1579,7 @@ async def agentic_ask(
         page_numbers=page_numbers,
         kb_reference=kb_ref,
         temporal_context=temporal_ctx,
+        financial=financial,
     )
 
     # Phase 3: Calculation verification
@@ -1288,6 +1620,7 @@ async def agentic_ask(
                 page_numbers=page_numbers,
                 kb_reference=kb_ref,
                 temporal_context=temporal_ctx,
+                financial=financial,
             )
             answer_text = await _verify_calculations(query, answer_text, nodes, llm)
         else:

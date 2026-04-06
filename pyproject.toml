@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nanoindex"
-version = "0.3.0"
+version = "0.3.1"
 description = "Turn any PDF into searchable trees and knowledge graphs. No vectors, no chunks."
 readme = "README.md"
 license = "Apache-2.0"
@@ -46,12 +46,18 @@ Repository = "https://github.com/nanonets/nanoindex"
 nanoindex = "nanoindex.cli:main"
 
 [project.optional-dependencies]
+gliner = [
+    "gliner>=0.2.0",
+]
+gliner-gpu = [
+    "gliner2>=0.1.0",
+]
 embeddings = [
     "sentence-transformers>=2.0.0",
     "numpy>=1.24.0",
 ]
 all = [
-    "nanoindex[embeddings]",
+    "nanoindex[gliner,gliner-gpu,embeddings]",
 ]
 dev = [
     "nanoindex[all]",
