@@ -193,13 +193,16 @@ class NanoIndex:
         # Validate keys early with clear messages
         if not self.config.nanonets_api_key:
             logger.warning(
-                "No NANONETS_API_KEY set. Set it via environment variable or pass nanonets_api_key=... "
-                "Get a free key at https://docstrange.nanonets.com/app"
+                "No NANONETS_API_KEY set. You need this for document parsing.\n"
+                "  Get a free key (10K pages) at https://docstrange.nanonets.com/app\n"
+                "  Then: export NANONETS_API_KEY=your_key"
             )
         if not self.config.reasoning_llm_model:
-            logger.info(
-                "No LLM configured. Set ANTHROPIC_API_KEY, OPENAI_API_KEY, or pass llm='anthropic:claude-sonnet-4-6'. "
-                "Indexing will work but questions require an LLM."
+            logger.warning(
+                "No LLM configured. You need this for answering questions.\n"
+                "  Set one of: ANTHROPIC_API_KEY, OPENAI_API_KEY, or GOOGLE_API_KEY\n"
+                "  Or pass: NanoIndex(llm='anthropic:claude-sonnet-4-6')\n"
+                "  Indexing will work but ask() requires an LLM."
             )
 
         self._client = None
@@ -229,22 +232,21 @@ class NanoIndex:
     def _get_reasoning_llm(self):
         """Reasoning LLM — used for retrieval + answer generation.
 
-        Falls back to the default LLM when no reasoning LLM is configured.
+        Raises ConfigError if no reasoning LLM is configured.
+        Will NOT fall back to the Nanonets OCR model.
         """
         if self._reasoning_llm is None:
             cfg = self.config
-            if cfg.reasoning_llm_model:
-                from nanoindex.core.llm import LLMClient, _auto_detect_key, _auto_detect_url
-                # Let auto-detect find the right key/url from env vars based on model name
-                key = cfg.reasoning_llm_api_key or _auto_detect_key(cfg.reasoning_llm_model, None) or cfg.require_llm_key()
-                url = cfg.reasoning_llm_base_url or _auto_detect_url(cfg.reasoning_llm_model, None)
-                self._reasoning_llm = LLMClient(
-                    api_key=key,
-                    base_url=url,
-                    model=cfg.reasoning_llm_model,
-                )
-            else:
-                self._reasoning_llm = self._get_llm()
+            # Ensure a reasoning LLM is configured — don't silently use OCR model
+            cfg.require_reasoning_llm()
+            from nanoindex.core.llm import LLMClient, _auto_detect_key, _auto_detect_url
+            key = cfg.reasoning_llm_api_key or _auto_detect_key(cfg.reasoning_llm_model, None) or cfg.require_llm_key()
+            url = cfg.reasoning_llm_base_url or _auto_detect_url(cfg.reasoning_llm_model, None)
+            self._reasoning_llm = LLMClient(
+                api_key=key,
+                base_url=url,
+                model=cfg.reasoning_llm_model,
+            )
         return self._reasoning_llm
 
     # ------------------------------------------------------------------
