@@ -397,6 +397,13 @@ class NanoIndex:
         When *include_metadata* is ``True``, each citation carries
         bounding boxes and page dimensions for its source pages.
         """
+        if tree is None:
+            raise ValueError(
+                "No document tree provided. Index a document first:\n\n"
+                "  tree = ni.index('document.pdf')\n"
+                "  answer = ni.ask('your question', tree)\n"
+            )
+
         # Backward-compat aliases
         if mode == "text":
             mode = "fast"

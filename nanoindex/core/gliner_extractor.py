@@ -42,6 +42,13 @@ DOMAIN_LABELS = {
         "Party", "Court", "CaseNumber", "Statute", "Jurisdiction",
         "Damages", "LegalTerm", "Judge", "FilingDate", "Attorney",
     ],
+    "legal_contract": [
+        "Party", "ContractName", "AgreementDate", "EffectiveDate", "ExpirationDate",
+        "RenewalTerm", "GoverningLaw", "Jurisdiction", "LicenseGrant", "IPAsset",
+        "LiabilityLimit", "Damages", "IndemnificationClause", "TerminationCondition",
+        "NonCompete", "NonSolicit", "Obligation", "InsuranceRequirement", "WarrantyPeriod",
+        "Attorney", "MonetaryAmount", "ConfidentialityObligation",
+    ],
     "medical": [
         "Patient", "Diagnosis", "Drug", "Procedure", "Dosage",
         "Symptom", "LabTest", "Physician", "Hospital", "InsuranceCode",
@@ -74,6 +81,7 @@ def _detect_domain(text: str, doc_name: str = "") -> str:
     scores = {
         "financial": sum(1 for w in ["revenue", "earnings", "fiscal", "eps", "ebitda", "sec", "10-k", "margin", "operating income", "net income"] if w in text_lower),
         "legal": sum(1 for w in ["court", "plaintiff", "defendant", "statute", "jurisdiction", "filing", "verdict", "case no"] if w in text_lower),
+        "legal_contract": sum(1 for w in ["agreement", "hereby", "whereas", "shall", "party", "termination", "indemnify", "governing law", "confidential", "non-disclosure", "merger", "acquisition"] if w in text_lower),
         "medical": sum(1 for w in ["patient", "diagnosis", "treatment", "clinical", "dosage", "symptom", "hospital"] if w in text_lower),
         "insurance": sum(1 for w in ["policy", "claim", "premium", "coverage", "deductible", "insured", "loss run"] if w in text_lower),
     }

@@ -257,6 +257,10 @@ async def run_eval(
             continue
 
         tree = load_tree(tree_file)
+        # Disambiguate repetitive titles for better tree navigation
+        from nanoindex.core.title_disambiguator import disambiguate_titles
+        tree = disambiguate_titles(tree)
+
         graph = graphs.get(doc_name)
         if graph:
             ni._graphs[doc_name] = graph
@@ -425,7 +429,7 @@ def main():
     questions = load_questions(args.limit)
     logger.info("Loaded %d questions", len(questions))
 
-    modes = ["fast_vision", "agentic_graph_vision"]
+    modes = ["agentic_vision"]
     all_results = asyncio.run(run_eval(questions, graphs, ni, modes))
 
     # Save summary
