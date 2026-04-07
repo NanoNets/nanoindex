@@ -791,6 +791,7 @@ async def _generate_answer(
     *,
     pdf_path: str | Path | None = None,
     use_vision: bool = False,
+    pure_vision: bool = False,
     page_numbers: list[int] | None = None,
     kb_reference: str = "",
     temporal_context: str = "Answer based only on information in the document.",
@@ -798,11 +799,52 @@ async def _generate_answer(
 ) -> str:
     """Generate a final answer from gathered context.
 
-    If vision mode fails (e.g. payload too large), automatically falls back
-    to text-only mode.
+    When *pure_vision* is True, the answer prompt contains ONLY page images
+    and the question — no extracted text. The VLM reads directly from the
+    rendered PDF pages, avoiding all OCR/text-extraction errors.
+
+    When *use_vision* is True (but not pure_vision), both extracted text
+    and page images are sent together (the existing behavior).
+
+    Falls back to text-only if vision fails.
     """
-    section_text = _build_section_text(nodes)
     answer_template = _ANSWER if financial else _ANSWER_GENERAL
+
+    if pure_vision and pdf_path and page_numbers:
+        # Pure vision: send ONLY page images + question prompt (no extracted text)
+        try:
+            from nanoindex.utils.pdf import render_pages
+            pages = sorted(page_numbers)[:_MAX_TOTAL_PAGES]
+            image_uris = render_pages(pdf_path, pages)
+
+            # Minimal prompt — no extracted text context, VLM reads from images
+            prompt = answer_template.format(
+                query=query,
+                context="[See the attached page images — read all data directly from the document pages above.]",
+                kb_reference=kb_reference,
+                temporal_context=temporal_context,
+            )
+
+            content_parts: list[dict[str, Any]] = []
+            for uri in image_uris:
+                content_parts.append({
+                    "type": "image_url",
+                    "image_url": {"url": uri},
+                })
+            content_parts.append({"type": "text", "text": prompt})
+            messages: list[dict[str, Any]] = [
+                {"role": "user", "content": content_parts}
+            ]
+            logger.info("Pure vision answer: %d page images, no extracted text", len(pages))
+            return await llm.chat(messages, temperature=0.0, max_tokens=2048)
+        except Exception as exc:
+            logger.warning(
+                "Pure vision failed (%s), falling back to text+vision",
+                exc,
+            )
+            # Fall through to text+vision or text-only below
+
+    section_text = _build_section_text(nodes)
     prompt = answer_template.format(
         query=query,
         context=section_text[:200000],
@@ -810,7 +852,7 @@ async def _generate_answer(
         temporal_context=temporal_context,
     )
 
-    # Try vision mode first, fall back to text if it fails
+    # Text + vision mode
     if use_vision and pdf_path and page_numbers:
         try:
             from nanoindex.utils.pdf import render_pages
@@ -1397,6 +1439,7 @@ async def agentic_ask(
     *,
     pdf_path: str | Path | None = None,
     use_vision: bool = False,
+    pure_vision: bool = False,
     max_rounds: int = _MAX_ROUNDS,
     include_metadata: bool = False,
     graph: "DocumentGraph | None" = None,
@@ -1578,6 +1621,7 @@ async def agentic_ask(
         query, nodes, llm,
         pdf_path=pdf_path,
         use_vision=use_vision,
+        pure_vision=pure_vision,
         page_numbers=page_numbers,
         kb_reference=kb_ref,
         temporal_context=temporal_ctx,
@@ -1619,6 +1663,7 @@ async def agentic_ask(
                 query, nodes, llm,
                 pdf_path=pdf_path,
                 use_vision=use_vision,
+                pure_vision=pure_vision,
                 page_numbers=page_numbers,
                 kb_reference=kb_ref,
                 temporal_context=temporal_ctx,
