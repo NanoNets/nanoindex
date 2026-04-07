@@ -17,7 +17,10 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from nanoindex.core.document_index import DocumentIndex
 
 from nanoindex.config import NanoIndexConfig
 from nanoindex.core.llm import LLMClient
@@ -479,8 +482,17 @@ def _collect_page_numbers(nodes: list[RetrievedNode], limit: int = _MAX_PAGES_PE
     return sorted(pages)[:limit]
 
 
-def _remaining_outline_json(tree: DocumentTree, read_ids: set[str]) -> str:
-    """Render unread nodes as a flat JSON list for the review prompt."""
+def _remaining_outline_json(
+    tree: DocumentTree,
+    read_ids: set[str],
+    doc_index: "DocumentIndex | None" = None,
+) -> str:
+    """Render unread nodes as a flat JSON list for the review prompt.
+
+    When a *doc_index* is provided, each node is annotated with the entities
+    it contains — this lets the agent make smarter navigation decisions
+    (e.g., "this node has Revenue and Net Income, exactly what I need").
+    """
     items: list[dict] = []
     for node in iter_nodes(tree.structure):
         if node.node_id not in read_ids:
@@ -490,6 +502,11 @@ def _remaining_outline_json(tree: DocumentTree, read_ids: set[str]) -> str:
             if node.start_index:
                 d["start_page"] = node.start_index
                 d["end_page"] = node.end_index
+            # Annotate with entities from the document index
+            if doc_index:
+                entities = doc_index.entities_in_node(node.node_id)
+                if entities:
+                    d["entities"] = [f"{e.name} ({e.entity_type})" for e in entities[:8]]
             items.append(d)
     if not items:
         return ""
@@ -604,6 +621,7 @@ async def _run_retrieval(
     max_rounds: int = _MAX_ROUNDS,
     decomposition: dict | None = None,
     financial: bool = True,
+    doc_index: DocumentIndex | None = None,
 ) -> tuple[list[RetrievedNode], list[int]]:
     """Multi-round retrieval.  Returns (retrieved_nodes, page_numbers)."""
 
@@ -673,7 +691,7 @@ async def _run_retrieval(
                     })
 
         section_text = _build_section_text(new_nodes)
-        remaining = _remaining_outline_json(tree, seen_ids)
+        remaining = _remaining_outline_json(tree, seen_ids, doc_index=doc_index)
 
         review_msg = _REVIEW.format(
             content=section_text[:120000],
@@ -698,7 +716,7 @@ async def _run_retrieval(
             # Run sufficiency check once before truly finishing
             if not sufficiency_checked and decomposition and decomposition.get("data_points"):
                 sufficiency_checked = True
-                remaining_outline = _remaining_outline_json(tree, seen_ids)
+                remaining_outline = _remaining_outline_json(tree, seen_ids, doc_index=doc_index)
                 if remaining_outline:
                     checklist = "\n".join(
                         f"  - {dp}" for dp in decomposition["data_points"]
@@ -1283,6 +1301,7 @@ async def _run_graph_seeded_retrieval(
     use_vision: bool = False,
     max_rounds: int = 4,
     decomposition: dict | None = None,
+    doc_index: DocumentIndex | None = None,
 ) -> tuple[list[RetrievedNode], list[int]]:
     """Agentic retrieval starting from graph-seeded nodes instead of full tree.
 
@@ -1324,7 +1343,7 @@ async def _run_graph_seeded_retrieval(
                     })
 
         section_text = _build_section_text(new_nodes)
-        remaining = _remaining_outline_json(tree, seen_ids)
+        remaining = _remaining_outline_json(tree, seen_ids, doc_index=doc_index)
 
         if round_num == 1:
             # First review: show seed content + context about how we got here
@@ -1361,7 +1380,7 @@ async def _run_graph_seeded_retrieval(
         if action == "done":
             if not sufficiency_checked and decomposition and decomposition.get("data_points"):
                 sufficiency_checked = True
-                remaining_outline = _remaining_outline_json(tree, seen_ids)
+                remaining_outline = _remaining_outline_json(tree, seen_ids, doc_index=doc_index)
                 if remaining_outline:
                     checklist = "\n".join(
                         f"  - {dp}" for dp in decomposition["data_points"]
@@ -1457,6 +1476,10 @@ async def agentic_ask(
     Phase 4: Self-evaluation — if the answer looks like a refusal, retry with
               keyword fallback retrieval and/or full-content dump.
     """
+    # Build unified document index (tree + graph)
+    from nanoindex.core.document_index import DocumentIndex as _DocumentIndex
+    doc_index = _DocumentIndex(tree, graph) if graph else None
+
     # Use tree.domain if tagged during indexing, else detect
     if tree.domain:
         financial = tree.is_financial
@@ -1531,11 +1554,11 @@ async def agentic_ask(
                     seen_ids=seen_ids,
                     pdf_path=pdf_path,
                     use_vision=use_vision,
-                    max_rounds=max_rounds - 1,  # save a round since we skip Round 1
+                    max_rounds=max_rounds - 1,
                     decomposition=decomposition,
+                    doc_index=doc_index,
                 )
             else:
-                # Graph seeds didn't resolve, fall back to standard agentic
                 nodes, page_numbers = await _run_retrieval(
                     query, tree, llm,
                     pdf_path=pdf_path,
@@ -1543,11 +1566,11 @@ async def agentic_ask(
                     max_rounds=max_rounds,
                     decomposition=decomposition,
                     financial=financial,
+                    doc_index=doc_index,
                 )
                 for rn in nodes:
                     seen_ids.add(rn.node.node_id)
         else:
-            # No graph matches, fall back to standard agentic
             logger.info("Graph-seeded agentic: no entity matches, falling back to standard")
             nodes, page_numbers = await _run_retrieval(
                 query, tree, llm,
@@ -1556,6 +1579,7 @@ async def agentic_ask(
                 max_rounds=max_rounds,
                 decomposition=decomposition,
                 financial=financial,
+                doc_index=doc_index,
             )
             for rn in nodes:
                 seen_ids.add(rn.node.node_id)
@@ -1568,6 +1592,7 @@ async def agentic_ask(
             max_rounds=max_rounds,
             decomposition=decomposition,
             financial=financial,
+            doc_index=doc_index,
         )
         for rn in nodes:
             seen_ids.add(rn.node.node_id)
