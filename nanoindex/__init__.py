@@ -342,6 +342,10 @@ class NanoIndex:
                 cfg.add_doc_description = add_doc_description
             tree = await enrich_tree(tree, llm, cfg)
 
+        # Disambiguate repetitive titles (e.g. "Reconciliation" x8)
+        from nanoindex.core.title_disambiguator import disambiguate_titles
+        tree = disambiguate_titles(tree)
+
         # Build entity graph (default: on)
         if self.config.build_graph:
             await self.async_build_graph(tree, parsed_document)
