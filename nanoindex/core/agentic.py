@@ -305,19 +305,6 @@ are PASS-THROUGH items that inflate both sides of the balance sheet. \
 When computing working capital, EXCLUDE customer funds/payables from \
 both current assets and current liabilities to get the meaningful \
 operating working capital figure.
-14. FREE CASH FLOW (FCF) = Operating Cash Flow MINUS Capital \
-Expenditures. FCF Conversion = FCF / Net Income. Do NOT use \
-Operating Cash Flow alone as FCF — you MUST subtract CapEx. \
-If a FINANCIAL REFERENCE block specifies a different formula, use that.
-15. TAX RATES can be NEGATIVE. When provision for income taxes is a \
-benefit (negative number) or pre-tax income is a loss (negative), the \
-effective tax rate will be negative. PRESERVE THE SIGN. A tax benefit \
-of $50M on a pre-tax loss of $500M = effective rate of -10%, NOT +10%.
-16. EBITDA = Operating Income + Depreciation & Amortization. Use \
-D&A from the cash flow statement (not the income statement) unless \
-the income statement explicitly breaks it out. If the question asks \
-for "unadjusted" EBITDA, do NOT add back restructuring or other charges.
-
 Provide a clear, specific answer. Never refuse to answer if the data \
 is available in the context."""
 
@@ -1427,9 +1414,12 @@ async def agentic_ask(
     Phase 4: Self-evaluation — if the answer looks like a refusal, retry with
               keyword fallback retrieval and/or full-content dump.
     """
-    # Detect if this is a financial document (affects prompts)
-    financial = _is_financial_doc(tree.doc_name, query)
-    logger.info("Domain: %s", "financial" if financial else "general")
+    # Use tree.domain if tagged during indexing, else detect
+    if tree.domain:
+        financial = tree.is_financial
+    else:
+        financial = _is_financial_doc(tree.doc_name, query)
+    logger.info("Domain: %s (tree.domain=%s)", "financial" if financial else "general", tree.domain)
 
     # Phase 0: Query decomposition
     decomposition = await _decompose_query(query, llm, financial=financial)

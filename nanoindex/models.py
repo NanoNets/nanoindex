@@ -166,10 +166,15 @@ class DocumentTree(BaseModel):
 
     doc_name: str
     doc_description: str | None = None
+    domain: str | None = None  # "sec_10k", "sec_10q", "earnings", "financial", "legal", "medical", "generic"
     extraction_metadata: dict[str, Any] = Field(default_factory=dict)
     structure: list[TreeNode] = Field(default_factory=list)
     all_bounding_boxes: list[BoundingBox] = Field(default_factory=list)
     page_dimensions: list[PageDimensions] = Field(default_factory=list)
+
+    @property
+    def is_financial(self) -> bool:
+        return self.domain in ("sec_10k", "sec_10q", "earnings", "financial") if self.domain else False
 
 
 # ---------------------------------------------------------------------------

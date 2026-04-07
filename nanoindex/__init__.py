@@ -302,6 +302,14 @@ class NanoIndex:
 
         tree = build_document_tree(extraction, path.stem, self.config)
 
+        # Tag domain for downstream KB/prompt selection
+        if not tree.domain:
+            from nanoindex.core.gliner_extractor import _detect_domain
+            from nanoindex.utils.tree_ops import iter_nodes
+            sample_text = " ".join(n.text or "" for n in list(iter_nodes(tree.structure))[:5])
+            tree.domain = _detect_domain(sample_text, doc_name=tree.doc_name)
+            logger.info("Document domain: %s", tree.domain)
+
         # Store metadata on the tree for later use
         if parsed_document is not None:
             tree._parsed_document = parsed_document  # type: ignore[attr-defined]

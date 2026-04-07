@@ -79,7 +79,11 @@ def format_kb_entries(entries: list[dict[str, Any]]) -> str:
     if not entries:
         return ""
 
-    parts = ["FINANCIAL REFERENCE (canonical definitions — use these formulas):"]
+    parts = [
+        "FINANCIAL REFERENCE — You MUST use the exact formulas below. "
+        "Do NOT invent alternative formulas or skip components. "
+        "If a convention says CRITICAL, follow it exactly."
+    ]
     for entry in entries:
         name = entry["name"]
         formula = entry.get("formula", "N/A")
@@ -90,7 +94,7 @@ def format_kb_entries(entries: list[dict[str, Any]]) -> str:
             parts.append(f"    Alt formula: {alt}")
         conventions = entry.get("conventions", [])
         if conventions:
-            for conv in conventions[:4]:
+            for conv in conventions:
                 parts.append(f"    • {conv}")
         where = entry.get("where_to_find")
         if where:

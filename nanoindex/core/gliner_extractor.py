@@ -130,7 +130,9 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
     full_text = " ".join(n.text or "" for n in all_nodes[:5])
 
     # Detect domain from doc name + content, get labels
-    domain = _detect_domain(full_text, doc_name=tree.doc_name)
+    domain = tree.domain or _detect_domain(full_text, doc_name=tree.doc_name)
+    if not tree.domain:
+        tree.domain = domain  # Tag the tree for downstream use
     labels = DOMAIN_LABELS.get(domain, DOMAIN_LABELS["generic"])
 
     # Auto-select model: GLiNER2 large on GPU, GLiNER v1 medium on CPU
@@ -291,7 +293,9 @@ def extract_entities_gliner_v1(tree: DocumentTree, *, skip_relationships: bool =
     all_nodes = list(iter_nodes(tree.structure))
     full_text = " ".join(n.text or "" for n in all_nodes[:5])
 
-    domain = _detect_domain(full_text, doc_name=tree.doc_name)
+    domain = tree.domain or _detect_domain(full_text, doc_name=tree.doc_name)
+    if not tree.domain:
+        tree.domain = domain
     labels = DOMAIN_LABELS.get(domain, DOMAIN_LABELS["generic"])
 
     model = _load_gliner_v1()
