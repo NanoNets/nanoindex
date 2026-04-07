@@ -4,7 +4,8 @@
 
 # NanoIndex
 
-**Turn any PDF into a tree you can reason over.**
+**Open-source GraphRAG that actually works on real documents.**
+**Karpathy-inspired knowledge bases. Self-validating trees. Agentic retrieval. Cited answers down to the pixel.**
 
 <p>
   <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/v/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI" /></a>
@@ -18,30 +19,49 @@
   <a href="https://colab.research.google.com/github/NanoNets/nanoindex/blob/main/examples/nanoindex_quickstart.ipynb"><img src="https://img.shields.io/badge/Try%20in-Google%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" /></a>
 </p>
 
-| Benchmark | Docs | Avg Pages | Accuracy |
+| Benchmark | Documents | Avg Pages | Accuracy |
 |---|---|---|---|
-| **FinanceBench** (SEC 10-K, 10-Q, 8-K) | 84 | 143 | **94.5%** |
-| **DocBench Legal** (court filings, legislation) | 51 | 54 | **96.0%** |
+| FinanceBench (SEC 10-K filings) | 84 | 143 | **94.5%** |
+| DocBench Legal (court filings, legislation) | 51 | 54 | **96.0%** |
 
 </div>
 
+Most RAG systems throw away the thing that makes documents useful: their structure. They chop PDFs into chunks, embed them, and hope the right chunk floats to the top. It works for simple lookups. It fails for anything that requires actually understanding the document.
+
+NanoIndex does what a careful reader would do. It reads the headings. It sees the table of contents. It understands that section 3.2 is part of section 3. Then it builds two things: a **tree** (the document's hierarchy) and a **knowledge graph** (entities, relationships, communities).
+
+**Self-validating trees.** After building the tree, NanoIndex validates it — checks page coverage, node depth, empty sections, duplicate IDs, and bounding box integrity. If a 160-page 10-K has gaps in page coverage or a flat structure where hierarchy should exist, you know before you query. The tree is the foundation; if it's wrong, everything downstream is wrong.
+
+**Agentic retrieval.** When you ask a question, the LLM doesn't just search — it reasons. It decomposes the question into data points needed, navigates the tree across multiple rounds, requests more sections when the first pass isn't sufficient, runs sufficiency checks against its own plan, and verifies calculations before returning. For financial documents, it knows income statements live in different nodes than balance sheets and automatically retrieves both when computing ratios. For general documents, it uses clean domain-neutral prompts. The `agentic_graph` mode combines this with entity graph seeding — the graph narrows the search space, then the agent reasons from there.
+
+When you ask a broad question like "what are the main themes?", it reasons across community summaries using map-reduce.
+
+The knowledge base is inspired by [Karpathy's LLM wiki approach](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): documents compile into interlinked markdown pages that grow smarter with every query. Open the folder in Obsidian and browse it like a wiki.
+
+Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3). Fully open source.
+
 ---
 
-Here's the problem with RAG: it doesn't read documents. It chops them into pieces, turns those pieces into vectors, and prays the right piece is close enough to your question in embedding space.
+## What Makes NanoIndex Different
 
-That works for "what color is the logo?" It fails for "compute the free cash flow conversion ratio from the income statement and cash flow statement on pages 47 and 52."
+| | Vector RAG | Microsoft Graph RAG | PageIndex | NanoIndex |
+|---|---|---|---|---|
+| **Indexing** | Chunk + embed | LLM extracts from chunks | LLM builds tree from pages | OCR-3 extracts structure + entities |
+| **Cost per doc** | Low (embedding) | High (LLM per chunk) | High (LLM per page) | Low (1 API call + free local NER) |
+| **Structure** | Lost | Lost | Preserved (tree) | Preserved (tree + graph) |
+| **Knowledge graph** | None | Yes (LLM-only) | None | Yes (GLiNER + spaCy + optional LLM) |
+| **Entity resolution** | N/A | Basic | None | Fuzzy (suffix, substring, Levenshtein) |
+| **Communities** | None | Leiden | None | Louvain + auto summaries |
+| **Global queries** | Cannot answer | Map-reduce | Cannot answer | Map-reduce communities |
+| **Tables** | Poor | Not supported | Not supported | Natively extracted |
+| **Vision** | No | No | No | Page images to LLM |
+| **Citations** | Chunk-level | None | Page-level | Pixel-level (bounding boxes) |
+| **Knowledge Base** | None | None | None | Obsidian wiki with [[backlinks]] |
+| **Self-validation** | None | None | None | Tree integrity + page coverage checks |
+| **Agentic retrieval** | No | No | No | Multi-round reasoning with graph seeding |
+| **Open source** | Varies | Yes | Yes | Yes |
 
-NanoIndex takes a different approach. It reads the document the way you would.
-
-## What it does
-
-**1. Builds a tree.** NanoIndex parses the PDF and preserves its structure. Section 3.2 is inside Section 3. The income statement is a child of the financial statements section. Tables keep their rows and columns. The tree validates itself: if pages are missing or sections are empty, you know before you ask a single question.
-
-**2. Builds an entity graph.** Using GLiNER (a zero-shot NER model that runs locally), it extracts every entity in the document: companies, people, dollar amounts, dates, legal clauses, medical terms. Then it links them. "Tim Cook" is the CEO of "Apple." "Revenue $394B" belongs to "FY2023." No LLM calls. No training data. Just a local model that knows what matters in your document type.
-
-**3. Connects them.** Every entity maps to the tree nodes where it appears. Every node lists the entities it contains. The tree gives you structure. The graph gives you semantics. Together, they form a single navigable index that an LLM agent can explore.
-
-**4. Lets agents reason over it.** When you ask a question, an LLM agent navigates this index in multiple rounds. It decomposes the question. It picks sections from the tree. It reads them (from rendered page images, not OCR text, so tables look exactly as printed). If it needs more data, it follows entity relationships to jump to related sections. It verifies its own calculations. Then it cites the exact page and pixel coordinates where each answer lives.
+---
 
 ## Quick Start
 
@@ -49,184 +69,191 @@ NanoIndex takes a different approach. It reads the document the way you would.
 pip install nanoindex
 ```
 
-You need two API keys:
+Or with [uv](https://docs.astral.sh/uv/) (recommended):
 
 ```bash
-export NANONETS_API_KEY=...    # document parsing — free 10K pages at docstrange.nanonets.com
-export ANTHROPIC_API_KEY=...   # or OPENAI_API_KEY, GOOGLE_API_KEY
+uv add nanoindex
 ```
 
-Then:
+```bash
+export NANONETS_API_KEY=your_key    # Get free at docstrange.nanonets.com/app (10K pages free)
+export ANTHROPIC_API_KEY=your_key   # Or OPENAI_API_KEY, GOOGLE_API_KEY, GROQ_API_KEY
+```
 
 ```python
 from nanoindex import NanoIndex
 
 ni = NanoIndex()
-tree = ni.index("annual_report.pdf")
-answer = ni.ask("What was the free cash flow conversion ratio?", tree)
-
+tree = ni.index("report.pdf")
+answer = ni.ask("What was the revenue?", tree)
 print(answer.content)
-# "FCF conversion = 154.7%. Operating cash flow was $6,439M,
-#  CapEx was $1,577M, giving FCF of $4,862M. Net income was
-#  $3,143M. FCF/Net Income = 154.7%."
-
-print(answer.citations[0].pages)          # [52]
-print(answer.citations[0].bounding_boxes) # [BoundingBox(page=52, x=234, y=567, ...)]
 ```
 
-That's it. Tree + graph + agent + citations. Five lines.
+3 lines. Keys auto-detected. LLM auto-selected.
 
-## How it thinks
+---
 
-Give NanoIndex a 200-page 10-K filing and ask: "Is free cash flow conversion improving?"
+## Everything It Can Do
 
-Here's what happens:
+### Document Q&A with cited answers
 
-```
-Agent: I need FCF and net income for multiple years.
-       FCF = Operating Cash Flow - CapEx.
-       Let me find the cash flow statement and income statement.
-
-Tree:  Node 0024.0020 "Consolidated Statement of Income" (pp. 47-48)
-       Node 0024.0022 "Consolidated Statement of Cash Flows" (pp. 51-52)
-
-Agent: [reads page images of pp. 47-48, 51-52]
-       FY2022: OCF $6,439M - CapEx $1,577M = FCF $4,862M
-       Net Income $3,143M → FCF Conversion = 154.7%
-
-       I need prior year too. Let me check the same statements.
-       FY2021: OCF $5,984M - CapEx $1,373M = FCF $4,611M
-       Net Income $3,193M → FCF Conversion = 144.4%
-
-Agent: 154.7% vs 144.4% — yes, improving by ~10 points.
-
-Citations: page 47 (income statement), page 52 (cash flow statement)
-           with bounding boxes for each number used.
+```python
+answer = ni.ask("What was Q3 gross margin?", tree)
+print(answer.content)     # "Gross margin was 42.3% in Q3..."
+print(answer.citations)   # [Citation(title="Income Statement", pages=[45, 46])]
 ```
 
-The agent reads page images directly, not extracted text. No OCR errors. No table parsing failures. It sees the document exactly as you would.
+### Knowledge graph (built automatically)
 
-## The entity graph
-
-Every document gets an entity graph automatically. No expensive LLM calls — just a local NER model that knows what to look for.
+Every document gets an entity graph with zero extra API calls:
 
 ```python
 graph = ni.get_graph(tree)
-# 921 entities, 103 relationships
+print(f"{len(graph.entities)} entities, {len(graph.relationships)} relationships")
 
-# What's in this document?
 for e in graph.entities[:5]:
     print(f"  [{e.entity_type}] {e.name}")
-    # [Company] 3M
-    # [Revenue] $32,765 million
-    # [FiscalYear] 2018
-    # [ExecutiveName] Michael Roman
-    # [BusinessSegment] Safety and Industrial
+for r in graph.relationships[:5]:
+    print(f"  {r.source} --{r.keywords}--> {r.target}")
 ```
 
-The system auto-detects the document type and loads the right entity labels:
+Entity extraction pipeline:
+1. **GLiNER zero-shot NER** with domain-adaptive labels (financial, legal, medical, insurance)
+2. **spaCy dependency parsing** for subject-verb-object relationships
+3. **Entity resolution** merges duplicates (fuzzy matching, suffix stripping, Levenshtein)
+4. **Community detection** groups related entities (Louvain algorithm)
+5. **LLM enhancement** adds domain-specific entities (optional, when reasoning LLM available)
 
-| Domain | Entity types |
-|---|---|
-| **SEC filings** | Company, Revenue, NetIncome, EPS, BusinessSegment, FiscalYear, Acquisition, Restructuring... |
-| **Legal** | Party, Court, CaseNumber, Statute, Jurisdiction, Damages, Judge, Attorney... |
-| **Medical** | Patient, Diagnosis, Drug, Procedure, Dosage, Symptom, LabTest... |
-| **Insurance** | Insurer, PolicyNumber, ClaimNumber, CoverageType, Premium, LossAmount... |
+### Global queries (community-based)
 
-Or pass your own labels. GLiNER extracts whatever entity types you define, zero-shot, no training.
-
-## Query modes
-
-| Mode | What it does | When to use it |
-|---|---|---|
-| `agentic_vision` | Agent navigates tree, reads page images | Best accuracy. Default. |
-| `agentic_graph_vision` | Graph seeds the agent, then reasons + expands | Faster. Almost as accurate. |
-| `fast_vision` | Graph lookup, no agent loop | Cheapest. Simple lookups. |
-| `global` | Map-reduce over entity communities | "What are the main themes?" |
-
-## What it knows about finance
-
-NanoIndex ships with a knowledge base of 31 financial formulas (ROA, ROE, FCF, EBITDA, working capital, effective tax rate...) with strict conventions:
-
-- "FCF = Operating Cash Flow minus CapEx. Not just OCF."
-- "Tax rates can be negative. Preserve the sign."
-- "Use D&A from the cash flow statement for EBITDA."
-
-When you ask a financial question, the relevant formulas are injected into the agent's prompt with enforcement language. The agent doesn't invent formulas. It uses the canonical ones.
-
-## Self-validating trees
-
-Before you ask a single question, NanoIndex validates the tree:
-
-- Does the tree cover every page in the document?
-- Are there empty nodes? Duplicate IDs?
-- Is the hierarchy deep enough, or is it suspiciously flat?
-- Are bounding boxes present for citations?
-
-If the tree is broken, you know immediately. Not after you've built a pipeline on top of it.
-
-## Pixel-level citations
-
-Every answer comes with bounding boxes:
+Answer questions about the entire document, not just specific facts:
 
 ```python
-for c in answer.citations:
-    for bb in c.bounding_boxes:
-        print(f"Page {bb.page}: ({bb.x}, {bb.y}) — '{bb.text}'")
+answer = ni.ask("What are the main themes in this document?", tree, mode="global")
 ```
 
-This isn't "see page 47." It's "this specific number is at coordinates (234, 567) on page 47, 89 pixels wide." You can draw a box around the exact cell in the exact table.
+Uses map-reduce across community summaries.
 
-## Pick your LLM
+### Structured data extraction (self-correcting)
+
+Extract tables and forms with self-correcting validation:
+
+```python
+result = ni.extract("invoice.pdf")
+print(result.fields)      # {'vendor': 'Acme', 'total': '$15,260'}
+
+result = ni.extract("claims.pdf")
+print(result.rows)         # [{'claim_no': 'WC-001', 'paid': 15000}, ...]
+print(result.validation)   # ValidationResult(passed=True, row_count_match=True)
+result.to_csv("output.csv")
+```
+
+Self-correcting loop: extract, validate against document totals, fix mismatches, repeat.
+
+### Knowledge Base (wiki-based)
+
+Documents compile into an Obsidian-compatible wiki that grows with every query:
+
+```python
+from nanoindex import KnowledgeBase
+
+kb = KnowledgeBase("./my-research")
+kb.add("report1.pdf")
+kb.add("report2.pdf")
+answer = kb.ask("How do these compare?")  # answer filed back into wiki
+kb.lint()                                  # find contradictions, stale data
+```
+
+Open `my-research/` in Obsidian. Browse concept pages with `[[backlinks]]`, entity graphs, activity logs.
+
+### Bounding box citations
+
+Every answer includes pixel-level coordinates:
+
+```python
+for citation in answer.citations:
+    for bb in citation.bounding_boxes:
+        print(f"Page {bb.page}: ({bb.x:.2f}, {bb.y:.2f}) text: {bb.text}")
+```
+
+### Pick your LLM
 
 ```python
 ni = NanoIndex(llm="anthropic:claude-sonnet-4-6")
 ni = NanoIndex(llm="openai:gpt-5.4")
 ni = NanoIndex(llm="gemini:gemini-2.5-flash")
 ni = NanoIndex(llm="groq:llama-3.3-70b-versatile")
+ni = NanoIndex(llm="ollama:llama3")        # local, no API key
 ```
 
-## Fully local mode
-
-No API keys at all:
-
-```python
-ni = NanoIndex(parser="pymupdf", llm="ollama:llama3")
-tree = ni.index("report.pdf")  # everything runs locally
-```
-
-## CLI
+### CLI
 
 ```bash
 nanoindex index report.pdf -o tree.json
 nanoindex ask report.pdf "What was the revenue?"
-nanoindex viz tree.json                           # opens D3 graph viewer
+nanoindex viz tree.json
+nanoindex kb create ./my-wiki
+nanoindex kb add report.pdf --wiki ./my-wiki
+nanoindex kb ask "What are the key findings?" --wiki ./my-wiki
 ```
+
+### Open-source mode (no API key for parsing)
+
+```python
+ni = NanoIndex(parser="pymupdf")
+tree = ni.index("report.pdf")  # fully local, no API calls
+```
+
+---
+
+## Query Modes
+
+| Mode | How it works | Best for |
+|---|---|---|
+| `agentic_vision` (default) | LLM navigates full tree + reads page images | Highest accuracy |
+| `agentic` | Same without images | Text-heavy docs |
+| `agentic_graph` | Graph seeds initial nodes, agent reasons + expands | Best accuracy/cost balance |
+| `agentic_graph_vision` | Same + page images | Graph precision + visual reasoning |
+| `fast` | Graph entity lookup, LLM sees ~20 nodes | Cheapest, fastest |
+| `fast_vision` | Same + page images | Charts and figures |
+| `global` | Map-reduce across community summaries | "What are the main themes?" |
+
+---
+
+## How It Works
+
+### Indexing
+
+<p align="center">
+  <img src="assets/ingestion-pipeline.gif" alt="Ingestion Pipeline" width="800"/>
+</p>
+
+### Querying
+
+<p align="center">
+  <img src="assets/query-agentic.gif" alt="Query Pipeline - Agentic Mode" width="800"/>
+</p>
+
+<p align="center">
+  <img src="assets/query-fast.gif" alt="Query Pipeline - Fast Mode" width="800"/>
+</p>
+
+---
 
 ## Benchmarks
 
-**FinanceBench** (150 questions, 84 SEC filings, avg 143 pages):
-
-| Mode | Accuracy | Evidence Page Hit | Avg Time |
+| Benchmark | Documents | Avg Pages | Accuracy |
 |---|---|---|---|
-| `agentic_vision` | **94.5%** | 93.3% | ~45s |
-| `agentic_graph_vision` | 85.3% | 90.0% | ~67s |
-| `fast_vision` | 77.3% | 82.7% | ~17s |
+| FinanceBench (SEC 10-K filings) | 84 | 143 | **94.5%** |
+| DocBench Legal (court filings, legislation) | 51 | 54 | **96.0%** |
 
-**DocBench Legal** (51 documents, avg 54 pages): **96.0%**
+Evidence page retrieval: **93.3%**
 
-96 entity graphs across the benchmark: 68,045 entities, 12,672 relationships.
+<p align="center">
+  <img src="assets/financebench-architecture.png" alt="FinanceBench Architecture" width="800"/>
+</p>
 
-## How it compares
-
-| | Vector RAG | Microsoft GraphRAG | PageIndex | **NanoIndex** |
-|---|---|---|---|---|
-| **Reads structure** | No (chunks) | No (chunks) | Yes (tree) | Yes (tree + graph) |
-| **Indexing cost** | Low | High (LLM/chunk) | High (LLM/page) | Low (1 API call) |
-| **Entity graph** | None | LLM-only | None | Local NER (free) |
-| **Agent retrieval** | No | No | No | Multi-round |
-| **Vision** | No | No | No | Page images |
-| **Citations** | Chunk-level | None | Page-level | Pixel-level |
+---
 
 ## Development
 
@@ -234,24 +261,25 @@ nanoindex viz tree.json                           # opens D3 graph viewer
 git clone https://github.com/nanonets/nanoindex.git
 cd nanoindex
 
-# With uv
+# With uv (recommended)
 uv sync --extra dev
 uv run pytest
 
-# With pip
+# Or with pip
 pip install -e ".[dev]"
 pytest
 ```
 
-For GLiNER entity extraction:
+For entity extraction with GLiNER2 (zero-shot NER, domain-adaptive labels):
 
 ```bash
-pip install nanoindex[gliner]       # GLiNER v1 (CPU, fast)
-pip install nanoindex[gliner-gpu]   # GLiNER2 large (GPU, best quality)
+uv sync --extra gliner    # or: pip install nanoindex[gliner]
 ```
 
-Auto-selects the right model for your hardware. GPU gets GLiNER2 large. CPU gets GLiNER v1 medium.
+GLiNER2 auto-detects GPU (CUDA) and uses batch inference for speed. On GPU: ~2 min per 150-page document. On CPU: ~8 min.
 
 ---
 
-Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3). Apache 2.0.
+## License
+
+Apache 2.0 — see [LICENSE](LICENSE).
