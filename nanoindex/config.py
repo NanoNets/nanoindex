@@ -94,8 +94,35 @@ class NanoIndexConfig(BaseModel):
     def require_llm_key(self) -> str:
         key = self.llm_api_key or self.nanonets_api_key
         if not key:
-            key = "no-key-required"
+            raise ConfigError(
+                "No LLM API key found. NanoIndex requires two API keys:\n\n"
+                "  1. NANONETS_API_KEY — for document parsing (OCR)\n"
+                "     Get a free key at https://docstrange.nanonets.com/app\n\n"
+                "  2. An LLM API key — for answering questions\n"
+                "     Set one of: ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY\n"
+                "     Or pass llm='anthropic:claude-sonnet-4-6' to NanoIndex()\n\n"
+                "Example:\n"
+                "  ni = NanoIndex(llm='anthropic:claude-sonnet-4-6')\n"
+            )
         return key
+
+    def require_reasoning_llm(self) -> str:
+        """Ensure a reasoning LLM is configured for querying."""
+        if not self.reasoning_llm_model:
+            raise ConfigError(
+                "No LLM configured for answering questions.\n\n"
+                "NanoIndex requires two API keys to work:\n\n"
+                "  1. NANONETS_API_KEY — for document parsing (OCR)\n"
+                "     Get a free key at https://docstrange.nanonets.com/app\n\n"
+                "  2. An LLM API key — for answering questions\n"
+                "     Set one of: ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY\n"
+                "     Or pass llm='anthropic:claude-sonnet-4-6' to NanoIndex()\n\n"
+                "Example:\n"
+                "  export NANONETS_API_KEY=your_nanonets_key\n"
+                "  export ANTHROPIC_API_KEY=your_anthropic_key\n"
+                "  ni = NanoIndex()  # auto-detects both keys\n"
+            )
+        return self.reasoning_llm_model
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:

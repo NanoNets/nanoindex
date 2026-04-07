@@ -32,8 +32,8 @@ from nanoindex.utils.tree_ops import (
 logger = logging.getLogger(__name__)
 
 _MAX_ROUNDS = 5
-_MAX_PAGES_PER_ROUND = 20
-_MAX_TOTAL_PAGES = 40
+_MAX_PAGES_PER_ROUND = 10
+_MAX_TOTAL_PAGES = 20
 _SMALL_TREE_THRESHOLD = 25  # Skip tree nav for documents with fewer nodes
 
 _REFUSAL_PATTERNS = re.compile(
@@ -305,6 +305,18 @@ are PASS-THROUGH items that inflate both sides of the balance sheet. \
 When computing working capital, EXCLUDE customer funds/payables from \
 both current assets and current liabilities to get the meaningful \
 operating working capital figure.
+14. FREE CASH FLOW (FCF) = Operating Cash Flow MINUS Capital \
+Expenditures. FCF Conversion = FCF / Net Income. Do NOT use \
+Operating Cash Flow alone as FCF — you MUST subtract CapEx. \
+If a FINANCIAL REFERENCE block specifies a different formula, use that.
+15. TAX RATES can be NEGATIVE. When provision for income taxes is a \
+benefit (negative number) or pre-tax income is a loss (negative), the \
+effective tax rate will be negative. PRESERVE THE SIGN. A tax benefit \
+of $50M on a pre-tax loss of $500M = effective rate of -10%, NOT +10%.
+16. EBITDA = Operating Income + Depreciation & Amortization. Use \
+D&A from the cash flow statement (not the income statement) unless \
+the income statement explicitly breaks it out. If the question asks \
+for "unadjusted" EBITDA, do NOT add back restructuring or other charges.
 
 Provide a clear, specific answer. Never refuse to answer if the data \
 is available in the context."""
