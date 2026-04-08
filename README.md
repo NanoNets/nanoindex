@@ -36,23 +36,23 @@ If NanoIndex is useful, a star helps others find it.
 
 ## The problem
 
-RAG breaks on long documents. Three ways:
+Most RAG systems chop documents into chunks and turn them into embeddings. Two things break.
 
-- **Finance.** Chunking splits a balance sheet mid-row. The system finds assets but misses liabilities. Half a table, wrong answer.
-- **Legal.** A liability cap in Section 8.3 references Section 1.1 and Section 4.2. The retriever finds one, not the three you need.
-- **Healthcare.** Drug interactions need the medication list (page 4), allergy history (page 1), and kidney function labs (page 12). The retriever returns one.
+**Structure is lost.** A 200-page filing has a table of contents, numbered sections, tables with rows and columns. Chunking throws all of that away. Section 3.2 is no longer inside Section 3. A balance sheet table gets split across two chunks. The hierarchy the author wrote is gone.
 
-In all three cases, the citation says "source: chunk_47." That doesn't pass audit.
+**Multi-hop questions fail.** Many real questions need data from multiple sections. Computing a ratio requires the income statement and the balance sheet. Checking a legal clause means reading the clause, its definitions, and its exceptions. A chunk retriever finds one section, not the three you need, because the question doesn't match all of them equally in embedding space.
+
+The result: wrong answers with citations that say "chunk_47" instead of a page and location an auditor can verify.
 
 ---
 
 ## Who is this for?
 
 - Developers building RAG over long, structured documents (10-Ks, contracts, medical records)
-- Teams where citation accuracy is a compliance or audit requirement.
+- Teams where citation accuracy is a compliance or audit requirement
 - Anyone hitting the limits of chunk-and-embed on multi-section documents
 
-**Not the right fit if:** you're querying short documents (<10 pages), need sub-second latency.
+**Not the right fit if:** you're querying short documents (<10 pages) or need sub-second latency.
 
 ---
 
@@ -86,13 +86,35 @@ export ANTHROPIC_API_KEY=your_key   # or OPENAI_API_KEY, GOOGLE_API_KEY
 ```python
 from nanoindex import NanoIndex
 
-ni = NanoIndex()
+# Pick your LLM
+ni = NanoIndex(llm="anthropic:claude-sonnet-4-6")
+# ni = NanoIndex(llm="openai:gpt-5.4")
+# ni = NanoIndex(llm="gemini:gemini-2.5-flash")
+# ni = NanoIndex(llm="ollama:llama3")  # fully local
+
+# Index a document
 tree = ni.index("10k_filing.pdf")
 answer = ni.ask("What was the free cash flow?", tree)
 
 print(answer.content)                     # computed answer with reasoning
 print(answer.citations[0].pages)          # [52]
 print(answer.citations[0].bounding_boxes) # exact coordinates on the page
+```
+
+### Save and reload trees
+
+Index once, query many times. Trees and graphs are JSON files you can save and load:
+
+```python
+from nanoindex.utils.tree_ops import save_tree, load_tree, load_graph
+
+# Save after indexing
+save_tree(tree, "3M_2018_10K.json")
+
+# Load later — no re-indexing needed
+tree = load_tree("3M_2018_10K.json")
+graph = load_graph("3M_2018_10K_graph.json")
+answer = ni.ask("What was the operating margin?", tree)
 ```
 
 ### Query modes
@@ -156,14 +178,15 @@ Three layers:
 
 ---
 
-## Pick your LLM
+## Roadmap
 
-```python
-ni = NanoIndex(llm="anthropic:claude-sonnet-4-6")
-ni = NanoIndex(llm="openai:gpt-5.4")
-ni = NanoIndex(llm="gemini:gemini-2.5-flash")
-ni = NanoIndex(llm="ollama:llama3")        # fully local
-```
+- [ ] **Agentic extraction** — self-correcting structured extraction for tables and forms (invoice line items, insurance loss runs, bank statement reconciliation)
+- [ ] **Real-world long document benchmarks** — bank statement reconciliation, insurance loss run extraction, multi-document contract analysis
+- [ ] **LegalBench-RAG** — character-level retrieval benchmark for legal contracts (CUAD, MAUD, ContractNLI)
+- [ ] **Streaming tree building** — real-time tree construction as pages are parsed
+- [ ] **Multi-agent wiki** — multiple agents maintaining different sections of the wiki concurrently
+
+---
 
 ## CLI
 
