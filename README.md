@@ -180,11 +180,10 @@ Three layers:
 
 ## Roadmap
 
-- [ ] **Agentic extraction** — self-correcting structured extraction for tables and forms (invoice line items, insurance loss runs, bank statement reconciliation)
-- [ ] **Real-world long document benchmarks** — bank statement reconciliation, insurance loss run extraction, multi-document contract analysis
-- [ ] **LegalBench-RAG** — character-level retrieval benchmark for legal contracts (CUAD, MAUD, ContractNLI)
-- [ ] **Streaming tree building** — real-time tree construction as pages are parsed
-- [ ] **Multi-agent wiki** — multiple agents maintaining different sections of the wiki concurrently
+- [ ] **Agentic extraction** self-correcting structured extraction for tables and forms (invoice line items, insurance loss runs, bank statement reconciliation)
+- [ ] **Real-world long document benchmarks** bank statement reconciliation, insurance loss run extraction, multi-document contract analysis
+- [ ] **Streaming tree building** real-time tree construction as pages are parsed
+- [ ] **Multi-agent wiki** multiple agents maintaining different sections of the wiki concurrently
 
 ---
 
