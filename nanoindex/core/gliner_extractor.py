@@ -144,8 +144,11 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
     labels = DOMAIN_LABELS.get(domain, DOMAIN_LABELS["generic"])
 
     # Auto-select model: GLiNER2 large on GPU, GLiNER v1 medium on CPU
-    import torch
-    use_v2 = torch.cuda.is_available()
+    try:
+        import torch
+        use_v2 = torch.cuda.is_available()
+    except ImportError:
+        use_v2 = False
 
     # Try GLiNER2 first if available (even on CPU, user may prefer quality)
     if use_v2:
@@ -387,11 +390,10 @@ def _extract_relationships_spacy(nodes, entity_mentions):
     try:
         nlp = spacy.load("en_core_web_sm")
     except OSError:
-        import subprocess
-        import sys
-
-        subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm", "--quiet"])
-        nlp = spacy.load("en_core_web_sm")
+        raise ImportError(
+            "spaCy model 'en_core_web_sm' not found. Install it with:\n"
+            "  python -m spacy download en_core_web_sm"
+        )
 
     relationships = []
     seen: set[tuple[str, str, str]] = set()

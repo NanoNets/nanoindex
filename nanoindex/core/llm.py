@@ -75,7 +75,7 @@ def _auto_detect_key(model: str, api_key: str | None) -> str:
             key = os.environ.get(env_var)
             if key:
                 return key
-    return api_key or "no-key"
+    return api_key or None
 
 
 class LLMClient:

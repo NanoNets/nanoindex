@@ -61,7 +61,7 @@ __all__ = [
     "ValidationResult",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.3.2"
 
 
 def __getattr__(name: str):
@@ -135,8 +135,6 @@ def _auto_detect_llm() -> str | None:
     for env_key, model in [
         ("ANTHROPIC_API_KEY", "claude-sonnet-4-6"),
         ("OPENAI_API_KEY", "gpt-5.4"),
-        ("GOOGLE_API_KEY", "gemini-2.5-flash"),
-        ("GROQ_API_KEY", "llama-3.3-70b-versatile"),
         ("GOOGLE_API_KEY", "gemini-2.5-flash"),
         ("GROQ_API_KEY", "llama-3.3-70b-versatile"),
     ]:
@@ -640,7 +638,7 @@ Final comprehensive answer:"""
         from nanoindex.core.entity_resolver import resolve_entities
         graph = resolve_entities(graph)
 
-        # Step 2: LLM enhancement (if reasoning LLM configured)
+        # Step 3: LLM enhancement (if reasoning LLM configured)
         if self.config.reasoning_llm_model:
             try:
                 from nanoindex.core.entity_extractor import extract_entities
