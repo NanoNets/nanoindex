@@ -24,7 +24,7 @@
 | **FinanceBench** (84 SEC filings, avg 143 pages) | **94.5%** |
 | **DocBench Legal** (51 court filings, avg 54 pages) | **96.0%** |
 
-If NanoIndex is useful, a star helps others find it.
+If NanoIndex is useful, a ⭐ helps others find it.
 
 <p align="center">
   <img src="assets/hero.gif" alt="NanoIndex" width="900"/>
