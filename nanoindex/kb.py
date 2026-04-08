@@ -76,8 +76,90 @@ class KnowledgeBase:
     # ------------------------------------------------------------------
 
     def add(self, pdf_path: str | Path) -> KBDocument:
-        """Add a document (sync wrapper)."""
+        """Add a document by indexing a PDF (sync wrapper)."""
         return _run(self.async_add(pdf_path))
+
+    def add_tree(
+        self,
+        tree: "DocumentTree",
+        graph: "DocumentGraph | None" = None,
+        source_path: str = "",
+    ) -> KBDocument:
+        """Add a pre-built tree (and optional graph) directly to the wiki.
+
+        Use this when you already have cached trees and graphs from
+        benchmarks or prior indexing runs::
+
+            from nanoindex.utils.tree_ops import load_tree
+            tree = load_tree("benchmarks/cache_v3/3M_2018_10K.json")
+            graph = DocumentGraph(**json.load(open("benchmarks/graphs_v4/3M_2018_10K.json")))
+            kb.add_tree(tree, graph)
+        """
+        doc_name = tree.doc_name
+
+        # Save tree
+        tree_rel = f"trees/{doc_name}.json"
+        (self._data_dir / "trees").mkdir(parents=True, exist_ok=True)
+        save_tree(tree, self._data_dir / tree_rel)
+
+        # Save graph
+        graph_rel: str | None = None
+        if graph is not None:
+            graph_rel = f"graphs/{doc_name}.json"
+            (self._data_dir / "graphs").mkdir(parents=True, exist_ok=True)
+            with open(self._data_dir / graph_rel, "w") as f:
+                json.dump(graph.model_dump(), f, ensure_ascii=False)
+            self._ni._graphs[doc_name] = graph
+
+        # Add to document store
+        self._store.add(tree, doc_id=doc_name)
+
+        # Create KB record
+        doc_id = slugify(doc_name)
+        now = datetime.now(timezone.utc).isoformat()
+        tree_json = json.dumps(tree.model_dump(exclude_none=True), sort_keys=True)
+        content_hash = hashlib.md5(tree_json.encode()).hexdigest()
+        kb_doc = KBDocument(
+            doc_id=doc_id,
+            doc_name=doc_name,
+            source_path=source_path,
+            added_at=now,
+            tree_path=tree_rel,
+            graph_path=graph_rel,
+            content_hash=content_hash,
+        )
+        self._config.documents.append(kb_doc)
+
+        # Wiki compile
+        try:
+            from nanoindex.core import wiki_compiler
+            wiki_compiler.incremental_update(
+                wiki_path=self.path,
+                new_doc=kb_doc,
+                new_tree=tree,
+                new_graph=graph,
+                config=self._config,
+                all_graphs={
+                    d.doc_id: self._load_graph(d)
+                    for d in self._config.documents
+                    if self._graph_path(d).exists()
+                },
+            )
+        except Exception:
+            logger.debug("Wiki update failed; skipping", exc_info=True)
+
+        self._save_config()
+
+        # Log
+        from nanoindex.utils.tree_ops import iter_nodes
+        node_count = len(list(iter_nodes(tree.structure)))
+        entity_count = len(graph.entities) if graph else 0
+        self._append_log(
+            "ingest",
+            f"{doc_name} (from cached tree)\n"
+            f"Added {node_count} nodes, {entity_count} entities.\n",
+        )
+        return kb_doc
 
     async def async_add(self, pdf_path: str | Path) -> KBDocument:
         """Index a PDF, persist artifacts, and update the knowledge base."""
