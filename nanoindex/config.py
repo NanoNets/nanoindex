@@ -65,7 +65,7 @@ class NanoIndexConfig(BaseModel):
     # Graph + embedding settings
     # Graph requires a reasoning LLM (set reasoning_llm_model to enable)
     # Embeddings use a local model (no API key needed)
-    build_graph: bool = True          # Extracts entities with reasoning LLM
+    build_graph: bool = False         # Set True to build entity graph during indexing
     build_embeddings: bool = False    # Enable for fast mode retrieval
     embedding_model: str = "local:all-MiniLM-L6-v2"
     embedding_api_key: str | None = None
@@ -78,9 +78,7 @@ class NanoIndexConfig(BaseModel):
     def _resolve_defaults(self) -> "NanoIndexConfig":
         if self.llm_api_key is None and self.nanonets_api_key is not None:
             self.llm_api_key = self.nanonets_api_key
-        # Auto-enable graph when a reasoning LLM is configured
-        if self.reasoning_llm_model and not self.build_graph:
-            self.build_graph = True
+        # Graph building is opt-in (set build_graph=True explicitly)
         return self
 
     def require_nanonets_key(self) -> str:
