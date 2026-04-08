@@ -120,3 +120,11 @@ def load_tree(path: str | Path) -> DocumentTree:
     with open(path) as f:
         data = json.load(f)
     return DocumentTree.model_validate(data)
+
+
+def load_graph(path: str | Path) -> "DocumentGraph":
+    """Deserialise a ``DocumentGraph`` from a JSON file."""
+    from nanoindex.models import DocumentGraph
+    with open(path) as f:
+        data = json.load(f)
+    return DocumentGraph.model_validate(data)

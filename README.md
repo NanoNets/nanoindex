@@ -4,8 +4,8 @@
 
 # NanoIndex
 
-**Open-source GraphRAG that actually works on real documents.**
-**Karpathy-inspired knowledge bases. Self-validating trees. Agentic retrieval. Cited answers down to the pixel.**
+**Open-source Agentic-RAG harness for long documents.**
+**Self-validating trees. Entity graphs. Cited answers down to the pixel.**
 
 <p>
   <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/v/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI" /></a>
@@ -24,262 +24,175 @@
 | FinanceBench (SEC 10-K filings) | 84 | 143 | **94.5%** |
 | DocBench Legal (court filings, legislation) | 51 | 54 | **96.0%** |
 
+<p align="center">
+  <img src="assets/hero.gif" alt="NanoIndex" width="900"/>
+</p>
+
 </div>
 
-Most RAG systems throw away the thing that makes documents useful: their structure. They chop PDFs into chunks, embed them, and hope the right chunk floats to the top. It works for simple lookups. It fails for anything that requires actually understanding the document.
+---
 
-NanoIndex does what a careful reader would do. It reads the headings. It sees the table of contents. It understands that section 3.2 is part of section 3. Then it builds two things: a **tree** (the document's hierarchy) and a **knowledge graph** (entities, relationships, communities).
+## The problem
 
-**Self-validating trees.** After building the tree, NanoIndex validates it — checks page coverage, node depth, empty sections, duplicate IDs, and bounding box integrity. If a 160-page 10-K has gaps in page coverage or a flat structure where hierarchy should exist, you know before you query. The tree is the foundation; if it's wrong, everything downstream is wrong.
+You have a 200-page annual report. You ask: "Which business segment is growing the fastest?"
 
-**Agentic retrieval.** When you ask a question, the LLM doesn't just search — it reasons. It decomposes the question into data points needed, navigates the tree across multiple rounds, requests more sections when the first pass isn't sufficient, runs sufficiency checks against its own plan, and verifies calculations before returning. For financial documents, it knows income statements live in different nodes than balance sheets and automatically retrieves both when computing ratios. For general documents, it uses clean domain-neutral prompts. The `agentic_graph` mode combines this with entity graph seeding — the graph narrows the search space, then the agent reasons from there.
+To answer that, you need to find the segment breakdown, figure out which segments exist, pull revenue for each one across two years, compute the growth rates, and compare. The data is spread across the MD&A section, the segment footnote, and the income statement. Three different sections, none of which contain the word "fastest."
 
-When you ask a broad question like "what are the main themes?", it reasons across community summaries using map-reduce.
+A chunk-and-embed retriever won't find all three. A decomposer agent can't split this question upfront because you don't know what the segments are until you read the document. You have to explore first, then compute.
 
-The knowledge base is inspired by [Karpathy's LLM wiki approach](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): documents compile into interlinked markdown pages that grow smarter with every query. Open the folder in Obsidian and browse it like a wiki.
+Same problem across industries:
 
-Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3). Fully open source.
+- **Finance.** Chunking splits a balance sheet table mid-row. The system finds current assets but misses current liabilities. Half a table, wrong answer.
+- **Legal.** A liability cap in Section 8.3 references definitions in Section 1.1 and exclusions in Section 4.2. The retriever finds one section, not the three you need.
+- **Healthcare.** Drug interactions require the medication list (page 4), allergy history (page 1), and kidney function labs (page 12). The retriever returns one.
+
+In all three cases, the citation says "source: chunk_47." That doesn't pass audit.
 
 ---
 
-## What Makes NanoIndex Different
+## Part 1: Querying within a single long document
 
-| | Vector RAG | Microsoft Graph RAG | PageIndex | NanoIndex |
-|---|---|---|---|---|
-| **Indexing** | Chunk + embed | LLM extracts from chunks | LLM builds tree from pages | OCR-3 extracts structure + entities |
-| **Cost per doc** | Low (embedding) | High (LLM per chunk) | High (LLM per page) | Low (1 API call + free local NER) |
-| **Structure** | Lost | Lost | Preserved (tree) | Preserved (tree + graph) |
-| **Knowledge graph** | None | Yes (LLM-only) | None | Yes (GLiNER + spaCy + optional LLM) |
-| **Entity resolution** | N/A | Basic | None | Fuzzy (suffix, substring, Levenshtein) |
-| **Communities** | None | Leiden | None | Louvain + auto summaries |
-| **Global queries** | Cannot answer | Map-reduce | Cannot answer | Map-reduce communities |
-| **Tables** | Poor | Not supported | Not supported | Natively extracted |
-| **Vision** | No | No | No | Page images to LLM |
-| **Citations** | Chunk-level | None | Page-level | Pixel-level (bounding boxes) |
-| **Knowledge Base** | None | None | None | Obsidian wiki with [[backlinks]] |
-| **Self-validation** | None | None | None | Tree integrity + page coverage checks |
-| **Agentic retrieval** | No | No | No | Multi-round reasoning with graph seeding |
-| **Open source** | Varies | Yes | Yes | Yes |
+NanoIndex reads documents the way a person would. It starts from the structure.
 
----
+[Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3) parses each PDF and returns the table of contents, section hierarchy, and heading structure. NanoIndex builds a tree that preserves these relationships.
 
-## Quick Start
+<p align="center">
+  <img src="assets/indexing.gif" alt="Indexing: PDF → Tree + Entity Graph" width="900"/>
+</p>
+
+| Document type | Examples | How NanoIndex navigates |
+|---|---|---|
+| **Structured** | 10-K filings, contracts, research papers | Uses the table of contents. Agent reads the outline, goes straight to the right section. |
+| **Semi-structured** | Earnings releases, quarterly reports | Disambiguates repetitive headings ("Reconciliation" x8 becomes "Reconciliation: Q2 2023 Segment Data"). |
+| **Unstructured** | Transcripts, scans, flat reports | Splits by page, extracts entities (people, companies, dates, amounts). The entity graph becomes the map. |
+
+When you ask a question, an LLM agent navigates this tree across multiple rounds. It reads page images directly. It verifies its calculations. It cites every answer with the exact page and coordinates where each number lives.
 
 ```bash
 pip install nanoindex
 ```
 
-Or with [uv](https://docs.astral.sh/uv/) (recommended):
-
 ```bash
-uv add nanoindex
-```
-
-```bash
-export NANONETS_API_KEY=your_key    # Get free at docstrange.nanonets.com/app (10K pages free)
-export ANTHROPIC_API_KEY=your_key   # Or OPENAI_API_KEY, GOOGLE_API_KEY, GROQ_API_KEY
+export NANONETS_API_KEY=your_key    # free at docstrange.nanonets.com (10K pages)
+export ANTHROPIC_API_KEY=your_key   # or OPENAI_API_KEY, GOOGLE_API_KEY
 ```
 
 ```python
 from nanoindex import NanoIndex
 
 ni = NanoIndex()
-tree = ni.index("report.pdf")
-answer = ni.ask("What was the revenue?", tree)
-print(answer.content)
+tree = ni.index("10k_filing.pdf")
+answer = ni.ask("What was the free cash flow?", tree)
+
+print(answer.content)                     # computed answer with reasoning
+print(answer.citations[0].pages)          # [52]
+print(answer.citations[0].bounding_boxes) # exact coordinates on the page
 ```
 
-3 lines. Keys auto-detected. LLM auto-selected.
+### Query modes
 
----
-
-## Everything It Can Do
-
-### Document Q&A with cited answers
-
-```python
-answer = ni.ask("What was Q3 gross margin?", tree)
-print(answer.content)     # "Gross margin was 42.3% in Q3..."
-print(answer.citations)   # [Citation(title="Income Statement", pages=[45, 46])]
-```
-
-### Knowledge graph (built automatically)
-
-Every document gets an entity graph with zero extra API calls:
-
-```python
-graph = ni.get_graph(tree)
-print(f"{len(graph.entities)} entities, {len(graph.relationships)} relationships")
-
-for e in graph.entities[:5]:
-    print(f"  [{e.entity_type}] {e.name}")
-for r in graph.relationships[:5]:
-    print(f"  {r.source} --{r.keywords}--> {r.target}")
-```
-
-Entity extraction pipeline:
-1. **GLiNER zero-shot NER** with domain-adaptive labels (financial, legal, medical, insurance)
-2. **spaCy dependency parsing** for subject-verb-object relationships
-3. **Entity resolution** merges duplicates (fuzzy matching, suffix stripping, Levenshtein)
-4. **Community detection** groups related entities (Louvain algorithm)
-5. **LLM enhancement** adds domain-specific entities (optional, when reasoning LLM available)
-
-### Global queries (community-based)
-
-Answer questions about the entire document, not just specific facts:
-
-```python
-answer = ni.ask("What are the main themes in this document?", tree, mode="global")
-```
-
-Uses map-reduce across community summaries.
-
-### Structured data extraction (self-correcting)
-
-Extract tables and forms with self-correcting validation:
-
-```python
-result = ni.extract("invoice.pdf")
-print(result.fields)      # {'vendor': 'Acme', 'total': '$15,260'}
-
-result = ni.extract("claims.pdf")
-print(result.rows)         # [{'claim_no': 'WC-001', 'paid': 15000}, ...]
-print(result.validation)   # ValidationResult(passed=True, row_count_match=True)
-result.to_csv("output.csv")
-```
-
-Self-correcting loop: extract, validate against document totals, fix mismatches, repeat.
-
-### Knowledge Base (wiki-based)
-
-Documents compile into an Obsidian-compatible wiki that grows with every query:
-
-```python
-from nanoindex import KnowledgeBase
-
-kb = KnowledgeBase("./my-research")
-kb.add("report1.pdf")
-kb.add("report2.pdf")
-answer = kb.ask("How do these compare?")  # answer filed back into wiki
-kb.lint()                                  # find contradictions, stale data
-```
-
-Open `my-research/` in Obsidian. Browse concept pages with `[[backlinks]]`, entity graphs, activity logs.
-
-### Bounding box citations
-
-Every answer includes pixel-level coordinates:
-
-```python
-for citation in answer.citations:
-    for bb in citation.bounding_boxes:
-        print(f"Page {bb.page}: ({bb.x:.2f}, {bb.y:.2f}) text: {bb.text}")
-```
-
-### Pick your LLM
-
-```python
-ni = NanoIndex(llm="anthropic:claude-sonnet-4-6")
-ni = NanoIndex(llm="openai:gpt-5.4")
-ni = NanoIndex(llm="gemini:gemini-2.5-flash")
-ni = NanoIndex(llm="groq:llama-3.3-70b-versatile")
-ni = NanoIndex(llm="ollama:llama3")        # local, no API key
-```
-
-### CLI
-
-```bash
-nanoindex index report.pdf -o tree.json
-nanoindex ask report.pdf "What was the revenue?"
-nanoindex viz tree.json
-nanoindex kb create ./my-wiki
-nanoindex kb add report.pdf --wiki ./my-wiki
-nanoindex kb ask "What are the key findings?" --wiki ./my-wiki
-```
-
-### Open-source mode (no API key for parsing)
-
-```python
-ni = NanoIndex(parser="pymupdf")
-tree = ni.index("report.pdf")  # fully local, no API calls
-```
-
----
-
-## Query Modes
-
-| Mode | How it works | Best for |
+| Mode | LLM calls | Best for |
 |---|---|---|
-| `agentic_vision` (default) | LLM navigates full tree + reads page images | Highest accuracy |
-| `agentic` | Same without images | Text-heavy docs |
-| `agentic_graph` | Graph seeds initial nodes, agent reasons + expands | Best accuracy/cost balance |
-| `agentic_graph_vision` | Same + page images | Graph precision + visual reasoning |
-| `fast` | Graph entity lookup, LLM sees ~20 nodes | Cheapest, fastest |
-| `fast_vision` | Same + page images | Charts and figures |
-| `global` | Map-reduce across community summaries | "What are the main themes?" |
+| `agentic_vision` (default) | 5-8 | Highest accuracy. Agent navigates tree, reads page images. |
+| `agentic_graph_vision` | 4-6 | Entity graph seeds the search, agent reasons from there. |
+| `fast_vision` | 2 | Simple fact lookups. Cheapest. |
+| `global` | N+1 | Broad questions. Map-reduce over entity communities. |
 
 ---
 
-## How It Works
+## Part 2: Querying across multiple documents (Karpathy-inspired wiki)
 
-### Indexing
+Single-document querying answers questions about one filing. But the harder problem is synthesis across documents: "How has 3M's revenue changed over 5 years?" or "Which company in my portfolio has the highest ROA?"
 
-<p align="center">
-  <img src="assets/ingestion-pipeline.gif" alt="Ingestion Pipeline" width="800"/>
-</p>
+Most RAG systems re-derive knowledge from scratch on every question. Inspired by [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), NanoIndex compiles documents into a persistent, interlinked wiki that gets richer with every source you add and every question you ask.
 
-### Querying
+```python
+from nanoindex.kb import KnowledgeBase
 
-<p align="center">
-  <img src="assets/query-agentic.gif" alt="Query Pipeline - Agentic Mode" width="800"/>
-</p>
+kb = KnowledgeBase("./sec-filings")
+kb.add("3M_2018_10K.pdf")     # extracts entities, builds concept pages
+kb.add("3M_2019_10K.pdf")     # updates existing concepts, flags changes
+kb.add("3M_2020_10K.pdf")     # cross-references across all three years
 
-<p align="center">
-  <img src="assets/query-fast.gif" alt="Query Pipeline - Fast Mode" width="800"/>
-</p>
+# Questions that synthesize across documents
+answer = kb.ask("How has 3M's revenue changed from 2018 to 2020?")
+
+# The answer is filed back into the wiki
+kb.lint()  # find contradictions, stale claims, orphan pages
+```
+
+You can also add pre-built trees and graphs directly (no re-indexing):
+
+```python
+from nanoindex.utils.tree_ops import load_tree, load_graph
+
+tree = load_tree("3M_2018_10K.json")
+graph = load_graph("3M_2018_10K_graph.json")
+kb.add_tree(tree, graph)
+```
+
+The wiki is a directory of markdown files. Open it in Obsidian and browse concept pages with `[[backlinks]]`, entity graphs, and an activity log. Every document updates existing pages. Every question gets filed back, linked to the concepts it touches.
+
+Three layers:
+- **Raw sources** — your PDFs, immutable, never modified
+- **The wiki** — markdown pages with cross-references. Concept pages, entity pages, document summaries, query results. The LLM writes and maintains all of it.
+- **The schema** — how the wiki is structured, what entity types to track, domain conventions
+
+The knowledge compounds. Cross-references are already there. Contradictions between years are already flagged. You don't re-derive the answer every time.
 
 ---
 
 ## Benchmarks
 
-| Benchmark | Documents | Avg Pages | Accuracy |
-|---|---|---|---|
-| FinanceBench (SEC 10-K filings) | 84 | 143 | **94.5%** |
-| DocBench Legal (court filings, legislation) | 51 | 54 | **96.0%** |
-
-Evidence page retrieval: **93.3%**
-
-<p align="center">
-  <img src="assets/financebench-architecture.png" alt="FinanceBench Architecture" width="800"/>
-</p>
+| Benchmark | Accuracy |
+|---|---|
+| **FinanceBench** (84 SEC filings, avg 143 pages) | **94.5%** |
+| **DocBench Legal** (51 court filings, avg 54 pages) | **96.0%** |
 
 ---
+
+## Pick your LLM
+
+```python
+ni = NanoIndex(llm="anthropic:claude-sonnet-4-6")
+ni = NanoIndex(llm="openai:gpt-5.4")
+ni = NanoIndex(llm="gemini:gemini-2.5-flash")
+ni = NanoIndex(llm="ollama:llama3")        # fully local
+```
+
+## CLI
+
+```bash
+nanoindex index report.pdf -o tree.json
+nanoindex ask report.pdf "What was the revenue?"
+nanoindex viz tree.json
+```
 
 ## Development
 
 ```bash
-git clone https://github.com/nanonets/nanoindex.git
-cd nanoindex
-
-# With uv (recommended)
-uv sync --extra dev
-uv run pytest
-
-# Or with pip
-pip install -e ".[dev]"
-pytest
+git clone https://github.com/nanonets/nanoindex.git && cd nanoindex
+uv sync --extra dev && uv run pytest    # or: pip install -e ".[dev]" && pytest
 ```
 
-For entity extraction with GLiNER2 (zero-shot NER, domain-adaptive labels):
-
-```bash
-uv sync --extra gliner    # or: pip install nanoindex[gliner]
-```
-
-GLiNER2 auto-detects GPU (CUDA) and uses batch inference for speed. On GPU: ~2 min per 150-page document. On CPU: ~8 min.
+Entity extraction: `pip install nanoindex[gliner]` (CPU) or `pip install nanoindex[gliner-gpu]` (GPU).
 
 ---
 
-## License
+## How it compares
 
-Apache 2.0 — see [LICENSE](LICENSE).
+| | Chunk + Embed | Microsoft GraphRAG | PageIndex | **NanoIndex** |
+|---|---|---|---|---|
+| **Indexing** | Chunk text, embed | LLM per chunk | LLM per page | 1 OCR API call |
+| **Structure** | Lost | Lost | Tree | Tree + entity graph |
+| **Navigation** | Similarity search | Map-reduce | LLM tree walk | Multi-round agent |
+| **Handles unstructured** | Yes (poorly) | Yes | No | Yes (entity graph) |
+| **Knowledge graph** | None | LLM-built ($$$) | None | Local NER (free) |
+| **Multi-document** | Vector DB | No | No | Wiki with [[backlinks]] |
+| **Citations** | Chunk ID | None | Page number | Pixel coordinates |
+| **Vision** | No | No | No | Page images to LLM |
+| **Cost per doc** | Low | High | High | Low |
+
+---
+
+Apache 2.0. Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3).

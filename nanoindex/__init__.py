@@ -374,7 +374,7 @@ class NanoIndex:
         mode: str = "agentic_vision",
         pdf_path: str | Path | None = None,
         include_metadata: bool = False,
-        pure_vision: bool = True,
+        pure_vision: bool = False,
     ) -> Answer:
         """Search + generate an answer in one step.
 
@@ -708,7 +708,7 @@ Final comprehensive answer:"""
         mode: str = "agentic_vision",
         pdf_path: str | Path | None = None,
         include_metadata: bool = False,
-        pure_vision: bool = True,
+        pure_vision: bool = False,
     ) -> Answer:
         return _run(self.async_ask(
             query, tree, mode=mode, pdf_path=pdf_path,
@@ -773,7 +773,7 @@ def ask(
     mode: str = "agentic_vision",
     pdf_path: str | Path | None = None,
     include_metadata: bool = False,
-    pure_vision: bool = True,
+    pure_vision: bool = False,
     **kwargs: Any,
 ) -> Answer:
     """Index (if needed), search, and answer a question about a document."""
