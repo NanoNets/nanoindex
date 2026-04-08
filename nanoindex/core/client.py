@@ -19,7 +19,7 @@ from nanoindex.exceptions import ExtractionError, RateLimitError
 logger = logging.getLogger(__name__)
 
 _BASE_URL = "https://extraction-api.nanonets.com"
-_DEFAULT_TIMEOUT = 300.0
+_DEFAULT_TIMEOUT = 1500.0
 _MAX_RETRIES = 5
 _BACKOFF_BASE = 2.0
 _POLL_INTERVAL = 2.0
