@@ -102,7 +102,6 @@ print(answer.citations[0].bounding_boxes) # exact coordinates on the page
 | `agentic_vision` (default) | 5-8 | Highest accuracy. Agent navigates tree, reads page images. |
 | `agentic_graph_vision` | 4-6 | Entity graph seeds the search, agent reasons from there. |
 | `fast_vision` | 2 | Simple fact lookups. Cheapest. |
-| `global` | N+1 | Broad questions. Map-reduce over entity communities. |
 
 ---
 
