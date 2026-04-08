@@ -106,8 +106,7 @@ print(answer.citations[0].bounding_boxes) # exact coordinates on the page
 By default, `index()` builds only the tree. To also extract entities and relationships:
 
 ```python
-ni = NanoIndex(llm="anthropic:claude-sonnet-4-6")
-ni.config.build_graph = True
+ni = NanoIndex(llm="anthropic:claude-sonnet-4-6", build_graph=True)
 tree = ni.index("10k_filing.pdf")  # tree + entity graph
 graph = ni.get_graph(tree)         # 921 entities, 103 relationships
 ```
