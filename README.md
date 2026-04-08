@@ -91,6 +91,12 @@ print(answer.citations[0].pages)          # [52]
 print(answer.citations[0].bounding_boxes) # exact coordinates on the page
 ```
 
+### Entity graph visualization
+
+<p align="center">
+  <img src="assets/viz-graph.gif" alt="Entity Graph — 3M 2018 10-K" width="900"/>
+</p>
+
 ### Query modes
 
 | Mode | LLM calls | Best for |
