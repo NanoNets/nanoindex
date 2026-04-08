@@ -318,7 +318,7 @@ async def _async_toc(
             output_format="json",
             json_options="table-of-contents",
         )
-        resp = await client.poll_result(record_id, max_wait=1500.0)
+        resp = await client.poll_result(record_id, max_wait=6000.0)
         return _parse_toc_response(resp)
     except Exception as exc:
         logger.warning("Async TOC extraction failed: %s", exc)
