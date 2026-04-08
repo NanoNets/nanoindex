@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import numpy as np
+# numpy imported lazily in methods that need it
 
 from nanoindex import NanoIndex, _run
 from nanoindex.core.document_store import DocumentStore
@@ -189,6 +189,7 @@ class KnowledgeBase:
             emb_rel = f"embeddings/{doc_name}.npz"
             emb_path = self._data_dir / emb_rel
             emb_path.parent.mkdir(parents=True, exist_ok=True)
+            import numpy as np
             np.savez(emb_path, **{k: np.array(v) for k, v in emb_data.items()})
 
         # 4. Add tree to DocumentStore
@@ -460,6 +461,7 @@ class KnowledgeBase:
             if doc.embeddings_path:
                 emb_path = self._data_dir / doc.embeddings_path
                 if emb_path.exists():
+                    import numpy as np
                     loaded = np.load(emb_path)
                     self._ni._node_embeddings[doc.doc_name] = {
                         k: loaded[k].tolist() for k in loaded.files

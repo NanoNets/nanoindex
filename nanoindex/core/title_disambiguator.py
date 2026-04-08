@@ -135,8 +135,8 @@ def _extract_subtitle(node: TreeNode) -> str | None:
     if meaningful_lines:
         # Take the first meaningful line that's different from title
         subtitle = meaningful_lines[0]
-        # Clean it up: remove company name prefix if it matches doc
-        subtitle = re.sub(r'^(?:Johnson\s*&\s*Johnson|J&J)\s+(?:and\s+)?(?:Subsidiaries\s+)?', '', subtitle, flags=re.IGNORECASE)
+        # Clean up common boilerplate prefixes (company name + "and Subsidiaries")
+        subtitle = re.sub(r'^[A-Z][A-Za-z\s&,\.]+(?:and\s+)?(?:Subsidiaries|Inc\.|Corp\.|LLC|Ltd\.?)\s*', '', subtitle, flags=re.IGNORECASE).strip()
         # Truncate to reasonable length
         if len(subtitle) > 80:
             subtitle = subtitle[:77] + "..."
