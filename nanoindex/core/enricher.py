@@ -44,7 +44,7 @@ Structure:
 
 Description:"""
 
-_MAX_CONCURRENT = 3
+_MAX_CONCURRENT = 15
 
 
 async def enrich_tree(
