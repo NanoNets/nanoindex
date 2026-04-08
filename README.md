@@ -49,10 +49,10 @@ In all three cases, the citation says "source: chunk_47." That doesn't pass audi
 ## Who is this for?
 
 - Developers building RAG over long, structured documents (10-Ks, contracts, medical records)
-- Teams where citation accuracy is a compliance or audit requirement
+- Teams where citation accuracy is a compliance or audit requirement.
 - Anyone hitting the limits of chunk-and-embed on multi-section documents
 
-**Not the right fit if:** you're querying short documents (<10 pages), need sub-second latency, or your documents are purely unstructured text with no sections at all.
+**Not the right fit if:** you're querying short documents (<10 pages), need sub-second latency.
 
 ---
 
