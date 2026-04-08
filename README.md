@@ -5,7 +5,7 @@
 # NanoIndex
 
 **Open-source Agentic-RAG harness for long documents.**
-**Self-validating trees. Entity graphs. Cited answers down to the pixel.**
+**Self-validating trees. Entity graphs. and Karpathy inspired LLM Wikis for Multi-documents. Cited answers down to the pixel.**
 
 <p>
   <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/v/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI" /></a>
