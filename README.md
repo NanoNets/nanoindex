@@ -7,11 +7,6 @@
 **Open-source agentic harness for long documents.**
 **Self-validating trees. Entity graphs. Karpathy-inspired LLM wikis. Cited answers down to the pixel.**
 
-| Benchmark | Accuracy |
-|---|---|
-| **FinanceBench** (84 SEC filings, avg 143 pages) | **94.5%** |
-| **DocBench Legal** (51 court filings, avg 54 pages) | **96.0%** |
-
 <p>
   <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/v/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI" /></a>
   <a href="https://github.com/nanonets/nanoindex"><img src="https://img.shields.io/badge/GitHub-NanoIndex-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
@@ -23,6 +18,11 @@
   <a href="https://docstrange.nanonets.com/app"><img src="https://img.shields.io/badge/Get%20API%20Key-Free%2010K%20Pages-FCC419?style=for-the-badge" /></a>
   <a href="https://colab.research.google.com/github/NanoNets/nanoindex/blob/main/examples/nanoindex_quickstart.ipynb"><img src="https://img.shields.io/badge/Try%20in-Google%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" /></a>
 </p>
+
+| Benchmark | Accuracy |
+|---|---|
+| **FinanceBench** (84 SEC filings, avg 143 pages) | **94.5%** |
+| **DocBench Legal** (51 court filings, avg 54 pages) | **96.0%** |
 
 If NanoIndex is useful, a star helps others find it.
 
@@ -94,12 +94,6 @@ print(answer.content)                     # computed answer with reasoning
 print(answer.citations[0].pages)          # [52]
 print(answer.citations[0].bounding_boxes) # exact coordinates on the page
 ```
-
-### Entity graph
-
-<p align="center">
-  <img src="assets/viz-graph.gif" alt="Entity Graph — 3M 2018 10-K" width="900"/>
-</p>
 
 ### Query modes
 
