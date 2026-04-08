@@ -218,4 +218,8 @@ Entity extraction: `pip install nanoindex[gliner]` (CPU) or `pip install nanoind
 
 ---
 
+<div align="center">
+  <img src="assets/social-card.gif" alt="NanoIndex" width="800"/>
+</div>
+
 Apache 2.0. Built on [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3).
