@@ -68,6 +68,8 @@ NanoIndex reads documents the way a person would. It starts from the structure.
 
 When you ask a question, an LLM agent navigates this tree across multiple rounds. It reads page images directly. It verifies its calculations. It cites every answer with the exact page and coordinates where each number lives.
 
+### Quick start
+
 ```bash
 pip install nanoindex
 ```
