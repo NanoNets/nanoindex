@@ -25,8 +25,8 @@ if TYPE_CHECKING:
 from nanoindex.config import NanoIndexConfig
 from nanoindex.core.llm import LLMClient
 from nanoindex.models import (
-    Answer, BoundingBox, Citation, DocumentTree,
-    PageDimensions, RetrievedNode, TreeNode,
+    Answer, Citation, DocumentTree,
+    RetrievedNode, TreeNode,
 )
 from nanoindex.utils.tree_ops import (
     collect_text, find_node, find_siblings, iter_nodes, tree_to_json_outline,
@@ -1710,28 +1710,5 @@ def _build_citations(
     tree: DocumentTree | None = None,
     include_metadata: bool = False,
 ) -> list[Citation]:
-    citations: list[Citation] = []
-    for rn in nodes:
-        pages = (
-            list(range(rn.node.start_index, rn.node.end_index + 1))
-            if rn.node.start_index else []
-        )
-        # Always propagate bounding boxes from the node itself
-        bboxes: list[BoundingBox] = list(rn.node.bounding_boxes)
-        dims: list[PageDimensions] = []
-        if include_metadata and pages and tree:
-            page_set = set(pages)
-            # Enrich with all bboxes for cited pages from the tree
-            tree_bboxes = [bb for bb in tree.all_bounding_boxes if bb.page in page_set]
-            if tree_bboxes:
-                bboxes = tree_bboxes
-            dims = [pd for pd in tree.page_dimensions if pd.page in page_set]
-        citations.append(Citation(
-            node_id=rn.node.node_id,
-            title=rn.node.title,
-            doc_name=rn.doc_name,
-            pages=pages,
-            bounding_boxes=bboxes,
-            page_dimensions=dims,
-        ))
-    return citations
+    from nanoindex.core.citations import build_citations
+    return build_citations(nodes, tree, include_metadata)

@@ -149,7 +149,12 @@ def _iter_all(nodes: list[TreeNode]):
 # ------------------------------------------------------------------
 
 def _attach_bboxes(nodes: list[TreeNode], bboxes: list[BoundingBox]) -> None:
-    """Attach bounding boxes to tree nodes by matching content text."""
+    """Attach heading bboxes to tree nodes by title matching.
+
+    This first pass matches bboxes to nodes by title text similarity.
+    It runs BEFORE page assignment — matched bboxes help determine which
+    pages a node covers.
+    """
     if not bboxes:
         return
 
@@ -162,6 +167,34 @@ def _attach_bboxes(nodes: list[TreeNode], bboxes: list[BoundingBox]) -> None:
             if bb_text == title_lower or _similarity(bb_text, title_lower) > 0.8:
                 node.bounding_boxes.append(bb)
                 break
+
+
+def _attach_content_bboxes(nodes: list[TreeNode], bboxes: list[BoundingBox]) -> None:
+    """Attach ALL content bboxes to leaf nodes by page overlap.
+
+    Runs AFTER page assignment. Every leaf node gets all bboxes from its
+    page range. This gives the citation resolver material to narrow from.
+    """
+    if not bboxes:
+        return
+
+    # Index bboxes by page
+    bboxes_by_page: dict[int, list[BoundingBox]] = {}
+    for bb in bboxes:
+        bboxes_by_page.setdefault(bb.page, []).append(bb)
+
+    for node in _iter_all(nodes):
+        if node.nodes:
+            continue  # skip parent nodes, only attach to leaves
+        if not node.start_index:
+            continue
+        # Collect all bboxes from this node's page range
+        page_bboxes = []
+        for p in range(node.start_index, (node.end_index or node.start_index) + 1):
+            page_bboxes.extend(bboxes_by_page.get(p, []))
+        if page_bboxes:
+            # Replace heading-only bbox with full content bboxes
+            node.bounding_boxes = page_bboxes
 
 
 def _assign_pages(nodes: list[TreeNode], page_count: int) -> None:
@@ -776,6 +809,7 @@ def build_document_tree(
 
     _attach_bboxes(tree_nodes, extraction.bounding_boxes)
     _assign_pages(tree_nodes, extraction.page_count)
+    _attach_content_bboxes(tree_nodes, extraction.bounding_boxes)  # after pages assigned
     tree_nodes = _recover_orphan_pages(
         tree_nodes, extraction.markdown, extraction.page_count,
     )
