@@ -321,6 +321,12 @@ class NanoIndex:
 
         llm = self._get_llm()
 
+        # Use reasoning LLM for enrichment if available (faster than OCR model)
+        try:
+            enrichment_llm = self._get_reasoning_llm()
+        except Exception:
+            enrichment_llm = llm
+
         # Split oversized leaf nodes (heuristic + optional LLM)
         tree = await refine_tree(tree, llm, self.config)
 
@@ -340,7 +346,7 @@ class NanoIndex:
                 cfg.add_summaries = add_summaries
             if add_doc_description is not None:
                 cfg.add_doc_description = add_doc_description
-            tree = await enrich_tree(tree, llm, cfg)
+            tree = await enrich_tree(tree, enrichment_llm, cfg)
 
         # Disambiguate repetitive titles (e.g. "Reconciliation" x8)
         from nanoindex.core.title_disambiguator import disambiguate_titles
