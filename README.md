@@ -4,8 +4,13 @@
 
 # NanoIndex
 
-**Open-source Agentic-RAG harness for long documents.**
-**Self-validating trees. Entity graphs. and Karpathy inspired LLM Wikis for Multi-documents. Cited answers down to the pixel.**
+**Open-source agentic harness for long documents.**
+**Self-validating trees. Entity graphs. Karpathy-inspired LLM wikis. Cited answers down to the pixel.**
+
+| Benchmark | Accuracy |
+|---|---|
+| **FinanceBench** (84 SEC filings, avg 143 pages) | **94.5%** |
+| **DocBench Legal** (51 court filings, avg 54 pages) | **96.0%** |
 
 <p>
   <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/v/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI" /></a>
@@ -19,10 +24,7 @@
   <a href="https://colab.research.google.com/github/NanoNets/nanoindex/blob/main/examples/nanoindex_quickstart.ipynb"><img src="https://img.shields.io/badge/Try%20in-Google%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" /></a>
 </p>
 
-| Benchmark | Documents | Avg Pages | Accuracy |
-|---|---|---|---|
-| FinanceBench (SEC 10-K filings) | 84 | 143 | **94.5%** |
-| DocBench Legal (court filings, legislation) | 51 | 54 | **96.0%** |
+If NanoIndex is useful, a star helps others find it.
 
 <p align="center">
   <img src="assets/hero.gif" alt="NanoIndex" width="900"/>
@@ -34,27 +36,29 @@
 
 ## The problem
 
-You have a 200-page annual report. You ask: "Which business segment is growing the fastest?"
+RAG breaks on long documents. Three ways:
 
-To answer that, you need to find the segment breakdown, figure out which segments exist, pull revenue for each one across two years, compute the growth rates, and compare. The data is spread across the MD&A section, the segment footnote, and the income statement. Three different sections, none of which contain the word "fastest."
-
-A chunk-and-embed retriever won't find all three. A decomposer agent can't split this question upfront because you don't know what the segments are until you read the document. You have to explore first, then compute.
-
-Same problem across industries:
-
-- **Finance.** Chunking splits a balance sheet table mid-row. The system finds current assets but misses current liabilities. Half a table, wrong answer.
-- **Legal.** A liability cap in Section 8.3 references definitions in Section 1.1 and exclusions in Section 4.2. The retriever finds one section, not the three you need.
-- **Healthcare.** Drug interactions require the medication list (page 4), allergy history (page 1), and kidney function labs (page 12). The retriever returns one.
+- **Finance.** Chunking splits a balance sheet mid-row. The system finds assets but misses liabilities. Half a table, wrong answer.
+- **Legal.** A liability cap in Section 8.3 references Section 1.1 and Section 4.2. The retriever finds one, not the three you need.
+- **Healthcare.** Drug interactions need the medication list (page 4), allergy history (page 1), and kidney function labs (page 12). The retriever returns one.
 
 In all three cases, the citation says "source: chunk_47." That doesn't pass audit.
 
 ---
 
+## Who is this for?
+
+- Developers building RAG over long, structured documents (10-Ks, contracts, medical records)
+- Teams where citation accuracy is a compliance or audit requirement
+- Anyone hitting the limits of chunk-and-embed on multi-section documents
+
+**Not the right fit if:** you're querying short documents (<10 pages), need sub-second latency, or your documents are purely unstructured text with no sections at all.
+
+---
+
 ## Part 1: Querying within a single long document
 
-NanoIndex reads documents the way a person would. It starts from the structure.
-
-[Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3) parses each PDF and returns the table of contents, section hierarchy, and heading structure. NanoIndex builds a tree that preserves these relationships.
+NanoIndex preserves document structure instead of destroying it. [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3) extracts the table of contents, section hierarchy, and heading structure. NanoIndex builds a tree from these.
 
 <p align="center">
   <img src="assets/light-loop.gif" alt="NanoIndex Pipeline" width="900"/>
@@ -66,7 +70,7 @@ NanoIndex reads documents the way a person would. It starts from the structure.
 | **Semi-structured** | Earnings releases, quarterly reports | Disambiguates repetitive headings ("Reconciliation" x8 becomes "Reconciliation: Q2 2023 Segment Data"). |
 | **Unstructured** | Transcripts, scans, flat reports | Splits by page, extracts entities (people, companies, dates, amounts). The entity graph becomes the map. |
 
-When you ask a question, an LLM agent navigates this tree across multiple rounds. It reads page images directly. It verifies its calculations. It cites every answer with the exact page and coordinates where each number lives.
+When you ask a question, an LLM agent navigates this tree across multiple rounds. It reads page images directly. It verifies its calculations. It cites every answer with the exact page and pixel coordinates.
 
 ### Quick start
 
@@ -91,7 +95,7 @@ print(answer.citations[0].pages)          # [52]
 print(answer.citations[0].bounding_boxes) # exact coordinates on the page
 ```
 
-### Entity graph visualization
+### Entity graph
 
 <p align="center">
   <img src="assets/viz-graph.gif" alt="Entity Graph — 3M 2018 10-K" width="900"/>
@@ -110,9 +114,9 @@ print(answer.citations[0].bounding_boxes) # exact coordinates on the page
 
 ## Part 2: Querying across multiple documents (Karpathy-inspired wiki)
 
-Single-document querying answers questions about one filing. But the harder problem is synthesis across documents: "How has 3M's revenue changed over 5 years?" or "Which company in my portfolio has the highest ROA?"
+The harder problem is synthesis across documents: "How has 3M's revenue changed over 5 years?" or "Which company in my portfolio has the highest ROA?"
 
-Most RAG systems re-derive knowledge from scratch on every question. Inspired by [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), NanoIndex compiles documents into a persistent, interlinked wiki that gets richer with every source you add and every question you ask.
+Inspired by [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), NanoIndex compiles documents into a persistent, interlinked wiki that gets richer with every source you add and every question you ask.
 
 ```python
 from nanoindex.kb import KnowledgeBase
@@ -122,14 +126,11 @@ kb.add("3M_2018_10K.pdf")     # extracts entities, builds concept pages
 kb.add("3M_2019_10K.pdf")     # updates existing concepts, flags changes
 kb.add("3M_2020_10K.pdf")     # cross-references across all three years
 
-# Questions that synthesize across documents
 answer = kb.ask("How has 3M's revenue changed from 2018 to 2020?")
-
-# The answer is filed back into the wiki
 kb.lint()  # find contradictions, stale claims, orphan pages
 ```
 
-You can also add pre-built trees and graphs directly (no re-indexing):
+Add pre-built trees and graphs directly:
 
 ```python
 from nanoindex.utils.tree_ops import load_tree, load_graph
@@ -139,23 +140,26 @@ graph = load_graph("3M_2018_10K_graph.json")
 kb.add_tree(tree, graph)
 ```
 
-The wiki is a directory of markdown files. Open it in Obsidian and browse concept pages with `[[backlinks]]`, entity graphs, and an activity log. Every document updates existing pages. Every question gets filed back, linked to the concepts it touches.
+The wiki is a directory of markdown files. Open it in Obsidian and browse concept pages with `[[backlinks]]`, entity graphs, and an activity log.
 
 Three layers:
 - **Raw sources** — your PDFs, immutable, never modified
-- **The wiki** — markdown pages with cross-references. Concept pages, entity pages, document summaries, query results. The LLM writes and maintains all of it.
+- **The wiki** — markdown pages with cross-references. The LLM writes and maintains all of it.
 - **The schema** — how the wiki is structured, what entity types to track, domain conventions
-
-The knowledge compounds. Cross-references are already there. Contradictions between years are already flagged. You don't re-derive the answer every time.
 
 ---
 
-## Benchmarks
+## How it compares
 
-| Benchmark | Accuracy |
-|---|---|
-| **FinanceBench** (84 SEC filings, avg 143 pages) | **94.5%** |
-| **DocBench Legal** (51 court filings, avg 54 pages) | **96.0%** |
+| | Chunk + Embed | Microsoft GraphRAG | PageIndex | **NanoIndex** |
+|---|---|---|---|---|
+| **Indexing** | Chunk text, embed | LLM per chunk | LLM per page | 1 OCR API call |
+| **Structure** | Lost | Lost | Tree | Tree + entity graph |
+| **Navigation** | Similarity search | Map-reduce | LLM tree walk | Multi-round agent |
+| **Multi-document** | Vector DB | No | No | Wiki with [[backlinks]] |
+| **Citations** | Chunk ID | None | Page number | Pixel coordinates |
+| **Vision** | No | No | No | Page images to LLM |
+| **Cost per doc** | Low | High | High | Low |
 
 ---
 
@@ -184,22 +188,6 @@ uv sync --extra dev && uv run pytest    # or: pip install -e ".[dev]" && pytest
 ```
 
 Entity extraction: `pip install nanoindex[gliner]` (CPU) or `pip install nanoindex[gliner-gpu]` (GPU).
-
----
-
-## How it compares
-
-| | Chunk + Embed | Microsoft GraphRAG | PageIndex | **NanoIndex** |
-|---|---|---|---|---|
-| **Indexing** | Chunk text, embed | LLM per chunk | LLM per page | 1 OCR API call |
-| **Structure** | Lost | Lost | Tree | Tree + entity graph |
-| **Navigation** | Similarity search | Map-reduce | LLM tree walk | Multi-round agent |
-| **Handles unstructured** | Yes (poorly) | Yes | No | Yes (entity graph) |
-| **Knowledge graph** | None | LLM-built ($$$) | None | Local NER (free) |
-| **Multi-document** | Vector DB | No | No | Wiki with [[backlinks]] |
-| **Citations** | Chunk ID | None | Page number | Pixel coordinates |
-| **Vision** | No | No | No | Page images to LLM |
-| **Cost per doc** | Low | High | High | Low |
 
 ---
 
