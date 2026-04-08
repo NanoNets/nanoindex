@@ -197,7 +197,8 @@ async def generate_answer(
     """
     if mode == "vision":
         if pdf_path is None:
-            raise GenerationError("pdf_path is required for vision mode")
+            logger.warning("Vision mode requested but no pdf_path provided, falling back to text mode")
+            mode = "text"
         return await generate_vision_answer(
             query, nodes, llm, pdf_path,
             tree=tree, include_metadata=include_metadata,
