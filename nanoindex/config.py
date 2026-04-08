@@ -86,8 +86,9 @@ class NanoIndexConfig(BaseModel):
     def require_nanonets_key(self) -> str:
         if not self.nanonets_api_key:
             raise ConfigError(
-                "nanonets_api_key is required. Set it via NANONETS_API_KEY env var, "
-                "config.yaml, or pass it to NanoIndexConfig(nanonets_api_key=...)."
+                "NANONETS_API_KEY is required for document parsing.\n\n"
+                "  Get a free key (10K pages) at https://docstrange.nanonets.com/app\n"
+                "  Then: export NANONETS_API_KEY=your_key\n"
             )
         return self.nanonets_api_key
 

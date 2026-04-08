@@ -44,7 +44,9 @@ Structure:
 
 Description:"""
 
-_MAX_CONCURRENT = 15
+_MAX_CONCURRENT = 30
+_MAX_RETRIES = 3
+_RETRY_DELAY = 2  # seconds, doubles on each retry
 
 
 async def enrich_tree(
@@ -88,11 +90,23 @@ async def _generate_summaries(
         messages = [{"role": "user", "content": prompt}]
 
         async with sem:
-            try:
-                node.summary = await llm.chat(messages, model=model, max_tokens=1024)
-            except Exception:
-                logger.warning("Summary generation failed for node '%s'", node.title, exc_info=True)
-                node.summary = node.title
+            for attempt in range(_MAX_RETRIES):
+                try:
+                    node.summary = await llm.chat(messages, model=model, max_tokens=1024)
+                    return
+                except Exception as exc:
+                    exc_str = str(exc).lower()
+                    if "rate" in exc_str or "429" in exc_str or "quota" in exc_str or "overloaded" in exc_str:
+                        delay = _RETRY_DELAY * (2 ** attempt)
+                        logger.info("Rate limited on '%s', retrying in %ds (attempt %d/%d)",
+                                    node.title[:30], delay, attempt + 1, _MAX_RETRIES)
+                        await asyncio.sleep(delay)
+                    else:
+                        logger.warning("Summary failed for '%s': %s", node.title[:30], exc)
+                        node.summary = node.title
+                        return
+            logger.warning("Summary failed after %d retries for '%s'", _MAX_RETRIES, node.title[:30])
+            node.summary = node.title
 
     await asyncio.gather(*[_summarise(n) for n in all_nodes])
 
