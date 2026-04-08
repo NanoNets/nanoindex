@@ -57,7 +57,7 @@ NanoIndex reads documents the way a person would. It starts from the structure.
 [Nanonets OCR-3](https://nanonets.com/research/nanonets-ocr-3) parses each PDF and returns the table of contents, section hierarchy, and heading structure. NanoIndex builds a tree that preserves these relationships.
 
 <p align="center">
-  <img src="assets/indexing.gif" alt="Indexing: PDF → Tree + Entity Graph" width="900"/>
+  <img src="assets/light-loop.gif" alt="NanoIndex Pipeline" width="900"/>
 </p>
 
 | Document type | Examples | How NanoIndex navigates |
