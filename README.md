@@ -101,6 +101,19 @@ print(answer.citations[0].pages)          # [52]
 print(answer.citations[0].bounding_boxes) # exact coordinates on the page
 ```
 
+### Build entity graph (optional)
+
+By default, `index()` builds only the tree. To also extract entities and relationships:
+
+```python
+ni = NanoIndex(llm="anthropic:claude-sonnet-4-6")
+ni.config.build_graph = True
+tree = ni.index("10k_filing.pdf")  # tree + entity graph
+graph = ni.get_graph(tree)         # 921 entities, 103 relationships
+```
+
+The entity graph enables `fast_vision` and `agentic_graph_vision` modes. Without it, `agentic_vision` (the default) works fine using tree navigation alone.
+
 ### Save and reload trees
 
 Index once, query many times. Trees and graphs are JSON files you can save and load:
