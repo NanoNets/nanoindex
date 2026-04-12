@@ -38,6 +38,40 @@ class PageDimensions(BaseModel):
 # Extraction result (output of Nanonets API)
 # ---------------------------------------------------------------------------
 
+class HierarchyTable(BaseModel):
+    id: str = ""
+    title: str = ""
+    headers: list[str] = Field(default_factory=list)
+    rows: list[list[str]] = Field(default_factory=list)
+    page: int = 0
+    section_id: str = ""
+    bounding_box: dict[str, Any] | None = None
+
+
+class HierarchyKVPair(BaseModel):
+    key: str
+    value: str
+    page: int = 0
+    section_id: str = ""
+    bounding_box: dict[str, Any] | None = None
+
+
+class HierarchyEntity(BaseModel):
+    """An entity extracted inline by the hierarchy API."""
+
+    name: str
+    entity_type: str = "Other"
+    value: str = ""
+
+
+class HierarchyRelationship(BaseModel):
+    """A relationship extracted inline by the hierarchy API."""
+
+    source: str
+    target: str
+    rel_type: str = "related_to"
+
+
 class HierarchySection(BaseModel):
     """A single section from the ``hierarchy_output`` JSON."""
 
@@ -45,19 +79,17 @@ class HierarchySection(BaseModel):
     title: str = ""
     level: int = 1
     content: str = ""
+    aggregated_content: str = ""
+    summary: str = ""
+    page: int = 0
+    end_page: int = 0
     subsections: list[HierarchySection] = Field(default_factory=list)
-
-
-class HierarchyTable(BaseModel):
-    id: str = ""
-    title: str = ""
-    headers: list[str] = Field(default_factory=list)
-    rows: list[list[str]] = Field(default_factory=list)
-
-
-class HierarchyKVPair(BaseModel):
-    key: str
-    value: str
+    tables: list[HierarchyTable] = Field(default_factory=list)
+    key_value_pairs: list[HierarchyKVPair] = Field(default_factory=list)
+    entities: list[HierarchyEntity] = Field(default_factory=list)
+    relationships: list[HierarchyRelationship] = Field(default_factory=list)
+    title_bounding_box: dict[str, Any] | None = None
+    content_bounding_box: dict[str, Any] | None = None
 
 
 class TOCEntry(BaseModel):
@@ -74,6 +106,7 @@ class ExtractionResult(BaseModel):
     """Normalised output from a Nanonets extraction call."""
 
     markdown: str = ""
+    page_markdowns: list[str] = Field(default_factory=list)  # per-page markdown from hierarchy API
     toc: list[TOCEntry] = Field(default_factory=list)
     hierarchy_sections: list[HierarchySection] = Field(default_factory=list)
     hierarchy_tables: list[HierarchyTable] = Field(default_factory=list)
@@ -132,6 +165,7 @@ class ParsedDocument(BaseModel):
         """Convert to an ExtractionResult for backward compatibility with the tree builder."""
         return ExtractionResult(
             markdown=self.markdown,
+            page_markdowns=self.pages,
             toc=self.toc,
             hierarchy_sections=self.hierarchy_sections,
             bounding_boxes=self.bounding_boxes,
