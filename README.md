@@ -16,7 +16,6 @@
 </p>
 <p>
   <a href="https://nanonets.com/research/nanonets-ocr-3"><img src="https://img.shields.io/badge/Built%20on-Nanonets%20OCR--3-546FFF?style=for-the-badge" /></a>
-  <a href="https://github.com/nanonets/nanoindex"><img src="https://img.shields.io/github/stars/NanoNets/nanoindex?style=for-the-badge&logo=github&logoColor=white&label=Stars" /></a>
 </p>
 
 <p>
@@ -128,7 +127,7 @@ from nanoindex.utils.tree_ops import save_tree, load_tree, load_graph
 # Save after indexing
 save_tree(tree, "3M_2018_10K.json")
 
-# Load later — no re-indexing needed
+# Load later - no re-indexing needed
 tree = load_tree("3M_2018_10K.json")
 graph = load_graph("3M_2018_10K_graph.json")
 answer = ni.ask("What was the operating margin?", tree)
@@ -175,9 +174,9 @@ kb.add_tree(tree, graph)
 The wiki is a directory of markdown files. Open it in Obsidian and browse concept pages with `[[backlinks]]`, entity graphs, and an activity log.
 
 Three layers:
-- **Raw sources** — your PDFs, immutable, never modified
-- **The wiki** — markdown pages with cross-references. The LLM writes and maintains all of it.
-- **The schema** — how the wiki is structured, what entity types to track, domain conventions
+- **Raw sources** - your PDFs, immutable, never modified
+- **The wiki** - markdown pages with cross-references. The LLM writes and maintains all of it.
+- **The schema** - how the wiki is structured, what entity types to track, domain conventions
 
 ---
 
