@@ -30,6 +30,7 @@ benchmarks/
 
 # Test outputs
 tests/output/
+smoke_test*.py
 
 # IDE / tool artifacts
 .claude/
