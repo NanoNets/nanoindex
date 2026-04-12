@@ -9,9 +9,14 @@
 
 <p>
   <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/v/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI" /></a>
-  <a href="https://github.com/nanonets/nanoindex"><img src="https://img.shields.io/badge/GitHub-NanoIndex-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
-  <a href="https://nanonets.com/research/nanonets-ocr-3"><img src="https://img.shields.io/badge/Built%20on-Nanonets%20OCR--3-546FFF?style=for-the-badge" /></a>
+  <a href="https://github.com/NanoNets/nanoindex/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/NanoNets/nanoindex/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=CI" /></a>
+  <a href="https://pypi.org/project/nanoindex/"><img src="https://img.shields.io/pypi/pyversions/nanoindex?style=for-the-badge&logo=python&logoColor=white" /></a>
+  <a href="https://pepy.tech/project/nanoindex"><img src="https://img.shields.io/pepy/dt/nanoindex?style=for-the-badge&logo=pypi&logoColor=white&label=Downloads" /></a>
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-20C997?style=for-the-badge" /></a>
+</p>
+<p>
+  <a href="https://nanonets.com/research/nanonets-ocr-3"><img src="https://img.shields.io/badge/Built%20on-Nanonets%20OCR--3-546FFF?style=for-the-badge" /></a>
+  <a href="https://github.com/nanonets/nanoindex"><img src="https://img.shields.io/github/stars/NanoNets/nanoindex?style=for-the-badge&logo=github&logoColor=white&label=Stars" /></a>
 </p>
 
 <p>
