@@ -2,7 +2,18 @@
 
 from __future__ import annotations
 
+import os
+
 import pytest
+
+
+@pytest.fixture()
+def api_key() -> str:
+    """Provide NANONETS_API_KEY or skip the test."""
+    key = os.environ.get("NANONETS_API_KEY", "")
+    if not key:
+        pytest.skip("NANONETS_API_KEY not set")
+    return key
 
 
 @pytest.fixture()
