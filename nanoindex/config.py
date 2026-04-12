@@ -54,6 +54,10 @@ class NanoIndexConfig(BaseModel):
     max_node_pages: int = Field(default=10, ge=1)
     parser: str = "nanonets"  # "nanonets" or "pymupdf"
     use_v2_api: bool = False  # V1 is default (better tree structure). V2 adds bboxes but weaker hierarchy.
+    use_hierarchy_api: bool = True  # Hierarchy API — single call, rich output with summaries + entities
+    financial_doc: bool = False  # Enable financial-specific prompts in hierarchy API
+    hierarchy_include_summaries: bool = True  # Generate summaries in hierarchy API
+    hierarchy_include_entities: bool = True  # Extract entities in hierarchy API
     doc_mode: str = "auto"    # "auto", "tree", "table", "form" — auto-detects by default
     split_strategy: str = "hybrid"  # "heuristic", "llm", or "hybrid"
 

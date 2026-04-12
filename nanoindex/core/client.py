@@ -124,6 +124,7 @@ class NanonetsClient:
         json_options: str | None = None,
         include_metadata: str | None = None,
         custom_instructions: str | None = None,
+        extraction_options: dict[str, Any] | None = None,
     ) -> dict[str, str]:
         fields: dict[str, str] = {"output_format": output_format}
         if json_options:
@@ -132,6 +133,9 @@ class NanonetsClient:
             fields["include_metadata"] = include_metadata
         if custom_instructions:
             fields["custom_instructions"] = custom_instructions
+        if extraction_options:
+            import json as _json
+            fields["extraction_options"] = _json.dumps(extraction_options)
         return fields
 
     async def extract_sync(
@@ -176,10 +180,11 @@ class NanonetsClient:
         json_options: str | None = None,
         include_metadata: str | None = None,
         custom_instructions: str | None = None,
+        extraction_options: dict[str, Any] | None = None,
     ) -> str:
         """Asynchronous extraction — returns a ``record_id`` for polling."""
         path = Path(file_path)
-        fields = self._build_extract_fields(output_format, json_options, include_metadata, custom_instructions)
+        fields = self._build_extract_fields(output_format, json_options, include_metadata, custom_instructions, extraction_options)
 
         with open(path, "rb") as f:
             files = {"file": (path.name, f, "application/octet-stream")}

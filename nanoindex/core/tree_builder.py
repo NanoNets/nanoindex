@@ -53,6 +53,68 @@ def _hierarchy_to_nodes(sections: list[HierarchySection], depth: int = 1) -> lis
     return nodes
 
 
+def _clean_title(title: str, max_len: int = 120) -> str:
+    """Truncate oversized titles from the hierarchy API.
+
+    Splits at `` — `` (the API's concatenation separator) and keeps the
+    **last** part — it's the specific subtitle, while the first part is
+    usually a generic parent heading repeated.
+    Falls back to simple truncation if no separator found.
+    """
+    if len(title) <= max_len:
+        return title
+    if " — " in title:
+        parts = title.split(" — ")
+        # Take the last part (most specific), but if it's very short
+        # combine last two parts for context
+        last = parts[-1].strip()
+        if len(last) < 10 and len(parts) > 2:
+            last = f"{parts[-2].strip()} — {last}"
+        return last[:max_len]
+    return title[:max_len].rsplit(" ", 1)[0] + "…"
+
+
+def _hierarchy_v2_to_nodes(sections: list[HierarchySection], depth: int = 1) -> list[TreeNode]:
+    """Convert beta ``HierarchySection`` objects (with all inline data) into ``TreeNode`` objects.
+
+    Unlike ``_hierarchy_to_nodes``, this preserves page ranges, summaries,
+    tables, and bounding boxes directly from the API response.
+    """
+    nodes: list[TreeNode] = []
+    for sec in sections:
+        # Use content only (not aggregated_content — that rolls up children and bloats parent nodes)
+        text = sec.content or None
+
+        # Convert section-level bboxes to BoundingBox models
+        bboxes: list[BoundingBox] = []
+        for bb_data in [sec.title_bounding_box, sec.content_bounding_box]:
+            if bb_data and isinstance(bb_data, dict):
+                bboxes.append(BoundingBox(
+                    page=bb_data.get("page", sec.page or 0),
+                    x=bb_data.get("x", 0),
+                    y=bb_data.get("y", 0),
+                    width=bb_data.get("width", 0),
+                    height=bb_data.get("height", 0),
+                    confidence=bb_data.get("confidence", 1.0),
+                    region_type="heading" if bb_data is sec.title_bounding_box else "content",
+                ))
+
+        node = TreeNode(
+            title=_clean_title(sec.title) or f"Section (level {depth})",
+            level=sec.level or depth,
+            text=text,
+            summary=sec.summary or None,
+            start_index=sec.page or 0,
+            end_index=sec.end_page or sec.page or 0,
+            bounding_boxes=bboxes,
+            tables=sec.tables,
+        )
+        if sec.subsections:
+            node.nodes = _hierarchy_v2_to_nodes(sec.subsections, depth=depth + 1)
+        nodes.append(node)
+    return nodes
+
+
 # ------------------------------------------------------------------
 # Step 2: Convert markdown headings → flat TreeNode list
 # ------------------------------------------------------------------
@@ -701,6 +763,121 @@ def _normalize_heading_levels(headings: list[HeadingNode]) -> list[HeadingNode]:
 
 
 # ------------------------------------------------------------------
+# SEC filing structure enforcement
+# ------------------------------------------------------------------
+
+_NOTE_RE = re.compile(r"^Notes?\s+\d+", re.IGNORECASE)
+_CONSOLIDATED_RE = re.compile(r"^Consolidated\s+(Statement|Balance)", re.IGNORECASE)
+_NOTES_TO_FS_RE = re.compile(r"^Notes?\s+to\s+(the\s+)?Consolidated", re.IGNORECASE)
+_BOILERPLATE_SECTION_RE = re.compile(
+    r"^(Table of Contents|Page \d+ Content|Footnotes?)$", re.IGNORECASE,
+)
+
+
+def _is_sec_filing(doc_name: str, nodes: list[TreeNode]) -> str | None:
+    """Detect SEC filing type from doc name or section titles."""
+    if re.search(r"_10[- ]?K", doc_name, re.IGNORECASE):
+        return "10k"
+    if re.search(r"_10[- ]?Q", doc_name, re.IGNORECASE):
+        return "10q"
+    if re.search(r"_8[- ]?K", doc_name, re.IGNORECASE):
+        return "8k"
+    # Check section titles for PART patterns
+    for node in _iter_all(nodes):
+        if _PART_RE.match((node.title or "").strip()):
+            return "10k"
+    return None
+
+
+def _flatten_tree(nodes: list[TreeNode]) -> list[TreeNode]:
+    """Flatten a nested tree into a document-order list, preserving pages."""
+    flat: list[TreeNode] = []
+    for node in nodes:
+        # Clear children before appending — we'll re-nest later
+        children = node.nodes
+        node.nodes = []
+        flat.append(node)
+        if children:
+            flat.extend(_flatten_tree(children))
+    return flat
+
+
+def _fix_sec_filing_structure(
+    nodes: list[TreeNode],
+    filing_type: str,
+    page_count: int,
+) -> list[TreeNode]:
+    """Flatten tree, reassign levels by SEC filing patterns, re-nest.
+
+    Fixes mis-nestings from the hierarchy API where window boundaries
+    cause divisions to land at L1 instead of under their parent Item.
+    """
+    # 1. Flatten to document-order list
+    flat = _flatten_tree(nodes)
+
+    # 2. Filter boilerplate sections
+    flat = [n for n in flat if not _BOILERPLATE_SECTION_RE.match((n.title or "").strip())]
+
+    # 3. Reassign levels based on title patterns
+    for node in flat:
+        title = (node.title or "").strip()
+        if _PART_RE.match(title):
+            node.level = 1
+        elif _ITEM_RE.match(title):
+            node.level = 2
+        elif _NOTES_TO_FS_RE.match(title):
+            node.level = 2
+        elif _CONSOLIDATED_RE.match(title):
+            node.level = 2
+        elif _NOTE_RE.match(title):
+            node.level = 3
+        else:
+            # Unrecognized titles at L1 get demoted to L3
+            if node.level <= 1:
+                node.level = 3
+
+    # 4. Re-nest using existing stack-based algorithm
+    nested = _nest_flat_nodes(flat)
+
+    # 5. Fix end_page from tree structure
+    _fix_end_pages(nested, page_count)
+
+    count_l1 = sum(1 for n in nested)
+    total = sum(1 for _ in _iter_all(nested))
+    logger.info(
+        "SEC %s structure fix: %d top-level, %d total nodes, %d boilerplate removed",
+        filing_type, count_l1, total, len(nodes) - len(flat),
+    )
+    return nested
+
+
+def _fix_end_pages(nodes: list[TreeNode], max_page: int) -> None:
+    """Compute end_page from tree structure (top-down from siblings/parent)."""
+    for i, node in enumerate(nodes):
+        # Recurse into children first
+        if node.nodes:
+            child_max = nodes[i + 1].start_index - 1 if i + 1 < len(nodes) and nodes[i + 1].start_index else max_page
+            _fix_end_pages(node.nodes, child_max)
+            # Parent spans from own start to last child's end
+            if not node.start_index and node.nodes[0].start_index:
+                node.start_index = node.nodes[0].start_index
+            if node.nodes[-1].end_index:
+                node.end_index = max(node.end_index, node.nodes[-1].end_index)
+
+        # Leaf or after children: end_page from next sibling
+        if i + 1 < len(nodes) and nodes[i + 1].start_index:
+            computed_end = nodes[i + 1].start_index - 1
+            if computed_end > node.end_index:
+                node.end_index = computed_end
+        elif not node.end_index or node.end_index < node.start_index:
+            node.end_index = max_page
+
+        # Ensure end >= start
+        if node.end_index < node.start_index:
+            node.end_index = node.start_index
+
+
+# ------------------------------------------------------------------
 # Main entry point
 # ------------------------------------------------------------------
 
@@ -720,6 +897,59 @@ def build_document_tree(
       6. Single root node
     """
     has_toc = len(extraction.toc) >= 2
+
+    # Check if we have rich hierarchy v2 data (from beta pipeline)
+    _has_hierarchy_v2 = (
+        extraction.hierarchy_sections
+        and extraction.hierarchy_sections[0].page > 0  # v2 sections have page numbers
+    )
+
+    if _has_hierarchy_v2:
+        logger.info("Using hierarchy v2 (beta pipeline) for tree structure (%d sections)",
+                     len(extraction.hierarchy_sections))
+        tree_nodes = _hierarchy_v2_to_nodes(extraction.hierarchy_sections)
+
+        # SEC filing structure enforcement
+        filing_type = _is_sec_filing(doc_name, tree_nodes)
+        if filing_type:
+            tree_nodes = _fix_sec_filing_structure(tree_nodes, filing_type, extraction.page_count)
+
+        # Reassign page text from per-page markdown if available
+        if extraction.page_markdowns:
+            page_md_map = {i + 1: md for i, md in enumerate(extraction.page_markdowns)}
+            for node in _iter_all(tree_nodes):
+                if node.start_index and not node.nodes:  # leaf nodes
+                    pages_text = []
+                    for pg in range(node.start_index, (node.end_index or node.start_index) + 1):
+                        if pg in page_md_map:
+                            pages_text.append(page_md_map[pg])
+                    if pages_text:
+                        node.text = "\n\n".join(pages_text)
+
+        _deduplicate_parent_text(tree_nodes)
+        tree_nodes = _deduplicate_sibling_branches(tree_nodes)
+
+        # Content coverage check — log if nodes are missing text
+        nodes_with_text = sum(1 for n in _iter_all(tree_nodes) if n.text)
+        total_nodes = sum(1 for _ in _iter_all(tree_nodes))
+        if total_nodes and nodes_with_text < total_nodes * 0.5:
+            logger.warning(
+                "Hierarchy v2: only %d/%d nodes have text content",
+                nodes_with_text, total_nodes,
+            )
+
+        assign_node_ids(tree_nodes)
+        return DocumentTree(
+            doc_name=doc_name,
+            extraction_metadata={
+                "extractor": "nanonets_hierarchy_v2",
+                "pages_processed": extraction.page_count,
+                "processing_time": round(extraction.processing_time, 2),
+            },
+            structure=tree_nodes,
+            all_bounding_boxes=extraction.bounding_boxes,
+            page_dimensions=extraction.page_dimensions,
+        )
 
     hierarchy_nodes = _hierarchy_to_nodes(extraction.hierarchy_sections)
     heading_nodes = parse_markdown_headings(extraction.markdown)

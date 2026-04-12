@@ -272,6 +272,10 @@ class NanoIndex:
         if self.config.parser == "nanonets":
             parser_kwargs["api_key"] = self.config.require_nanonets_key()
             parser_kwargs["use_v2"] = self.config.use_v2_api
+            parser_kwargs["use_hierarchy"] = self.config.use_hierarchy_api
+            parser_kwargs["financial_doc"] = self.config.financial_doc
+            parser_kwargs["include_summaries"] = self.config.hierarchy_include_summaries
+            parser_kwargs["include_entities"] = self.config.hierarchy_include_entities
         parser = get_parser(self.config.parser, **parser_kwargs)
         parsed_document = await parser.parse(path)
         extraction = parsed_document.to_extraction_result()

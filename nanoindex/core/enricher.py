@@ -20,7 +20,7 @@ from nanoindex.utils.tree_ops import iter_nodes
 
 logger = logging.getLogger(__name__)
 
-_SUMMARY_PROMPT = """\
+_SUMMARY_PROMPT_FINANCE = """\
 Summarize this section in TWO parts (max 60 words total):
 1. One sentence describing the section.
 2. Key data items: list the specific metrics, line items, or data points \
@@ -32,6 +32,19 @@ Title: {title}
 Content: {content}
 
 Summary:"""
+
+_SUMMARY_PROMPT_GENERAL = """\
+Summarize this section in TWO parts (max 60 words total):
+1. One sentence describing what this section covers.
+2. Key items: list the specific topics, entities, data points, or findings \
+present. If the section contains a table, list every column header visible.
+
+Title: {title}
+Content: {content}
+
+Summary:"""
+
+_FINANCE_DOMAINS = {"sec_10k", "sec_10q", "financial", "earnings", "insurance"}
 
 _DOC_DESCRIPTION_PROMPT = """\
 You are a document indexing assistant. Given the document structure below, \
@@ -59,9 +72,11 @@ async def enrich_tree(
     Modifies *tree* in-place and returns it.
     """
     model = config.summary_model or llm.model
+    domain = getattr(tree, "domain", "") or ""
+    summary_prompt = _SUMMARY_PROMPT_FINANCE if domain in _FINANCE_DOMAINS else _SUMMARY_PROMPT_GENERAL
 
     if config.add_summaries:
-        await _generate_summaries(tree.structure, llm, model, config.min_node_tokens)
+        await _generate_summaries(tree.structure, llm, model, config.min_node_tokens, summary_prompt)
 
     if config.add_doc_description:
         tree.doc_description = await _generate_doc_description(tree, llm, model)
@@ -74,19 +89,39 @@ async def _generate_summaries(
     llm: LLMClient,
     model: str,
     min_tokens: int,
+    summary_prompt: str = _SUMMARY_PROMPT_GENERAL,
 ) -> None:
     """Generate summaries for all nodes concurrently."""
-    all_nodes = [n for n in iter_nodes(nodes) if n.summary is None]
+    # Process bottom-up: leaves first so parent summaries can use children's summaries
+    all_nodes_ordered = list(iter_nodes(nodes))
+    # Separate leaves (no children or all children already summarised) from parents
+    leaves = [n for n in all_nodes_ordered if n.summary is None and not n.nodes]
+    parents = [n for n in all_nodes_ordered if n.summary is None and n.nodes]
+    # Reverse parents so deepest parents go first
+    parents.reverse()
+    all_nodes = leaves  # will process parents after leaves complete
 
     sem = asyncio.Semaphore(_MAX_CONCURRENT)
 
     async def _summarise(node: TreeNode) -> None:
         content = node.text or ""
         if count_tokens(content) < min_tokens:
-            node.summary = content[:200] if content else node.title
-            return
+            # For parent nodes, synthesise content from children's summaries
+            if node.nodes:
+                child_summaries = [
+                    f"- {c.title}: {c.summary}"
+                    for c in node.nodes if c.summary and c.summary != c.title
+                ]
+                if child_summaries:
+                    content = f"Section: {node.title}\nContains:\n" + "\n".join(child_summaries[:15])
+                else:
+                    node.summary = content[:200] if content else node.title
+                    return
+            else:
+                node.summary = content[:200] if content else node.title
+                return
 
-        prompt = _SUMMARY_PROMPT.format(title=node.title, content=content[:30000])
+        prompt = summary_prompt.format(title=node.title, content=content[:30000])
         messages = [{"role": "user", "content": prompt}]
 
         async with sem:
@@ -108,7 +143,13 @@ async def _generate_summaries(
             logger.warning("Summary failed after %d retries for '%s'", _MAX_RETRIES, node.title[:30])
             node.summary = node.title
 
-    await asyncio.gather(*[_summarise(n) for n in all_nodes])
+    # Phase 1: summarise leaves concurrently
+    if all_nodes:
+        await asyncio.gather(*[_summarise(n) for n in all_nodes])
+
+    # Phase 2: summarise parents (bottom-up, children already done)
+    if parents:
+        await asyncio.gather(*[_summarise(n) for n in parents])
 
 
 async def _generate_doc_description(
