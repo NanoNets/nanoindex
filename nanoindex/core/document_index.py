@@ -21,7 +21,6 @@ from nanoindex.models import (
     DocumentGraph,
     DocumentTree,
     Entity,
-    Relationship,
     TreeNode,
 )
 from nanoindex.utils.tree_ops import iter_nodes
@@ -103,7 +102,9 @@ class DocumentIndex:
     def _build_nx(self) -> Any:
         G = nx.Graph()
         for ent in self.graph.entities:
-            G.add_node(ent.name, entity_type=ent.entity_type, source_node_ids=set(ent.source_node_ids))
+            G.add_node(
+                ent.name, entity_type=ent.entity_type, source_node_ids=set(ent.source_node_ids)
+            )
         for rel in self.graph.relationships:
             if not G.has_node(rel.source):
                 G.add_node(rel.source, entity_type="Other", source_node_ids=set())

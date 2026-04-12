@@ -1,4 +1,5 @@
 """Extract structured tables from documents using V2 API or markdown parsing."""
+
 import csv
 import io
 import logging
@@ -79,11 +80,13 @@ async def extract_tables_v2(file_id: str, client) -> list[ExtractedTable]:
         if not rows:
             return []
 
-        return [ExtractedTable(
-            name=f"Extracted Table ({len(rows)} rows)",
-            columns=list(rows[0].keys()),
-            rows=rows,
-        )]
+        return [
+            ExtractedTable(
+                name=f"Extracted Table ({len(rows)} rows)",
+                columns=list(rows[0].keys()),
+                rows=rows,
+            )
+        ]
     except Exception as exc:
         logger.warning("V2 table extraction failed: %s", exc)
         return []

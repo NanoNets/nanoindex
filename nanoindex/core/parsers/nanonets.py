@@ -61,7 +61,8 @@ class NanonetsParser(BaseParser):
         client = NanonetsClient(self._api_key, **self._kwargs)
         try:
             result = await extract_document(
-                file_path, client,
+                file_path,
+                client,
                 use_hierarchy=True,
                 financial_doc=self._financial_doc,
                 include_summaries=self._include_summaries,

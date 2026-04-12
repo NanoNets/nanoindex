@@ -79,12 +79,14 @@ def _build_citations(
     include_metadata: bool = False,
 ) -> list[Citation]:
     from nanoindex.core.citations import build_citations
+
     return build_citations(nodes, tree, include_metadata)
 
 
 # ------------------------------------------------------------------
 # Text-based generation
 # ------------------------------------------------------------------
+
 
 async def generate_text_answer(
     query: str,
@@ -123,6 +125,7 @@ async def generate_text_answer(
 # Vision-based generation
 # ------------------------------------------------------------------
 
+
 async def generate_vision_answer(
     query: str,
     nodes: list[RetrievedNode],
@@ -150,10 +153,12 @@ async def generate_vision_answer(
     user_content: list[dict[str, Any]] = []
 
     for i, uri in enumerate(image_uris):
-        user_content.append({
-            "type": "image_url",
-            "image_url": {"url": uri},
-        })
+        user_content.append(
+            {
+                "type": "image_url",
+                "image_url": {"url": uri},
+            }
+        )
 
     context_text = _build_text_context(nodes)
     prompt = _VISION_USER.format(query=query, context=context_text[:40000])
@@ -179,6 +184,7 @@ async def generate_vision_answer(
 # Unified entry point
 # ------------------------------------------------------------------
 
+
 async def generate_answer(
     query: str,
     nodes: list[RetrievedNode],
@@ -197,13 +203,22 @@ async def generate_answer(
     """
     if mode == "vision":
         if pdf_path is None:
-            logger.warning("Vision mode requested but no pdf_path provided, falling back to text mode")
+            logger.warning(
+                "Vision mode requested but no pdf_path provided, falling back to text mode"
+            )
         else:
             return await generate_vision_answer(
-                query, nodes, llm, pdf_path,
-                tree=tree, include_metadata=include_metadata,
+                query,
+                nodes,
+                llm,
+                pdf_path,
+                tree=tree,
+                include_metadata=include_metadata,
             )
     return await generate_text_answer(
-        query, nodes, llm,
-        tree=tree, include_metadata=include_metadata,
+        query,
+        nodes,
+        llm,
+        tree=tree,
+        include_metadata=include_metadata,
     )

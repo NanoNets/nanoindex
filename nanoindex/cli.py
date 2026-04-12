@@ -20,6 +20,7 @@ console = Console()
 
 def _lazy_nanoindex(**kwargs):
     from nanoindex import NanoIndex
+
     return NanoIndex(**kwargs)
 
 
@@ -54,6 +55,7 @@ def _build_kwargs(
 # CLI group
 # ------------------------------------------------------------------
 
+
 @click.group()
 @click.version_option(package_name="nanoindex")
 def main():
@@ -63,6 +65,7 @@ def main():
 # ------------------------------------------------------------------
 # index
 # ------------------------------------------------------------------
+
 
 @main.command()
 @click.argument("file_path", type=click.Path(exists=True))
@@ -93,18 +96,22 @@ def index(
 
     if output:
         from nanoindex.utils.tree_ops import save_tree
+
         save_tree(tree, output)
         console.print(f"[green]✓[/] Tree saved to {output}")
     else:
         _print_tree(tree)
 
-    console.print(f"\n[dim]Nodes: {_count_nodes(tree.structure)} | "
-                  f"Pages: {tree.extraction_metadata.get('pages_processed', '?')}[/]")
+    console.print(
+        f"\n[dim]Nodes: {_count_nodes(tree.structure)} | "
+        f"Pages: {tree.extraction_metadata.get('pages_processed', '?')}[/]"
+    )
 
 
 # ------------------------------------------------------------------
 # search
 # ------------------------------------------------------------------
+
 
 @main.command()
 @click.argument("tree_path", type=click.Path(exists=True))
@@ -133,24 +140,29 @@ def search(
         return
 
     for rn in results:
-        console.print(Panel(
-            f"[bold]{rn.node.title}[/] [{rn.node.node_id}]\n"
-            f"Pages {rn.node.start_index}-{rn.node.end_index}\n\n"
-            f"{rn.text[:500]}{'…' if len(rn.text) > 500 else ''}",
-            border_style="cyan",
-        ))
+        console.print(
+            Panel(
+                f"[bold]{rn.node.title}[/] [{rn.node.node_id}]\n"
+                f"Pages {rn.node.start_index}-{rn.node.end_index}\n\n"
+                f"{rn.text[:500]}{'…' if len(rn.text) > 500 else ''}",
+                border_style="cyan",
+            )
+        )
 
 
 # ------------------------------------------------------------------
 # ask
 # ------------------------------------------------------------------
 
+
 @main.command()
 @click.argument("file_path", type=click.Path(exists=True))
 @click.argument("query")
 @click.option("--mode", type=click.Choice(["text", "vision"]), default="text")
 @click.option("--tree-path", type=click.Path(), default=None, help="Pre-built tree JSON")
-@click.option("--metadata", is_flag=True, default=False, help="Include bounding box metadata in citations")
+@click.option(
+    "--metadata", is_flag=True, default=False, help="Include bounding box metadata in citations"
+)
 @_common_llm_options
 def ask(
     file_path: str,
@@ -169,6 +181,7 @@ def ask(
 
     if tree_path:
         from nanoindex.utils.tree_ops import load_tree
+
         tree = load_tree(tree_path)
     else:
         with console.status("[bold green]Indexing document…"):
@@ -202,6 +215,7 @@ def ask(
 # ------------------------------------------------------------------
 # viz
 # ------------------------------------------------------------------
+
 
 @main.command()
 @click.argument("tree_path", type=click.Path(exists=True), required=False, default=None)
@@ -241,6 +255,7 @@ def viz(tree_path: str | None, port: int, no_open: bool):
     # If a specific tree was given, copy it to the cache dir for visibility
     if tree_path:
         from nanoindex.utils.tree_ops import load_tree
+
         tree = load_tree(tree_path)
         doc_name = tree.doc_name or Path(tree_path).stem
 
@@ -250,12 +265,14 @@ def viz(tree_path: str | None, port: int, no_open: bool):
         target = cache_dir / f"{doc_name}.json"
         if not target.exists():
             import shutil as _shutil
+
             _shutil.copy2(tree_path, target)
             console.print(f"[dim]Copied tree to {target}[/]")
 
     url = f"http://localhost:{port}"
     if tree_path:
         from nanoindex.utils.tree_ops import load_tree
+
         tree = load_tree(tree_path)
         doc_name = tree.doc_name or Path(tree_path).stem
         url += f"/tree?name={doc_name}"
@@ -266,6 +283,7 @@ def viz(tree_path: str | None, port: int, no_open: bool):
     if not no_open:
         import webbrowser
         import threading
+
         threading.Timer(2.0, lambda: webbrowser.open(url)).start()
 
     # Start Next.js dev server
@@ -283,6 +301,7 @@ def viz(tree_path: str | None, port: int, no_open: bool):
 # ------------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------------
+
 
 def _print_tree(doc_tree):
     """Render a DocumentTree as a rich Tree widget."""
@@ -308,11 +327,10 @@ def _count_nodes(nodes) -> int:
     return count
 
 
-
-
 # ------------------------------------------------------------------
 # kb (Knowledge Base commands)
 # ------------------------------------------------------------------
+
 
 @main.group()
 def kb():
@@ -326,6 +344,7 @@ def kb():
 def kb_create(path, nanonets_api_key, llm_base_url, llm_api_key, llm_model):
     """Create a new knowledge base."""
     from nanoindex.kb import KnowledgeBase
+
     kwargs = _build_kwargs(nanonets_api_key, llm_base_url, llm_api_key, llm_model)
     kb_inst = KnowledgeBase(path, **kwargs)
     console.print(f"[green]Created knowledge base at {path}[/green]")
@@ -340,6 +359,7 @@ def kb_create(path, nanonets_api_key, llm_base_url, llm_api_key, llm_model):
 def kb_add(pdf_path, wiki, nanonets_api_key, llm_base_url, llm_api_key, llm_model):
     """Add a document to the knowledge base."""
     from nanoindex.kb import KnowledgeBase
+
     kwargs = _build_kwargs(nanonets_api_key, llm_base_url, llm_api_key, llm_model)
     kb_inst = KnowledgeBase(wiki, **kwargs)
     with console.status("[bold green]Indexing and compiling..."):
@@ -357,6 +377,7 @@ def kb_add(pdf_path, wiki, nanonets_api_key, llm_base_url, llm_api_key, llm_mode
 def kb_ask(question, wiki, mode, nanonets_api_key, llm_base_url, llm_api_key, llm_model):
     """Ask a question across the knowledge base."""
     from nanoindex.kb import KnowledgeBase
+
     kwargs = _build_kwargs(nanonets_api_key, llm_base_url, llm_api_key, llm_model)
     kb_inst = KnowledgeBase(wiki, **kwargs)
     with console.status("[bold green]Searching..."):
@@ -372,6 +393,7 @@ def kb_ask(question, wiki, mode, nanonets_api_key, llm_base_url, llm_api_key, ll
 def kb_status(wiki):
     """Show knowledge base statistics."""
     from nanoindex.kb import KnowledgeBase
+
     kb_inst = KnowledgeBase(wiki)
     stats = kb_inst.status()
     console.print(f"[bold]Knowledge Base:[/bold] {wiki}")
@@ -387,6 +409,7 @@ def kb_status(wiki):
 def kb_lint(wiki):
     """Find inconsistencies in the knowledge base."""
     from nanoindex.kb import KnowledgeBase
+
     kb_inst = KnowledgeBase(wiki)
     warnings = kb_inst.lint()
     if warnings:

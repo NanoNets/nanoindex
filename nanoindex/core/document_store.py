@@ -98,13 +98,15 @@ class DocumentStore:
         for entry in self._entries.values():
             tree_file = f"{entry.doc_id}.json"
             save_tree(entry.tree, d / tree_file)
-            manifest.append({
-                "doc_id": entry.doc_id,
-                "doc_name": entry.doc_name,
-                "tree_file": tree_file,
-                "metadata": entry.metadata,
-                "description": entry.description,
-            })
+            manifest.append(
+                {
+                    "doc_id": entry.doc_id,
+                    "doc_name": entry.doc_name,
+                    "tree_file": tree_file,
+                    "metadata": entry.metadata,
+                    "description": entry.description,
+                }
+            )
 
         with open(d / _MANIFEST_FILE, "w") as f:
             json.dump(manifest, f, indent=2, ensure_ascii=False)
@@ -166,21 +168,22 @@ class DocumentStore:
     ) -> list[DocumentEntry]:
         """Use an LLM to select relevant documents by comparing the query
         against each document's description."""
-        entries_with_desc = [
-            e for e in self._entries.values() if e.description
-        ]
+        entries_with_desc = [e for e in self._entries.values() if e.description]
         if not entries_with_desc:
             logger.warning("No documents have descriptions — returning all")
             return list(self._entries.values())[:max_docs]
 
-        docs_payload = json.dumps([
-            {
-                "doc_id": e.doc_id,
-                "doc_name": e.doc_name,
-                "doc_description": e.description,
-            }
-            for e in entries_with_desc
-        ], indent=2)
+        docs_payload = json.dumps(
+            [
+                {
+                    "doc_id": e.doc_id,
+                    "doc_name": e.doc_name,
+                    "doc_description": e.description,
+                }
+                for e in entries_with_desc
+            ],
+            indent=2,
+        )
 
         prompt = _DOC_SELECT_PROMPT.format(query=query, documents=docs_payload)
         messages = [{"role": "user", "content": prompt}]
@@ -191,11 +194,7 @@ class DocumentStore:
             logger.warning("LLM returned no doc IDs — falling back to all")
             return entries_with_desc[:max_docs]
 
-        results = [
-            self._entries[did]
-            for did in selected_ids
-            if did in self._entries
-        ]
+        results = [self._entries[did] for did in selected_ids if did in self._entries]
         return results[:max_docs]
 
     def select_direct(
@@ -254,6 +253,7 @@ def _parse_doc_ids(response: str) -> list[str]:
 # ------------------------------------------------------------------
 # Metadata filter matching
 # ------------------------------------------------------------------
+
 
 def _matches_filters(metadata: dict[str, Any], filters: dict[str, Any]) -> bool:
     for key, value in filters.items():

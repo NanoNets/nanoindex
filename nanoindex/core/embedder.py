@@ -17,7 +17,9 @@ from nanoindex.utils.tree_ops import iter_nodes
 logger = logging.getLogger(__name__)
 
 
-async def embed_texts(texts: list[str], api_key: str, model: str, base_url: str) -> list[list[float]]:
+async def embed_texts(
+    texts: list[str], api_key: str, model: str, base_url: str
+) -> list[list[float]]:
     """Embed a batch of texts using OpenAI-compatible API or local model.
 
     If model starts with 'local:' (e.g. 'local:all-MiniLM-L6-v2'), uses
@@ -43,7 +45,9 @@ async def embed_texts(texts: list[str], api_key: str, model: str, base_url: str)
             )
             resp.raise_for_status()
             data = resp.json()
-            batch_embs = [item["embedding"] for item in sorted(data["data"], key=lambda x: x["index"])]
+            batch_embs = [
+                item["embedding"] for item in sorted(data["data"], key=lambda x: x["index"])
+            ]
             all_embeddings.extend(batch_embs)
 
     return all_embeddings
@@ -125,6 +129,7 @@ def cosine_search(
 # ---------------------------------------------------------------------------
 # Persistence
 # ---------------------------------------------------------------------------
+
 
 def save_embeddings(embeddings: dict[str, list[float]], path: Path) -> None:
     """Save embeddings as compressed numpy archive."""

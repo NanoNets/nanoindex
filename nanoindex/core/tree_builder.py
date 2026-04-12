@@ -38,6 +38,7 @@ logger = logging.getLogger(__name__)
 # Step 1: Convert hierarchy sections → flat TreeNode list
 # ------------------------------------------------------------------
 
+
 def _hierarchy_to_nodes(sections: list[HierarchySection], depth: int = 1) -> list[TreeNode]:
     """Recursively convert ``HierarchySection`` objects into ``TreeNode`` objects."""
     nodes: list[TreeNode] = []
@@ -89,15 +90,17 @@ def _hierarchy_v2_to_nodes(sections: list[HierarchySection], depth: int = 1) -> 
         bboxes: list[BoundingBox] = []
         for bb_data in [sec.title_bounding_box, sec.content_bounding_box]:
             if bb_data and isinstance(bb_data, dict):
-                bboxes.append(BoundingBox(
-                    page=bb_data.get("page", sec.page or 0),
-                    x=bb_data.get("x", 0),
-                    y=bb_data.get("y", 0),
-                    width=bb_data.get("width", 0),
-                    height=bb_data.get("height", 0),
-                    confidence=bb_data.get("confidence", 1.0),
-                    region_type="heading" if bb_data is sec.title_bounding_box else "content",
-                ))
+                bboxes.append(
+                    BoundingBox(
+                        page=bb_data.get("page", sec.page or 0),
+                        x=bb_data.get("x", 0),
+                        y=bb_data.get("y", 0),
+                        width=bb_data.get("width", 0),
+                        height=bb_data.get("height", 0),
+                        confidence=bb_data.get("confidence", 1.0),
+                        region_type="heading" if bb_data is sec.title_bounding_box else "content",
+                    )
+                )
 
         node = TreeNode(
             title=_clean_title(sec.title) or f"Section (level {depth})",
@@ -119,6 +122,7 @@ def _hierarchy_v2_to_nodes(sections: list[HierarchySection], depth: int = 1) -> 
 # Step 2: Convert markdown headings → flat TreeNode list
 # ------------------------------------------------------------------
 
+
 def _headings_to_flat_nodes(headings: list[HeadingNode]) -> list[TreeNode]:
     """Convert parsed markdown headings into a flat ``TreeNode`` list.
 
@@ -137,13 +141,15 @@ def _headings_to_flat_nodes(headings: list[HeadingNode]) -> list[TreeNode]:
         if end_page < h.page:
             end_page = h.page
 
-        nodes.append(TreeNode(
-            title=h.title,
-            level=h.level,
-            text=h.text_content or None,
-            start_index=h.page,
-            end_index=end_page,
-        ))
+        nodes.append(
+            TreeNode(
+                title=h.title,
+                level=h.level,
+                text=h.text_content or None,
+                start_index=h.page,
+                end_index=end_page,
+            )
+        )
     return nodes
 
 
@@ -171,6 +177,7 @@ def _nest_flat_nodes(flat: list[TreeNode]) -> list[TreeNode]:
 # ------------------------------------------------------------------
 # Step 3: Merge hierarchy + headings
 # ------------------------------------------------------------------
+
 
 def _similarity(a: str, b: str) -> float:
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
@@ -209,6 +216,7 @@ def _iter_all(nodes: list[TreeNode]):
 # ------------------------------------------------------------------
 # Step 4: Attach bounding boxes and assign pages
 # ------------------------------------------------------------------
+
 
 def _attach_bboxes(nodes: list[TreeNode], bboxes: list[BoundingBox]) -> None:
     """Attach heading bboxes to tree nodes by title matching.
@@ -308,6 +316,7 @@ def _propagate_pages_up(nodes: list[TreeNode], page_count: int) -> None:
 # Step 5: Confidence filtering
 # ------------------------------------------------------------------
 
+
 def _filter_low_confidence(nodes: list[TreeNode], threshold: float) -> list[TreeNode]:
     """Remove tree nodes whose average bbox confidence is below *threshold*."""
     kept: list[TreeNode] = []
@@ -324,6 +333,7 @@ def _filter_low_confidence(nodes: list[TreeNode], threshold: float) -> list[Tree
 # ------------------------------------------------------------------
 # Step 6: Split oversized nodes
 # ------------------------------------------------------------------
+
 
 def _split_large_nodes(nodes: list[TreeNode], max_tokens: int) -> list[TreeNode]:
     """Recursively split nodes whose text exceeds *max_tokens*."""
@@ -370,6 +380,7 @@ def _chunk_text(text: str, max_tokens: int) -> list[str]:
 # ------------------------------------------------------------------
 # Step 7: Attach tables
 # ------------------------------------------------------------------
+
 
 def _attach_tables(nodes: list[TreeNode], tables: list[HierarchyTable]) -> None:
     """Attach hierarchy tables to the most relevant tree node."""
@@ -441,10 +452,7 @@ def _build_from_toc(
         if next_page < entry.page:
             next_page = entry.page
 
-        text_parts = [
-            page_texts.get(p, "")
-            for p in range(entry.page, next_page + 1)
-        ]
+        text_parts = [page_texts.get(p, "") for p in range(entry.page, next_page + 1)]
         text = "\n\n".join(t for t in text_parts if t).strip()
 
         node = TreeNode(
@@ -473,7 +481,10 @@ def _build_from_toc(
 # ------------------------------------------------------------------
 
 _BOILERPLATE_TITLES = {
-    "table of contents", "contents", "index", "page",
+    "table of contents",
+    "contents",
+    "index",
+    "page",
 }
 
 _PAGE_TITLE_RE = re.compile(r"^page\s+\d+$", re.IGNORECASE)
@@ -497,6 +508,7 @@ def _find_running_headers(headings: list[HeadingNode]) -> set[str]:
         return to_remove
 
     from collections import Counter
+
     title_counts = Counter(h.title.strip() for h in headings)
     threshold = len(headings) * 0.3
 
@@ -512,7 +524,9 @@ def _strip_boilerplate(
     to_remove: set[str],
 ) -> list[HeadingNode]:
     """Remove boilerplate headings, keeping only real section headings."""
-    return [h for h in headings if h.title.strip() not in to_remove and not _is_boilerplate(h.title)]
+    return [
+        h for h in headings if h.title.strip() not in to_remove and not _is_boilerplate(h.title)
+    ]
 
 
 # ------------------------------------------------------------------
@@ -542,10 +556,7 @@ def _reassign_page_text(
             continue
         if node.start_index <= 0:
             continue
-        parts = [
-            page_texts.get(p, "")
-            for p in range(node.start_index, node.end_index + 1)
-        ]
+        parts = [page_texts.get(p, "") for p in range(node.start_index, node.end_index + 1)]
         full_text = "\n\n".join(t for t in parts if t).strip()
         if full_text:
             node.text = full_text
@@ -609,18 +620,21 @@ def _recover_orphan_pages(
                 title = cleaned[:100]
                 break
 
-        new_nodes.append(TreeNode(
-            title=title,
-            level=1,
-            text=text,
-            start_index=rng_start,
-            end_index=rng_end,
-        ))
+        new_nodes.append(
+            TreeNode(
+                title=title,
+                level=1,
+                text=text,
+                start_index=rng_start,
+                end_index=rng_end,
+            )
+        )
 
     if new_nodes:
         logger.info(
             "Recovered %d orphan page ranges (%d pages) as new tree nodes",
-            len(new_nodes), len(orphan_pages),
+            len(new_nodes),
+            len(orphan_pages),
         )
         nodes.extend(new_nodes)
 
@@ -669,7 +683,7 @@ def _deduplicate_sibling_branches(nodes: list[TreeNode]) -> list[TreeNode]:
 
     def _branch_text(node: TreeNode) -> str:
         parts = [node.text or ""]
-        for child in (node.nodes or []):
+        for child in node.nodes or []:
             parts.append(_branch_text(child))
         return "\n".join(parts)
 
@@ -691,15 +705,13 @@ def _deduplicate_sibling_branches(nodes: list[TreeNode]) -> list[TreeNode]:
             if shorter < 100:
                 continue
             sample_len = min(shorter, 2000)
-            overlap = sum(
-                1 for a, b in zip(branch[:sample_len], prev_text[:sample_len])
-                if a == b
-            )
+            overlap = sum(1 for a, b in zip(branch[:sample_len], prev_text[:sample_len]) if a == b)
             if overlap / sample_len > 0.80:
                 is_dup = True
                 logger.info(
                     "Removing duplicate branch '%s' (%.0f%% overlap with earlier sibling)",
-                    node.title[:60], (overlap / sample_len) * 100,
+                    node.title[:60],
+                    (overlap / sample_len) * 100,
                 )
                 break
 
@@ -710,7 +722,9 @@ def _deduplicate_sibling_branches(nodes: list[TreeNode]) -> list[TreeNode]:
     if len(kept) < len(nodes):
         logger.info(
             "Sibling dedup removed %d duplicate branches (%d → %d)",
-            len(nodes) - len(kept), len(nodes), len(kept),
+            len(nodes) - len(kept),
+            len(nodes),
+            len(kept),
         )
     return kept
 
@@ -745,13 +759,15 @@ def _normalize_heading_levels(headings: list[HeadingNode]) -> list[HeadingNode]:
             new_level = 2
         else:
             new_level = 3
-        result.append(HeadingNode(
-            title=h.title,
-            level=new_level,
-            line_number=h.line_number,
-            page=h.page,
-            text_content=h.text_content,
-        ))
+        result.append(
+            HeadingNode(
+                title=h.title,
+                level=new_level,
+                line_number=h.line_number,
+                page=h.page,
+                text_content=h.text_content,
+            )
+        )
 
     logger.info(
         "Normalized heading levels: %d at L1, %d at L2, %d at L3",
@@ -770,7 +786,8 @@ _NOTE_RE = re.compile(r"^Notes?\s+\d+", re.IGNORECASE)
 _CONSOLIDATED_RE = re.compile(r"^Consolidated\s+(Statement|Balance)", re.IGNORECASE)
 _NOTES_TO_FS_RE = re.compile(r"^Notes?\s+to\s+(the\s+)?Consolidated", re.IGNORECASE)
 _BOILERPLATE_SECTION_RE = re.compile(
-    r"^(Table of Contents|Page \d+ Content|Footnotes?)$", re.IGNORECASE,
+    r"^(Table of Contents|Page \d+ Content|Footnotes?)$",
+    re.IGNORECASE,
 )
 
 
@@ -846,7 +863,10 @@ def _fix_sec_filing_structure(
     total = sum(1 for _ in _iter_all(nested))
     logger.info(
         "SEC %s structure fix: %d top-level, %d total nodes, %d boilerplate removed",
-        filing_type, count_l1, total, len(nodes) - len(flat),
+        filing_type,
+        count_l1,
+        total,
+        len(nodes) - len(flat),
     )
     return nested
 
@@ -856,7 +876,11 @@ def _fix_end_pages(nodes: list[TreeNode], max_page: int) -> None:
     for i, node in enumerate(nodes):
         # Recurse into children first
         if node.nodes:
-            child_max = nodes[i + 1].start_index - 1 if i + 1 < len(nodes) and nodes[i + 1].start_index else max_page
+            child_max = (
+                nodes[i + 1].start_index - 1
+                if i + 1 < len(nodes) and nodes[i + 1].start_index
+                else max_page
+            )
             _fix_end_pages(node.nodes, child_max)
             # Parent spans from own start to last child's end
             if not node.start_index and node.nodes[0].start_index:
@@ -880,6 +904,7 @@ def _fix_end_pages(nodes: list[TreeNode], max_page: int) -> None:
 # ------------------------------------------------------------------
 # Main entry point
 # ------------------------------------------------------------------
+
 
 def build_document_tree(
     extraction: ExtractionResult,
@@ -905,8 +930,10 @@ def build_document_tree(
     )
 
     if _has_hierarchy_v2:
-        logger.info("Using hierarchy v2 (beta pipeline) for tree structure (%d sections)",
-                     len(extraction.hierarchy_sections))
+        logger.info(
+            "Using hierarchy v2 (beta pipeline) for tree structure (%d sections)",
+            len(extraction.hierarchy_sections),
+        )
         tree_nodes = _hierarchy_v2_to_nodes(extraction.hierarchy_sections)
 
         # SEC filing structure enforcement
@@ -935,7 +962,8 @@ def build_document_tree(
         if total_nodes and nodes_with_text < total_nodes * 0.5:
             logger.warning(
                 "Hierarchy v2: only %d/%d nodes have text content",
-                nodes_with_text, total_nodes,
+                nodes_with_text,
+                total_nodes,
             )
 
         assign_node_ids(tree_nodes)
@@ -990,12 +1018,15 @@ def build_document_tree(
     elif len(real_headings) >= 3 and (headings_are_dense or distinct_heading_levels >= 2):
         heading_page_coverage = (
             len({h.page for h in real_headings}) / extraction.page_count
-            if extraction.page_count else 0
+            if extraction.page_count
+            else 0
         )
         if heading_page_coverage >= 0.15:
             logger.info(
                 "Using markdown headings for tree (%d headings / %d levels / %d pages, %.0f%% page coverage)",
-                len(real_headings), distinct_heading_levels, extraction.page_count,
+                len(real_headings),
+                distinct_heading_levels,
+                extraction.page_count,
                 heading_page_coverage * 100,
             )
             tree_nodes = _nest_flat_nodes(heading_tree_nodes)
@@ -1005,7 +1036,9 @@ def build_document_tree(
                 heading_page_coverage * 100,
             )
             tree_nodes = _build_section_grouped_tree(
-                extraction.markdown, extraction.page_count, real_headings,
+                extraction.markdown,
+                extraction.page_count,
+                real_headings,
             )
         else:
             logger.info(
@@ -1016,32 +1049,42 @@ def build_document_tree(
     elif len(real_headings) >= 3 and extraction.page_count > 1:
         logger.info(
             "Using section-grouped tree (%d section headings across %d pages)",
-            len(real_headings), extraction.page_count,
+            len(real_headings),
+            extraction.page_count,
         )
         tree_nodes = _build_section_grouped_tree(
-            extraction.markdown, extraction.page_count, real_headings,
+            extraction.markdown,
+            extraction.page_count,
+            real_headings,
         )
     elif extraction.page_count > 1:
         logger.info(
             "Headings too sparse (%d headings for %d pages) — building page-based tree",
-            len(real_headings), extraction.page_count,
+            len(real_headings),
+            extraction.page_count,
         )
         tree_nodes = _build_page_based_tree(
-            extraction.markdown, extraction.page_count, real_headings,
+            extraction.markdown,
+            extraction.page_count,
+            real_headings,
         )
     else:
         logger.info("No structure detected — creating single root node")
-        tree_nodes = [TreeNode(
-            title=doc_name,
-            level=1,
-            text=extraction.markdown or None,
-        )]
+        tree_nodes = [
+            TreeNode(
+                title=doc_name,
+                level=1,
+                text=extraction.markdown or None,
+            )
+        ]
 
     _attach_bboxes(tree_nodes, extraction.bounding_boxes)
     _assign_pages(tree_nodes, extraction.page_count)
     _attach_content_bboxes(tree_nodes, extraction.bounding_boxes)  # after pages assigned
     tree_nodes = _recover_orphan_pages(
-        tree_nodes, extraction.markdown, extraction.page_count,
+        tree_nodes,
+        extraction.markdown,
+        extraction.page_count,
     )
     _reassign_page_text(tree_nodes, extraction.markdown, extraction.page_count)
     _attach_tables(tree_nodes, extraction.hierarchy_tables)
@@ -1096,9 +1139,7 @@ def _build_section_grouped_tree(
             end_page = page_count
         end_page = max(end_page, start_page)
 
-        section_text_parts = [
-            page_texts.get(p, "") for p in range(start_page, end_page + 1)
-        ]
+        section_text_parts = [page_texts.get(p, "") for p in range(start_page, end_page + 1)]
         section_text = "\n\n".join(t for t in section_text_parts if t).strip()
 
         section_node = TreeNode(
@@ -1116,13 +1157,15 @@ def _build_section_grouped_tree(
                 if not pg_text:
                     continue
                 pg_title = _best_page_title([], pg_text, pg)
-                section_node.nodes.append(TreeNode(
-                    title=pg_title,
-                    level=heading.level + 1,
-                    text=pg_text,
-                    start_index=pg,
-                    end_index=pg,
-                ))
+                section_node.nodes.append(
+                    TreeNode(
+                        title=pg_title,
+                        level=heading.level + 1,
+                        text=pg_text,
+                        start_index=pg,
+                        end_index=pg,
+                    )
+                )
             if section_node.nodes:
                 section_node.text = None
 
@@ -1215,13 +1258,15 @@ def _build_page_based_tree(
         )
 
         for h in headings_on_page[1:]:
-            node.nodes.append(TreeNode(
-                title=h.title,
-                level=2,
-                text=h.text_content or None,
-                start_index=pg,
-                end_index=pg,
-            ))
+            node.nodes.append(
+                TreeNode(
+                    title=h.title,
+                    level=2,
+                    text=h.text_content or None,
+                    start_index=pg,
+                    end_index=pg,
+                )
+            )
 
         nodes.append(node)
 

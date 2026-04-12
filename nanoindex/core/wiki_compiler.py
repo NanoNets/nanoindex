@@ -24,6 +24,7 @@ from nanoindex.utils.tree_ops import iter_nodes
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _outline_md(nodes: list[TreeNode], indent: int = 0) -> list[str]:
     """Render a tree outline as markdown bullet list lines."""
     lines: list[str] = []
@@ -42,6 +43,7 @@ def _outline_md(nodes: list[TreeNode], indent: int = 0) -> list[str]:
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 def compile_document_page(
     tree: DocumentTree,
@@ -339,13 +341,10 @@ def compile_query_page(
             doc_slug = slugify(cit.doc_name) if cit.doc_name else ""
             if doc_slug:
                 lines.append(
-                    f"- [[documents/{doc_slug}|{cit.title}]] "
-                    f"(pp. {pages_str}, node {cit.node_id})"
+                    f"- [[documents/{doc_slug}|{cit.title}]] (pp. {pages_str}, node {cit.node_id})"
                 )
             else:
-                lines.append(
-                    f"- {cit.title} (pp. {pages_str}, node {cit.node_id})"
-                )
+                lines.append(f"- {cit.title} (pp. {pages_str}, node {cit.node_id})")
         lines.append("")
 
     # Related concepts
@@ -362,6 +361,7 @@ def compile_query_page(
 # ---------------------------------------------------------------------------
 # Incremental update
 # ---------------------------------------------------------------------------
+
 
 def _collect_entity_data(
     entity_name: str,
@@ -395,16 +395,12 @@ def _collect_entity_data(
                 key = (rel.target, rel.keywords)
                 if key not in seen_rels:
                     seen_rels.add(key)
-                    relationships.append(
-                        (rel.target, slugify(rel.target), rel.keywords)
-                    )
+                    relationships.append((rel.target, slugify(rel.target), rel.keywords))
             elif rel.target == entity_name:
                 key = (rel.source, rel.keywords)
                 if key not in seen_rels:
                     seen_rels.add(key)
-                    relationships.append(
-                        (rel.source, slugify(rel.source), rel.keywords)
-                    )
+                    relationships.append((rel.source, slugify(rel.source), rel.keywords))
 
     return entity_type, descriptions, source_docs, relationships
 
@@ -452,8 +448,8 @@ def incremental_update(
                 config.concept_index[ent.name].append(new_doc.doc_id)
 
             # Merge from all graphs
-            entity_type, descriptions, source_docs, relationships = (
-                _collect_entity_data(ent.name, all_graphs, all_doc_slugs)
+            entity_type, descriptions, source_docs, relationships = _collect_entity_data(
+                ent.name, all_graphs, all_doc_slugs
             )
 
             concept_md = compile_concept_page(
@@ -463,9 +459,7 @@ def incremental_update(
                 source_docs=source_docs,
                 relationships=relationships,
             )
-            (concepts_dir / f"{ent_slug}.md").write_text(
-                concept_md, encoding="utf-8"
-            )
+            (concepts_dir / f"{ent_slug}.md").write_text(concept_md, encoding="utf-8")
 
     # 3. Regenerate index
     index_md = compile_index_page(config, query_count=0)

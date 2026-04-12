@@ -18,48 +18,141 @@ logger = logging.getLogger(__name__)
 # Domain label presets — tuned for real document types
 DOMAIN_LABELS = {
     "financial": [
-        "Company", "Person", "Revenue", "NetIncome", "OperatingIncome",
-        "GrossProfit", "EPS", "Segment", "FiscalPeriod", "FinancialMetric",
-        "CashFlow", "Debt", "Dividend", "Acquisition", "Location",
+        "Company",
+        "Person",
+        "Revenue",
+        "NetIncome",
+        "OperatingIncome",
+        "GrossProfit",
+        "EPS",
+        "Segment",
+        "FiscalPeriod",
+        "FinancialMetric",
+        "CashFlow",
+        "Debt",
+        "Dividend",
+        "Acquisition",
+        "Location",
     ],
     "sec_10k": [
-        "Company", "ExecutiveName", "Revenue", "NetIncome", "OperatingIncome",
-        "GrossMargin", "EPS", "BusinessSegment", "FiscalYear", "FinancialMetric",
-        "CapitalExpenditure", "WorkingCapital", "TotalAssets", "TotalDebt",
-        "SharesOutstanding", "Dividend", "Acquisition", "Restructuring",
+        "Company",
+        "ExecutiveName",
+        "Revenue",
+        "NetIncome",
+        "OperatingIncome",
+        "GrossMargin",
+        "EPS",
+        "BusinessSegment",
+        "FiscalYear",
+        "FinancialMetric",
+        "CapitalExpenditure",
+        "WorkingCapital",
+        "TotalAssets",
+        "TotalDebt",
+        "SharesOutstanding",
+        "Dividend",
+        "Acquisition",
+        "Restructuring",
     ],
     "sec_10q": [
-        "Company", "Revenue", "NetIncome", "EPS", "BusinessSegment",
-        "FiscalQuarter", "FinancialMetric", "CashFlow", "WorkingCapital",
-        "QuickRatio", "InventoryTurnover", "DebtSecurity", "Location",
+        "Company",
+        "Revenue",
+        "NetIncome",
+        "EPS",
+        "BusinessSegment",
+        "FiscalQuarter",
+        "FinancialMetric",
+        "CashFlow",
+        "WorkingCapital",
+        "QuickRatio",
+        "InventoryTurnover",
+        "DebtSecurity",
+        "Location",
     ],
     "earnings": [
-        "Company", "ExecutiveName", "Revenue", "EPS", "Guidance",
-        "BusinessSegment", "FiscalQuarter", "GrowthRate", "FinancialMetric",
-        "AdjustedEPS", "FreeCashFlow", "ARR", "NetRevenueRetention",
+        "Company",
+        "ExecutiveName",
+        "Revenue",
+        "EPS",
+        "Guidance",
+        "BusinessSegment",
+        "FiscalQuarter",
+        "GrowthRate",
+        "FinancialMetric",
+        "AdjustedEPS",
+        "FreeCashFlow",
+        "ARR",
+        "NetRevenueRetention",
     ],
     "legal": [
-        "Party", "Court", "CaseNumber", "Statute", "Jurisdiction",
-        "Damages", "LegalTerm", "Judge", "FilingDate", "Attorney",
+        "Party",
+        "Court",
+        "CaseNumber",
+        "Statute",
+        "Jurisdiction",
+        "Damages",
+        "LegalTerm",
+        "Judge",
+        "FilingDate",
+        "Attorney",
     ],
     "legal_contract": [
-        "Party", "ContractName", "AgreementDate", "EffectiveDate", "ExpirationDate",
-        "RenewalTerm", "GoverningLaw", "Jurisdiction", "LicenseGrant", "IPAsset",
-        "LiabilityLimit", "Damages", "IndemnificationClause", "TerminationCondition",
-        "NonCompete", "NonSolicit", "Obligation", "InsuranceRequirement", "WarrantyPeriod",
-        "Attorney", "MonetaryAmount", "ConfidentialityObligation",
+        "Party",
+        "ContractName",
+        "AgreementDate",
+        "EffectiveDate",
+        "ExpirationDate",
+        "RenewalTerm",
+        "GoverningLaw",
+        "Jurisdiction",
+        "LicenseGrant",
+        "IPAsset",
+        "LiabilityLimit",
+        "Damages",
+        "IndemnificationClause",
+        "TerminationCondition",
+        "NonCompete",
+        "NonSolicit",
+        "Obligation",
+        "InsuranceRequirement",
+        "WarrantyPeriod",
+        "Attorney",
+        "MonetaryAmount",
+        "ConfidentialityObligation",
     ],
     "medical": [
-        "Patient", "Diagnosis", "Drug", "Procedure", "Dosage",
-        "Symptom", "LabTest", "Physician", "Hospital", "InsuranceCode",
+        "Patient",
+        "Diagnosis",
+        "Drug",
+        "Procedure",
+        "Dosage",
+        "Symptom",
+        "LabTest",
+        "Physician",
+        "Hospital",
+        "InsuranceCode",
     ],
     "insurance": [
-        "Insurer", "PolicyNumber", "ClaimNumber", "CoverageType",
-        "Premium", "Deductible", "LossAmount", "ReserveAmount", "ClaimDate",
+        "Insurer",
+        "PolicyNumber",
+        "ClaimNumber",
+        "CoverageType",
+        "Premium",
+        "Deductible",
+        "LossAmount",
+        "ReserveAmount",
+        "ClaimDate",
     ],
     "generic": [
-        "Organization", "Person", "Location", "Date", "Product",
-        "Event", "Money", "Percentage", "Document",
+        "Organization",
+        "Person",
+        "Location",
+        "Date",
+        "Product",
+        "Event",
+        "Money",
+        "Percentage",
+        "Document",
     ],
 }
 
@@ -79,11 +172,72 @@ def _detect_domain(text: str, doc_name: str = "") -> str:
     # Content-based detection
     text_lower = text[:5000].lower()
     scores = {
-        "financial": sum(1 for w in ["revenue", "earnings", "fiscal", "eps", "ebitda", "sec", "10-k", "margin", "operating income", "net income"] if w in text_lower),
-        "legal": sum(1 for w in ["court", "plaintiff", "defendant", "statute", "jurisdiction", "filing", "verdict", "case no"] if w in text_lower),
-        "legal_contract": sum(1 for w in ["agreement", "hereby", "whereas", "shall", "party", "termination", "indemnify", "governing law", "confidential", "non-disclosure", "merger", "acquisition"] if w in text_lower),
-        "medical": sum(1 for w in ["patient", "diagnosis", "treatment", "clinical", "dosage", "symptom", "hospital"] if w in text_lower),
-        "insurance": sum(1 for w in ["policy", "claim", "premium", "coverage", "deductible", "insured", "loss run"] if w in text_lower),
+        "financial": sum(
+            1
+            for w in [
+                "revenue",
+                "earnings",
+                "fiscal",
+                "eps",
+                "ebitda",
+                "sec",
+                "10-k",
+                "margin",
+                "operating income",
+                "net income",
+            ]
+            if w in text_lower
+        ),
+        "legal": sum(
+            1
+            for w in [
+                "court",
+                "plaintiff",
+                "defendant",
+                "statute",
+                "jurisdiction",
+                "filing",
+                "verdict",
+                "case no",
+            ]
+            if w in text_lower
+        ),
+        "legal_contract": sum(
+            1
+            for w in [
+                "agreement",
+                "hereby",
+                "whereas",
+                "shall",
+                "party",
+                "termination",
+                "indemnify",
+                "governing law",
+                "confidential",
+                "non-disclosure",
+                "merger",
+                "acquisition",
+            ]
+            if w in text_lower
+        ),
+        "medical": sum(
+            1
+            for w in [
+                "patient",
+                "diagnosis",
+                "treatment",
+                "clinical",
+                "dosage",
+                "symptom",
+                "hospital",
+            ]
+            if w in text_lower
+        ),
+        "insurance": sum(
+            1
+            for w in ["policy", "claim", "premium", "coverage", "deductible", "insured", "loss run"]
+            if w in text_lower
+        ),
     }
     best = max(scores, key=scores.get)
     return best if scores[best] >= 3 else "generic"
@@ -102,6 +256,7 @@ def _load_gliner2():
         raise ImportError("pip install gliner2 — required for GLiNER2 entity extraction")
 
     import torch
+
     device = "cuda" if torch.cuda.is_available() else "cpu"
     logger.info("Loading GLiNER2 large model on %s...", device)
     model = GLiNER2.from_pretrained("fastino/gliner2-large-v1")
@@ -146,6 +301,7 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
     # Auto-select model: GLiNER2 large on GPU, GLiNER v1 medium on CPU
     try:
         import torch
+
         use_v2 = torch.cuda.is_available()
     except ImportError:
         use_v2 = False
@@ -173,7 +329,7 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
     _MAX_TEXT = 4096 if model_version == "v2" else 512
 
     chunks: list[str] = []
-    chunk_meta: list[tuple] = []    # (node_index, node_id, chunk_start)
+    chunk_meta: list[tuple] = []  # (node_index, node_id, chunk_start)
 
     for ni_idx, node in enumerate(all_nodes):
         text = node.text or ""
@@ -182,7 +338,7 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
         # For v1 with smaller context, use multiple chunks per node
         if model_version == "v1":
             for cs in range(0, min(len(text), 10000), 500):
-                chunk = text[cs:cs + 512]
+                chunk = text[cs : cs + 512]
                 if len(chunk) >= 20:
                     chunks.append(chunk)
                     chunk_meta.append((ni_idx, node.node_id, cs))
@@ -195,7 +351,10 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
 
     logger.info(
         "GLiNER %s: %d chunks from %d nodes (batch_size=%d, device=%s)",
-        model_version, len(chunks), len(all_nodes), batch_size,
+        model_version,
+        len(chunks),
+        len(all_nodes),
+        batch_size,
         "cuda" if on_gpu else "cpu",
     )
 
@@ -205,7 +364,10 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
         # GLiNER2 batch API
         try:
             batch_results = model.batch_extract_entities(
-                chunks, labels, batch_size=batch_size, threshold=threshold,
+                chunks,
+                labels,
+                batch_size=batch_size,
+                threshold=threshold,
             )
         except Exception:
             logger.warning("Batch extraction failed, falling back to sequential", exc_info=True)
@@ -281,22 +443,29 @@ def extract_entities_gliner(tree: DocumentTree) -> DocumentGraph:
         if info["descriptions"]:
             descs = sorted(info["descriptions"], key=len)
             desc = descs[0]
-        entities.append(Entity(
-            name=info["name"],
-            entity_type=info["type"],
-            description=desc[:200],
-            source_node_ids=sorted(info["node_ids"]),
-        ))
+        entities.append(
+            Entity(
+                name=info["name"],
+                entity_type=info["type"],
+                description=desc[:200],
+                source_node_ids=sorted(info["node_ids"]),
+            )
+        )
 
     logger.info(
         "GLiNER2 extraction (%s domain): %d entities, %d relationships from %d nodes",
-        domain, len(entities), len(relationships), len(all_nodes),
+        domain,
+        len(entities),
+        len(relationships),
+        len(all_nodes),
     )
 
     return DocumentGraph(doc_name=tree.doc_name, entities=entities, relationships=relationships)
 
 
-def extract_entities_gliner_v1(tree: DocumentTree, *, skip_relationships: bool = False) -> DocumentGraph:
+def extract_entities_gliner_v1(
+    tree: DocumentTree, *, skip_relationships: bool = False
+) -> DocumentGraph:
     """Fast extraction using GLiNER v1 medium — ~56ms/call, ~20s per 150-node doc.
 
     Use this for bulk graph building. Optionally skip spaCy relationships for speed.
@@ -323,7 +492,7 @@ def extract_entities_gliner_v1(tree: DocumentTree, *, skip_relationships: bool =
             continue
 
         for chunk_start in range(0, min(len(text), _MAX_TEXT), _CHUNK_STEP):
-            chunk = text[chunk_start:chunk_start + _CHUNK_SIZE]
+            chunk = text[chunk_start : chunk_start + _CHUNK_SIZE]
             if len(chunk) < 20:
                 continue
 
@@ -369,16 +538,21 @@ def extract_entities_gliner_v1(tree: DocumentTree, *, skip_relationships: bool =
         if info["descriptions"]:
             descs = sorted(info["descriptions"], key=len)
             desc = descs[0]
-        entities.append(Entity(
-            name=info["name"],
-            entity_type=info["type"],
-            description=desc[:200],
-            source_node_ids=sorted(info["node_ids"]),
-        ))
+        entities.append(
+            Entity(
+                name=info["name"],
+                entity_type=info["type"],
+                description=desc[:200],
+                source_node_ids=sorted(info["node_ids"]),
+            )
+        )
 
     logger.info(
         "GLiNER v1 extraction (%s domain): %d entities, %d relationships from %d nodes",
-        domain, len(entities), len(relationships), len(all_nodes),
+        domain,
+        len(entities),
+        len(relationships),
+        len(all_nodes),
     )
     return DocumentGraph(doc_name=tree.doc_name, entities=entities, relationships=relationships)
 
@@ -414,15 +588,21 @@ def _extract_relationships_spacy(nodes, entity_mentions):
                     if child.dep_ in ("dobj", "attr", "pobj", "oprd"):
                         obj = child.text.lower()
                         if subj in entity_mentions and obj in entity_mentions:
-                            key = (entity_mentions[subj]["name"], entity_mentions[obj]["name"], verb.lemma_)
+                            key = (
+                                entity_mentions[subj]["name"],
+                                entity_mentions[obj]["name"],
+                                verb.lemma_,
+                            )
                             if key not in seen:
                                 seen.add(key)
-                                relationships.append(Relationship(
-                                    source=entity_mentions[subj]["name"],
-                                    target=entity_mentions[obj]["name"],
-                                    keywords=verb.lemma_,
-                                    source_node_ids=[node.node_id],
-                                ))
+                                relationships.append(
+                                    Relationship(
+                                        source=entity_mentions[subj]["name"],
+                                        target=entity_mentions[obj]["name"],
+                                        keywords=verb.lemma_,
+                                        source_node_ids=[node.node_id],
+                                    )
+                                )
 
         # Prepositional relationships: "CEO of Apple", "headquartered in Cupertino"
         for token in doc:
@@ -433,14 +613,20 @@ def _extract_relationships_spacy(nodes, entity_mentions):
                         pobj_text = pobj.text.lower()
                         if head_text in entity_mentions and pobj_text in entity_mentions:
                             rel_text = f"{token.head.text} {token.text}"
-                            key = (entity_mentions[head_text]["name"], entity_mentions[pobj_text]["name"], rel_text)
+                            key = (
+                                entity_mentions[head_text]["name"],
+                                entity_mentions[pobj_text]["name"],
+                                rel_text,
+                            )
                             if key not in seen:
                                 seen.add(key)
-                                relationships.append(Relationship(
-                                    source=entity_mentions[head_text]["name"],
-                                    target=entity_mentions[pobj_text]["name"],
-                                    keywords=rel_text,
-                                    source_node_ids=[node.node_id],
-                                ))
+                                relationships.append(
+                                    Relationship(
+                                        source=entity_mentions[head_text]["name"],
+                                        target=entity_mentions[pobj_text]["name"],
+                                        keywords=rel_text,
+                                        source_node_ids=[node.node_id],
+                                    )
+                                )
 
     return relationships

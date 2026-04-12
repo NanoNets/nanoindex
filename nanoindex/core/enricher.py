@@ -73,10 +73,14 @@ async def enrich_tree(
     """
     model = config.summary_model or llm.model
     domain = getattr(tree, "domain", "") or ""
-    summary_prompt = _SUMMARY_PROMPT_FINANCE if domain in _FINANCE_DOMAINS else _SUMMARY_PROMPT_GENERAL
+    summary_prompt = (
+        _SUMMARY_PROMPT_FINANCE if domain in _FINANCE_DOMAINS else _SUMMARY_PROMPT_GENERAL
+    )
 
     if config.add_summaries:
-        await _generate_summaries(tree.structure, llm, model, config.min_node_tokens, summary_prompt)
+        await _generate_summaries(
+            tree.structure, llm, model, config.min_node_tokens, summary_prompt
+        )
 
     if config.add_doc_description:
         tree.doc_description = await _generate_doc_description(tree, llm, model)
@@ -110,10 +114,13 @@ async def _generate_summaries(
             if node.nodes:
                 child_summaries = [
                     f"- {c.title}: {c.summary}"
-                    for c in node.nodes if c.summary and c.summary != c.title
+                    for c in node.nodes
+                    if c.summary and c.summary != c.title
                 ]
                 if child_summaries:
-                    content = f"Section: {node.title}\nContains:\n" + "\n".join(child_summaries[:15])
+                    content = f"Section: {node.title}\nContains:\n" + "\n".join(
+                        child_summaries[:15]
+                    )
                 else:
                     node.summary = content[:200] if content else node.title
                     return
@@ -131,16 +138,28 @@ async def _generate_summaries(
                     return
                 except Exception as exc:
                     exc_str = str(exc).lower()
-                    if "rate" in exc_str or "429" in exc_str or "quota" in exc_str or "overloaded" in exc_str:
-                        delay = _RETRY_DELAY * (2 ** attempt)
-                        logger.info("Rate limited on '%s', retrying in %ds (attempt %d/%d)",
-                                    node.title[:30], delay, attempt + 1, _MAX_RETRIES)
+                    if (
+                        "rate" in exc_str
+                        or "429" in exc_str
+                        or "quota" in exc_str
+                        or "overloaded" in exc_str
+                    ):
+                        delay = _RETRY_DELAY * (2**attempt)
+                        logger.info(
+                            "Rate limited on '%s', retrying in %ds (attempt %d/%d)",
+                            node.title[:30],
+                            delay,
+                            attempt + 1,
+                            _MAX_RETRIES,
+                        )
                         await asyncio.sleep(delay)
                     else:
                         logger.warning("Summary failed for '%s': %s", node.title[:30], exc)
                         node.summary = node.title
                         return
-            logger.warning("Summary failed after %d retries for '%s'", _MAX_RETRIES, node.title[:30])
+            logger.warning(
+                "Summary failed after %d retries for '%s'", _MAX_RETRIES, node.title[:30]
+            )
             node.summary = node.title
 
     # Phase 1: summarise leaves concurrently

@@ -87,9 +87,7 @@ Identify the problem and suggest corrections. Return JSON:
                     if 0 <= idx < len(rows):
                         rows.pop(idx)
                         removed += 1
-                corrections.append(
-                    f"Iteration {iteration + 1}: removed {removed} duplicate rows"
-                )
+                corrections.append(f"Iteration {iteration + 1}: removed {removed} duplicate rows")
 
             corrections.extend(fix.get("corrections", []))
         except Exception as exc:

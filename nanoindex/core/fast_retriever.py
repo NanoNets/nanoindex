@@ -115,7 +115,9 @@ async def fast_search(
         # Step 2: Graph expansion — follow relationships to related nodes
         if candidate_ids and config.graph_hops > 0:
             nx_graph = build_nx_graph(graph)
-            expanded = graph_expand(nx_graph, candidate_ids, entity_to_nodes, hops=config.graph_hops)
+            expanded = graph_expand(
+                nx_graph, candidate_ids, entity_to_nodes, hops=config.graph_hops
+            )
             new_from_graph = expanded - candidate_ids
             candidate_ids |= new_from_graph
             if new_from_graph:
@@ -160,10 +162,12 @@ async def fast_search(
         node = find_node(tree.structure, nid)
         if node:
             text = collect_text(node)
-            results.append(RetrievedNode(
-                node=node,
-                text=text,
-                doc_name=tree.doc_name,
-            ))
+            results.append(
+                RetrievedNode(
+                    node=node,
+                    text=text,
+                    doc_name=tree.doc_name,
+                )
+            )
 
     return results

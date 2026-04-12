@@ -80,8 +80,7 @@ def _extract_subtitle(node: TreeNode) -> str | None:
     # First try: child titles (most reliable — they often have quarter/segment labels)
     if node.nodes:
         child_titles = [
-            c.title for c in node.nodes
-            if c.title and c.title.strip().lower() != title_lower
+            c.title for c in node.nodes if c.title and c.title.strip().lower() != title_lower
         ]
         if child_titles:
             return "; ".join(child_titles[:3])
@@ -89,7 +88,7 @@ def _extract_subtitle(node: TreeNode) -> str | None:
     # Gather text: own text, then child text, then summary
     text = node.text or ""
     if not text.strip():
-        for child in (node.nodes or []):
+        for child in node.nodes or []:
             if (child.text or "").strip():
                 text = child.text
                 break
@@ -105,25 +104,26 @@ def _extract_subtitle(node: TreeNode) -> str | None:
     # Patterns like "Q1 2023", "FY2022", "Second Quarter", "Six Months", "2022 ACTUAL vs. 2021"
     first_chunk = text[:500]
     quarter_match = re.search(
-        r'(Q[1-4]\s*\d{4}|(?:First|Second|Third|Fourth)\s+Quarter|'
-        r'(?:Six|Three|Nine|Twelve)\s+Months|'
-        r'(?:FY|Full[- ]?Year)\s*\d{4}|'
-        r'\d{4}\s*(?:QTD|YTD)|'
-        r'\d{4}\s+ACTUAL\s+vs\.?\s+\d{4})',
-        first_chunk, re.IGNORECASE,
+        r"(Q[1-4]\s*\d{4}|(?:First|Second|Third|Fourth)\s+Quarter|"
+        r"(?:Six|Three|Nine|Twelve)\s+Months|"
+        r"(?:FY|Full[- ]?Year)\s*\d{4}|"
+        r"\d{4}\s*(?:QTD|YTD)|"
+        r"\d{4}\s+ACTUAL\s+vs\.?\s+\d{4})",
+        first_chunk,
+        re.IGNORECASE,
     )
     if quarter_match:
         return quarter_match.group(0).strip()
 
     # Strategy 2: Find a subtitle after the main title
     # Often the text starts with the title then has a more specific subtitle on the next line
-    lines = [l.strip() for l in text[:500].split("\n") if l.strip()]
+    lines = [ln.strip() for ln in text[:500].split("\n") if ln.strip()]
 
     # Skip lines that are just the title
     title_lower = (node.title or "").strip().lower()
     meaningful_lines = []
     for line in lines[:5]:
-        clean = re.sub(r'<[^>]+>', '', line).strip()  # strip HTML tags
+        clean = re.sub(r"<[^>]+>", "", line).strip()  # strip HTML tags
         if not clean:
             continue
         if clean.lower() == title_lower:
@@ -136,7 +136,12 @@ def _extract_subtitle(node: TreeNode) -> str | None:
         # Take the first meaningful line that's different from title
         subtitle = meaningful_lines[0]
         # Clean up common boilerplate prefixes (company name + "and Subsidiaries")
-        subtitle = re.sub(r'^[A-Z][A-Za-z\s&,\.]+(?:and\s+)?(?:Subsidiaries|Inc\.|Corp\.|LLC|Ltd\.?)\s*', '', subtitle, flags=re.IGNORECASE).strip()
+        subtitle = re.sub(
+            r"^[A-Z][A-Za-z\s&,\.]+(?:and\s+)?(?:Subsidiaries|Inc\.|Corp\.|LLC|Ltd\.?)\s*",
+            "",
+            subtitle,
+            flags=re.IGNORECASE,
+        ).strip()
         # Truncate to reasonable length
         if len(subtitle) > 80:
             subtitle = subtitle[:77] + "..."
@@ -145,11 +150,12 @@ def _extract_subtitle(node: TreeNode) -> str | None:
 
     # Strategy 3: Look for segment/topic keywords
     segment_match = re.search(
-        r'((?:Income|Revenue|Sales|Earnings|Assets|Liabilities|Equity|Cash Flow|'
-        r'Operating|Investing|Financing|Segment|Geographic|Region|'
-        r'Consumer|Pharmaceutical|MedTech|Industrial|Healthcare|'
-        r'Innovative Medicine|Essential Health)\s*(?:by\s+\w+)?)',
-        first_chunk, re.IGNORECASE,
+        r"((?:Income|Revenue|Sales|Earnings|Assets|Liabilities|Equity|Cash Flow|"
+        r"Operating|Investing|Financing|Segment|Geographic|Region|"
+        r"Consumer|Pharmaceutical|MedTech|Industrial|Healthcare|"
+        r"Innovative Medicine|Essential Health)\s*(?:by\s+\w+)?)",
+        first_chunk,
+        re.IGNORECASE,
     )
     if segment_match:
         return segment_match.group(0).strip()

@@ -234,7 +234,9 @@ async def extract_multimodal_entities(
             except Exception:
                 logger.warning(
                     "Modal processing failed for %s on page %d",
-                    item.content_type, item.page, exc_info=True,
+                    item.content_type,
+                    item.page,
+                    exc_info=True,
                 )
                 return
 
@@ -246,7 +248,9 @@ async def extract_multimodal_entities(
 
     logger.info(
         "Multimodal extraction: %d entities, %d relationships from %d items",
-        len(entities), len(relationships), len(parsed.modal_contents),
+        len(entities),
+        len(relationships),
+        len(parsed.modal_contents),
     )
     return entities, relationships
 
@@ -255,17 +259,24 @@ async def extract_multimodal_entities(
 # Persistence
 # ---------------------------------------------------------------------------
 
+
 def save_graph(graph: DocumentGraph, path) -> None:
     """Save graph to JSON file."""
     from pathlib import Path
+
     with open(Path(path), "w") as f:
         json.dump(graph.model_dump(), f, ensure_ascii=False, indent=2)
-    logger.info("Saved graph (%d entities, %d rels) to %s",
-                len(graph.entities), len(graph.relationships), path)
+    logger.info(
+        "Saved graph (%d entities, %d rels) to %s",
+        len(graph.entities),
+        len(graph.relationships),
+        path,
+    )
 
 
 def load_graph(path) -> DocumentGraph:
     """Load graph from JSON file."""
     from pathlib import Path
+
     with open(Path(path)) as f:
         return DocumentGraph.model_validate(json.load(f))

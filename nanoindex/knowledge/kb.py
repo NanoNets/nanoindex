@@ -69,7 +69,8 @@ def _load_kb() -> FinancialKB:
     kb = FinancialKB(data)
     logger.info(
         "Financial KB loaded: %d terms, %d aliases",
-        len(kb.terms), len(kb._alias_index),
+        len(kb.terms),
+        len(kb._alias_index),
     )
     return kb
 

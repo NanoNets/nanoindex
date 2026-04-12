@@ -1,4 +1,5 @@
 """Extract key-value form fields from documents using V2 API."""
+
 import logging
 from nanoindex.models import ExtractedForm
 
@@ -6,9 +7,26 @@ logger = logging.getLogger(__name__)
 
 # Common schemas for auto-detection
 COMMON_SCHEMAS = {
-    "invoice": ["vendor", "invoice_number", "date", "due_date", "total", "tax", "subtotal", "line_items"],
+    "invoice": [
+        "vendor",
+        "invoice_number",
+        "date",
+        "due_date",
+        "total",
+        "tax",
+        "subtotal",
+        "line_items",
+    ],
     "receipt": ["store", "date", "items", "total", "tax", "payment_method"],
-    "insurance_dec": ["policy_number", "insured", "effective_date", "expiration_date", "limits", "deductible", "premium"],
+    "insurance_dec": [
+        "policy_number",
+        "insured",
+        "effective_date",
+        "expiration_date",
+        "limits",
+        "deductible",
+        "premium",
+    ],
 }
 
 
@@ -24,6 +42,7 @@ async def extract_form_v2(file_id: str, client, fields: list[str] | None = None)
 
         if isinstance(content, str):
             import json
+
             try:
                 content = json.loads(content)
             except Exception:
@@ -45,6 +64,7 @@ async def extract_form_v2(file_id: str, client, fields: list[str] | None = None)
 def extract_form_from_markdown(markdown: str) -> ExtractedForm:
     """Heuristic form extraction from markdown using key: value pattern matching."""
     import re
+
     fields = {}
     for line in markdown.split("\n"):
         match = re.match(r"^([A-Za-z][^:]{1,50}):\s*(.+)$", line.strip())

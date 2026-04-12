@@ -88,10 +88,14 @@ class NanonetsV2Client:
                 if json_body is not None:
                     resp = await client.request(method, path, json=json_body, timeout=req_timeout)
                 else:
-                    resp = await client.request(method, path, data=data, files=files, timeout=req_timeout)
+                    resp = await client.request(
+                        method, path, data=data, files=files, timeout=req_timeout
+                    )
 
                 if resp.status_code == 429:
-                    retry_after = float(resp.headers.get("Retry-After", _BACKOFF_BASE ** (attempt + 1)))
+                    retry_after = float(
+                        resp.headers.get("Retry-After", _BACKOFF_BASE ** (attempt + 1))
+                    )
                     if attempt < _MAX_RETRIES - 1:
                         logger.warning("Rate limited (429), retrying in %.1fs …", retry_after)
                         await asyncio.sleep(retry_after)
@@ -101,7 +105,9 @@ class NanonetsV2Client:
                 if resp.status_code >= 500:
                     if attempt < _MAX_RETRIES - 1:
                         wait = _BACKOFF_BASE ** (attempt + 1)
-                        logger.warning("Server error %d, retrying in %.1fs …", resp.status_code, wait)
+                        logger.warning(
+                            "Server error %d, retrying in %.1fs …", resp.status_code, wait
+                        )
                         await asyncio.sleep(wait)
                         continue
 
@@ -112,7 +118,11 @@ class NanonetsV2Client:
                     )
 
                 if resp.status_code == 400:
-                    body = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+                    body = (
+                        resp.json()
+                        if resp.headers.get("content-type", "").startswith("application/json")
+                        else {}
+                    )
                     detail = body.get("detail", resp.text[:200])
                     raise ExtractionError(f"Bad request: {detail}")
 
@@ -123,7 +133,9 @@ class NanonetsV2Client:
                 last_exc = exc
                 if attempt < _MAX_RETRIES - 1:
                     wait = _BACKOFF_BASE ** (attempt + 1)
-                    logger.warning("Connection error: %s. Retrying in %.1fs …", type(exc).__name__, wait)
+                    logger.warning(
+                        "Connection error: %s. Retrying in %.1fs …", type(exc).__name__, wait
+                    )
                     await asyncio.sleep(wait)
                     continue
                 raise ExtractionError(
@@ -148,7 +160,10 @@ class NanonetsV2Client:
         with open(path, "rb") as f:
             files = {"file": (path.name, f, "application/octet-stream")}
             resp = await self._request_with_retry(
-                "POST", "/api/v2/files", files=files, timeout=self._upload_timeout,
+                "POST",
+                "/api/v2/files",
+                files=files,
+                timeout=self._upload_timeout,
             )
 
         data = resp.json()
@@ -413,12 +428,20 @@ class NanonetsV2Client:
 
         logger.info(
             "Parsed %s: %d pages, %d bounding boxes in %.1fs",
-            Path(file_path).name, page_count, len(bounding_boxes), elapsed,
+            Path(file_path).name,
+            page_count,
+            len(bounding_boxes),
+            elapsed,
         )
 
         # Final safety: markdown MUST be a string, period.
         while isinstance(content, dict):
-            content = content.get("content", "") or content.get("markdown", "") or content.get("text", "") or ""
+            content = (
+                content.get("content", "")
+                or content.get("markdown", "")
+                or content.get("text", "")
+                or ""
+            )
         if not isinstance(content, str):
             content = str(content) if content else ""
 

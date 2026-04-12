@@ -3,19 +3,21 @@
 Groups densely-connected entities into communities for global queries.
 Communities enable global queries like "What are the main themes?"
 """
+
 import logging
-from nanoindex.models import DocumentGraph, Entity
+from nanoindex.models import DocumentGraph
 
 logger = logging.getLogger(__name__)
 
 
 class Community:
     """A group of related entities."""
+
     def __init__(self, id: int, entity_names: list[str], label: str = ""):
         self.id = id
         self.entity_names = entity_names
         self.label = label  # auto-generated or LLM-generated
-        self.summary = ""   # LLM-generated summary
+        self.summary = ""  # LLM-generated summary
 
 
 def detect_communities(graph: DocumentGraph) -> list[Community]:
@@ -41,13 +43,13 @@ def detect_communities(graph: DocumentGraph) -> list[Community]:
 
     # Louvain community detection
     from networkx.algorithms.community import louvain_communities
+
     try:
         communities_sets = louvain_communities(G, resolution=1.0, seed=42)
     except Exception:
         return []
 
     communities = []
-    entity_map = {e.name.lower(): e for e in graph.entities}
 
     for idx, members in enumerate(communities_sets):
         if len(members) < 2:
@@ -61,11 +63,13 @@ def detect_communities(graph: DocumentGraph) -> list[Community]:
         top_names = [n for n, _ in degrees[:3]]
         label = " / ".join(top_names)
 
-        communities.append(Community(
-            id=idx,
-            entity_names=member_list,
-            label=label,
-        ))
+        communities.append(
+            Community(
+                id=idx,
+                entity_names=member_list,
+                label=label,
+            )
+        )
 
     logger.info("Detected %d communities from %d entities", len(communities), len(G.nodes))
     return communities
@@ -90,8 +94,11 @@ def auto_summarize_community(community: Community, graph: DocumentGraph) -> str:
 
     # Add key relationships within community
     member_set = {n.lower() for n in community.entity_names}
-    internal_rels = [r for r in graph.relationships
-                     if r.source.lower() in member_set and r.target.lower() in member_set]
+    internal_rels = [
+        r
+        for r in graph.relationships
+        if r.source.lower() in member_set and r.target.lower() in member_set
+    ]
 
     if internal_rels:
         lines.append(f"\nRelationships ({len(internal_rels)}):")
@@ -111,6 +118,8 @@ What is the theme or topic that connects them?
 
 Summary:"""
     try:
-        return await llm.chat([{"role": "user", "content": prompt}], max_tokens=200, temperature=0.0)
+        return await llm.chat(
+            [{"role": "user", "content": prompt}], max_tokens=200, temperature=0.0
+        )
     except Exception:
         return auto_summarize_community(community, graph)

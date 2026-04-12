@@ -21,15 +21,23 @@ from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from nanoindex.core.document_index import DocumentIndex
+    from nanoindex.models import DocumentGraph
 
 from nanoindex.config import NanoIndexConfig
 from nanoindex.core.llm import LLMClient
 from nanoindex.models import (
-    Answer, Citation, DocumentTree,
-    RetrievedNode, TreeNode,
+    Answer,
+    Citation,
+    DocumentTree,
+    RetrievedNode,
+    TreeNode,
 )
 from nanoindex.utils.tree_ops import (
-    collect_text, find_node, find_siblings, iter_nodes, tree_to_json_outline,
+    collect_text,
+    find_node,
+    find_siblings,
+    iter_nodes,
+    tree_to_json_outline,
 )
 
 logger = logging.getLogger(__name__)
@@ -329,15 +337,36 @@ Instructions:
 Return ONLY the final answer (corrected if needed, or original if correct). \
 Do not include meta-commentary about the verification process."""
 
-_HAS_NUMBERS = re.compile(r"\d+[\d,]*\.?\d*\s*[%$BMKbmk]|\$\s*\d|ratio|margin|ROA|ROE|EPS", re.IGNORECASE)
+_HAS_NUMBERS = re.compile(
+    r"\d+[\d,]*\.?\d*\s*[%$BMKbmk]|\$\s*\d|ratio|margin|ROA|ROE|EPS", re.IGNORECASE
+)
 
 # Financial document indicators
 _FINANCIAL_KEYWORDS = {
-    "10-k", "10-q", "8-k", "10k", "10q", "8k", "sec filing",
-    "income statement", "balance sheet", "cash flow", "revenue",
-    "earnings", "fiscal", "eps", "ebitda", "net income", "operating income",
-    "gross margin", "roe", "roa", "working capital", "dividend",
-    "shareholders", "consolidated statements",
+    "10-k",
+    "10-q",
+    "8-k",
+    "10k",
+    "10q",
+    "8k",
+    "sec filing",
+    "income statement",
+    "balance sheet",
+    "cash flow",
+    "revenue",
+    "earnings",
+    "fiscal",
+    "eps",
+    "ebitda",
+    "net income",
+    "operating income",
+    "gross margin",
+    "roe",
+    "roa",
+    "working capital",
+    "dividend",
+    "shareholders",
+    "consolidated statements",
 }
 
 
@@ -353,6 +382,7 @@ def _is_financial_doc(doc_name: str, query: str = "") -> bool:
 # ------------------------------------------------------------------
 # Query decomposition
 # ------------------------------------------------------------------
+
 
 async def _decompose_query(query: str, llm: LLMClient, *, financial: bool = True) -> dict:
     """Break the query into required data points and statements."""
@@ -386,6 +416,7 @@ def _format_decomposition(decomp: dict) -> str:
 # ------------------------------------------------------------------
 # JSON parsing
 # ------------------------------------------------------------------
+
 
 def _parse_agent_response(text: str) -> dict:
     """Extract a JSON object from the LLM response, robustly."""
@@ -458,6 +489,7 @@ def _parse_node_ids(data: dict) -> list[str]:
 # Content building helpers
 # ------------------------------------------------------------------
 
+
 def _build_section_text(nodes: list[RetrievedNode]) -> str:
     parts: list[str] = []
     for rn in nodes:
@@ -470,7 +502,9 @@ def _build_section_text(nodes: list[RetrievedNode]) -> str:
     return "\n\n".join(parts)
 
 
-def _collect_page_numbers(nodes: list[RetrievedNode], limit: int = _MAX_PAGES_PER_ROUND) -> list[int]:
+def _collect_page_numbers(
+    nodes: list[RetrievedNode], limit: int = _MAX_PAGES_PER_ROUND
+) -> list[int]:
     pages: list[int] = []
     seen: set[int] = set()
     for rn in nodes:
@@ -517,6 +551,7 @@ def _remaining_outline_json(
 # Node resolution
 # ------------------------------------------------------------------
 
+
 def _resolve_node(
     structure: list[TreeNode],
     nid: str,
@@ -562,7 +597,10 @@ def _fuzzy_find_by_title(
     if best_node:
         logger.info(
             "Fuzzy title match: '%s' → '%s' [%s] (score=%.2f)",
-            title, best_node.title, best_node.node_id, best_score,
+            title,
+            best_node.title,
+            best_node.node_id,
+            best_score,
         )
     return best_node
 
@@ -601,7 +639,9 @@ def _resolve_nodes(
             if siblings:
                 logger.info(
                     "Auto-expanded node '%s' with %d siblings: %s",
-                    nid, len(siblings), [s.node_id for s in siblings],
+                    nid,
+                    len(siblings),
+                    [s.node_id for s in siblings],
                 )
 
     return results
@@ -610,6 +650,7 @@ def _resolve_nodes(
 # ------------------------------------------------------------------
 # Agent retrieval loop (retrieval only — no answering)
 # ------------------------------------------------------------------
+
 
 async def _run_retrieval(
     query: str,
@@ -661,7 +702,8 @@ async def _run_retrieval(
     all_retrieved.extend(new_nodes)
     logger.info(
         "Agent round 1 selected %d nodes: %s",
-        len(new_nodes), [n.node.node_id for n in new_nodes],
+        len(new_nodes),
+        [n.node.node_id for n in new_nodes],
     )
 
     if not new_nodes:
@@ -683,12 +725,15 @@ async def _run_retrieval(
 
             if deduped:
                 from nanoindex.utils.pdf import render_pages
+
                 image_uris = render_pages(pdf_path, deduped)
                 for uri in image_uris:
-                    content_parts.append({
-                        "type": "image_url",
-                        "image_url": {"url": uri},
-                    })
+                    content_parts.append(
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": uri},
+                        }
+                    )
 
         section_text = _build_section_text(new_nodes)
         remaining = _remaining_outline_json(tree, seen_ids, doc_index=doc_index)
@@ -718,12 +763,9 @@ async def _run_retrieval(
                 sufficiency_checked = True
                 remaining_outline = _remaining_outline_json(tree, seen_ids, doc_index=doc_index)
                 if remaining_outline:
-                    checklist = "\n".join(
-                        f"  - {dp}" for dp in decomposition["data_points"]
-                    )
+                    checklist = "\n".join(f"  - {dp}" for dp in decomposition["data_points"])
                     retrieved_titles = "\n".join(
-                        f"  - [{rn.node.node_id}] {rn.node.title}"
-                        for rn in all_retrieved
+                        f"  - [{rn.node.node_id}] {rn.node.title}" for rn in all_retrieved
                     )
                     suf_msg = _SUFFICIENCY.format(
                         checklist=checklist,
@@ -742,11 +784,14 @@ async def _run_retrieval(
                         suf_ids = _parse_node_ids(suf_data)
                         if suf_ids:
                             suf_thinking = suf_data.get("thinking", "")
-                            new_nodes = _resolve_nodes(tree.structure, suf_ids, seen_ids, thinking=suf_thinking)
+                            new_nodes = _resolve_nodes(
+                                tree.structure, suf_ids, seen_ids, thinking=suf_thinking
+                            )
                             all_retrieved.extend(new_nodes)
                             logger.info(
                                 "Sufficiency check retrieved %d more nodes: %s",
-                                len(new_nodes), [n.node.node_id for n in new_nodes],
+                                len(new_nodes),
+                                [n.node.node_id for n in new_nodes],
                             )
                             if new_nodes:
                                 continue
@@ -769,7 +814,9 @@ async def _run_retrieval(
             all_retrieved.extend(new_nodes)
             logger.info(
                 "Agent round %d requested %d more nodes: %s",
-                round_num, len(new_nodes), [n.node.node_id for n in new_nodes],
+                round_num,
+                len(new_nodes),
+                [n.node.node_id for n in new_nodes],
             )
             if not new_nodes:
                 logger.info("No new resolvable nodes, treating as done")
@@ -784,7 +831,9 @@ async def _run_retrieval(
             if new_nodes:
                 logger.info(
                     "Agent round %d (implicit select) %d nodes: %s",
-                    round_num, len(new_nodes), [n.node.node_id for n in new_nodes],
+                    round_num,
+                    len(new_nodes),
+                    [n.node.node_id for n in new_nodes],
                 )
                 continue
 
@@ -801,6 +850,7 @@ async def _run_retrieval(
 # ------------------------------------------------------------------
 # Answer generation (separate from retrieval)
 # ------------------------------------------------------------------
+
 
 async def _generate_answer(
     query: str,
@@ -832,6 +882,7 @@ async def _generate_answer(
         # Pure vision: send ONLY page images + question prompt (no extracted text)
         try:
             from nanoindex.utils.pdf import render_pages
+
             pages = sorted(page_numbers)[:_MAX_TOTAL_PAGES]
             image_uris = render_pages(pdf_path, pages)
 
@@ -845,14 +896,14 @@ async def _generate_answer(
 
             content_parts: list[dict[str, Any]] = []
             for uri in image_uris:
-                content_parts.append({
-                    "type": "image_url",
-                    "image_url": {"url": uri},
-                })
+                content_parts.append(
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": uri},
+                    }
+                )
             content_parts.append({"type": "text", "text": prompt})
-            messages: list[dict[str, Any]] = [
-                {"role": "user", "content": content_parts}
-            ]
+            messages: list[dict[str, Any]] = [{"role": "user", "content": content_parts}]
             logger.info("Pure vision answer: %d page images, no extracted text", len(pages))
             return await llm.chat(messages, temperature=0.0, max_tokens=2048)
         except Exception as exc:
@@ -874,18 +925,19 @@ async def _generate_answer(
     if use_vision and pdf_path and page_numbers:
         try:
             from nanoindex.utils.pdf import render_pages
+
             pages = sorted(page_numbers)[:_MAX_TOTAL_PAGES]
             image_uris = render_pages(pdf_path, pages)
             content_parts: list[dict[str, Any]] = []
             for uri in image_uris:
-                content_parts.append({
-                    "type": "image_url",
-                    "image_url": {"url": uri},
-                })
+                content_parts.append(
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": uri},
+                    }
+                )
             content_parts.append({"type": "text", "text": prompt})
-            messages: list[dict[str, Any]] = [
-                {"role": "user", "content": content_parts}
-            ]
+            messages: list[dict[str, Any]] = [{"role": "user", "content": content_parts}]
             return await llm.chat(messages, temperature=0.0, max_tokens=2048)
         except Exception as exc:
             logger.warning(
@@ -934,6 +986,7 @@ async def _verify_calculations(
 
 _SMALL_TREE_MAX_TEXT = 200_000  # Only dump full content if it fits in context
 
+
 def _is_small_tree(tree: DocumentTree) -> bool:
     """Return True when the tree is small enough to skip navigation.
 
@@ -962,6 +1015,7 @@ def _dump_all_content(tree: DocumentTree) -> list[RetrievedNode]:
 # Fix 4: Keyword fallback — scan all leaf nodes by keyword
 # ------------------------------------------------------------------
 
+
 def _keyword_search_nodes(
     tree: DocumentTree,
     query: str,
@@ -975,7 +1029,21 @@ def _keyword_search_nodes(
 
     for word in query.lower().split():
         cleaned = word.strip("?.,!\"'()[]")
-        if len(cleaned) > 3 and cleaned not in {"what", "which", "does", "have", "that", "this", "from", "with", "based", "about", "answer", "following", "question"}:
+        if len(cleaned) > 3 and cleaned not in {
+            "what",
+            "which",
+            "does",
+            "have",
+            "that",
+            "this",
+            "from",
+            "with",
+            "based",
+            "about",
+            "answer",
+            "following",
+            "question",
+        }:
             keywords.append(cleaned)
 
     if decomposition:
@@ -999,8 +1067,7 @@ def _keyword_search_nodes(
         title_lower = (node.title or "").lower()
         summary_lower = (node.summary or "").lower()
         score = sum(
-            1 for kw in keywords
-            if kw in text_lower or kw in title_lower or kw in summary_lower
+            1 for kw in keywords if kw in text_lower or kw in title_lower or kw in summary_lower
         )
         if score > 0:
             scored.append((score, node, text))
@@ -1042,8 +1109,7 @@ def _check_statement_coverage(
         return []
 
     retrieved_text = " ".join(
-        (rn.node.title or "") + " " + (rn.node.summary or "")
-        for rn in retrieved
+        (rn.node.title or "") + " " + (rn.node.summary or "") for rn in retrieved
     ).lower()
 
     missing_keywords: list[str] = []
@@ -1074,7 +1140,8 @@ def _check_statement_coverage(
     if extra:
         logger.info(
             "Statement guard added %d nodes: %s",
-            len(extra), [n.node.node_id for n in extra],
+            len(extra),
+            [n.node.node_id for n in extra],
         )
     return extra
 
@@ -1084,16 +1151,36 @@ def _check_statement_coverage(
 # ------------------------------------------------------------------
 
 _NOTES_TRIGGER_KEYWORDS: list[str] = [
-    "derivative", "notional", "hedging", "fair value",
-    "geographic", "region", "country", "international",
-    "segment", "business unit",
-    "restructuring", "impairment", "goodwill",
-    "lease", "right-of-use",
-    "stock-based compensation", "RSU", "restricted stock",
-    "acquisition", "merger", "divestiture",
-    "pension", "retirement", "benefit plan",
-    "debt", "borrowing", "credit facility",
-    "contingent", "litigation", "legal proceeding",
+    "derivative",
+    "notional",
+    "hedging",
+    "fair value",
+    "geographic",
+    "region",
+    "country",
+    "international",
+    "segment",
+    "business unit",
+    "restructuring",
+    "impairment",
+    "goodwill",
+    "lease",
+    "right-of-use",
+    "stock-based compensation",
+    "RSU",
+    "restricted stock",
+    "acquisition",
+    "merger",
+    "divestiture",
+    "pension",
+    "retirement",
+    "benefit plan",
+    "debt",
+    "borrowing",
+    "credit facility",
+    "contingent",
+    "litigation",
+    "legal proceeding",
 ]
 
 
@@ -1106,18 +1193,20 @@ def _targeted_notes_retrieval(
 ) -> list[RetrievedNode]:
     """Scan Notes-to-FS sections when the query involves topics typically in Notes."""
     query_lower = query.lower()
-    decomp_text = " ".join(
-        decomposition.get("data_points", []) + decomposition.get("statements_needed", [])
-    ).lower() if decomposition else ""
+    decomp_text = (
+        " ".join(
+            decomposition.get("data_points", []) + decomposition.get("statements_needed", [])
+        ).lower()
+        if decomposition
+        else ""
+    )
     combined_query = query_lower + " " + decomp_text
 
     triggered = any(kw in combined_query for kw in _NOTES_TRIGGER_KEYWORDS)
     if not triggered:
         return []
 
-    retrieved_titles = " ".join(
-        (rn.node.title or "").lower() for rn in retrieved
-    )
+    retrieved_titles = " ".join((rn.node.title or "").lower() for rn in retrieved)
     if "note" in retrieved_titles:
         return []
 
@@ -1142,7 +1231,8 @@ def _targeted_notes_retrieval(
     if extra:
         logger.info(
             "Notes retrieval added %d nodes: %s",
-            len(extra), [n.node.node_id for n in extra],
+            len(extra),
+            [n.node.node_id for n in extra],
         )
     return extra
 
@@ -1166,16 +1256,12 @@ def _check_multi_year_coverage(
     if decomposition:
         combined += " " + " ".join(decomposition.get("data_points", []))
 
-    years_needed = set(
-        int(m[-4:]) for m in _YEAR_PATTERN.findall(combined)
-    )
+    years_needed = set(int(m[-4:]) for m in _YEAR_PATTERN.findall(combined))
     if len(years_needed) < 2:
         return []
 
     retrieved_text = " ".join(rn.text or "" for rn in retrieved)
-    years_found = set(
-        int(m[-4:]) for m in _YEAR_PATTERN.findall(retrieved_text)
-    )
+    years_found = set(int(m[-4:]) for m in _YEAR_PATTERN.findall(retrieved_text))
     missing_years = years_needed - years_found
     if not missing_years:
         return []
@@ -1197,7 +1283,9 @@ def _check_multi_year_coverage(
     if extra:
         logger.info(
             "Multi-year guard added %d nodes for missing years %s: %s",
-            len(extra), missing_years, [n.node.node_id for n in extra],
+            len(extra),
+            missing_years,
+            [n.node.node_id for n in extra],
         )
     return extra
 
@@ -1290,6 +1378,7 @@ def _infer_temporal_context(doc_name: str) -> str:
 # Graph-seeded agentic retrieval (skip Round 1, start from graph nodes)
 # ------------------------------------------------------------------
 
+
 async def _run_graph_seeded_retrieval(
     query: str,
     tree: DocumentTree,
@@ -1335,12 +1424,15 @@ async def _run_graph_seeded_retrieval(
 
             if deduped:
                 from nanoindex.utils.pdf import render_pages
+
                 image_uris = render_pages(pdf_path, deduped)
                 for uri in image_uris:
-                    content_parts.append({
-                        "type": "image_url",
-                        "image_url": {"url": uri},
-                    })
+                    content_parts.append(
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": uri},
+                        }
+                    )
 
         section_text = _build_section_text(new_nodes)
         remaining = _remaining_outline_json(tree, seen_ids, doc_index=doc_index)
@@ -1351,11 +1443,13 @@ async def _run_graph_seeded_retrieval(
 
 {decomp_text}
 
-{_REVIEW.format(
-    content=section_text[:120000],
-    query=query,
-    remaining=remaining[:20000] if remaining else "All sections have been read.",
-)}"""
+{
+                _REVIEW.format(
+                    content=section_text[:120000],
+                    query=query,
+                    remaining=remaining[:20000] if remaining else "All sections have been read.",
+                )
+            }"""
         else:
             review_msg = _REVIEW.format(
                 content=section_text[:120000],
@@ -1382,12 +1476,9 @@ async def _run_graph_seeded_retrieval(
                 sufficiency_checked = True
                 remaining_outline = _remaining_outline_json(tree, seen_ids, doc_index=doc_index)
                 if remaining_outline:
-                    checklist = "\n".join(
-                        f"  - {dp}" for dp in decomposition["data_points"]
-                    )
+                    checklist = "\n".join(f"  - {dp}" for dp in decomposition["data_points"])
                     retrieved_titles = "\n".join(
-                        f"  - [{rn.node.node_id}] {rn.node.title}"
-                        for rn in all_retrieved
+                        f"  - [{rn.node.node_id}] {rn.node.title}" for rn in all_retrieved
                     )
                     suf_msg = _SUFFICIENCY.format(
                         checklist=checklist,
@@ -1404,7 +1495,9 @@ async def _run_graph_seeded_retrieval(
                         suf_ids = _parse_node_ids(suf_data)
                         if suf_ids:
                             new_nodes = _resolve_nodes(
-                                tree.structure, suf_ids, seen_ids,
+                                tree.structure,
+                                suf_ids,
+                                seen_ids,
                                 thinking=suf_data.get("thinking", ""),
                             )
                             all_retrieved.extend(new_nodes)
@@ -1426,7 +1519,8 @@ async def _run_graph_seeded_retrieval(
             all_retrieved.extend(new_nodes)
             logger.info(
                 "Graph-seeded round %d: +%d nodes",
-                round_num, len(new_nodes),
+                round_num,
+                len(new_nodes),
             )
             if not new_nodes:
                 break
@@ -1449,6 +1543,7 @@ async def _run_graph_seeded_retrieval(
 # ------------------------------------------------------------------
 # Public entry point
 # ------------------------------------------------------------------
+
 
 async def agentic_ask(
     query: str,
@@ -1478,6 +1573,7 @@ async def agentic_ask(
     """
     # Build unified document index (tree + graph)
     from nanoindex.core.document_index import DocumentIndex as _DocumentIndex
+
     doc_index = _DocumentIndex(tree, graph) if graph else None
 
     # Use tree.domain if tagged during indexing, else detect
@@ -1504,7 +1600,10 @@ async def agentic_ask(
 
     # Phase 1a: Small document full-content mode (Fix 1)
     if _is_small_tree(tree):
-        logger.info("Small document (%d nodes) — using full-content mode", sum(1 for _ in iter_nodes(tree.structure)))
+        logger.info(
+            "Small document (%d nodes) — using full-content mode",
+            sum(1 for _ in iter_nodes(tree.structure)),
+        )
         nodes = _dump_all_content(tree)
         for rn in nodes:
             seen_ids.add(rn.node.node_id)
@@ -1514,9 +1613,12 @@ async def agentic_ask(
         # Use graph to find seed nodes (skips expensive Round 1 full-tree LLM call),
         # then let the agentic review loop reason and expand from there.
         from nanoindex.core.graph_builder import (
-            build_entity_to_nodes, build_nx_graph,
-            entity_keyword_match, graph_expand,
+            build_entity_to_nodes,
+            build_nx_graph,
+            entity_keyword_match,
+            graph_expand,
         )
+
         entity_to_nodes = build_entity_to_nodes(graph)
         seed_ids = entity_keyword_match(query, entity_to_nodes)
 
@@ -1537,7 +1639,8 @@ async def agentic_ask(
             if len(seed_ids) > max_seeds:
                 logger.info(
                     "Graph-seeded agentic: %d seeds too broad (max %d), falling back to standard agentic",
-                    len(seed_ids), max_seeds,
+                    len(seed_ids),
+                    max_seeds,
                 )
                 seed_ids = set()  # trigger fallback below
             else:
@@ -1549,7 +1652,9 @@ async def agentic_ask(
             if seed_nodes:
                 # Run agentic review rounds starting from graph-seeded content
                 nodes, page_numbers = await _run_graph_seeded_retrieval(
-                    query, tree, llm,
+                    query,
+                    tree,
+                    llm,
                     seed_nodes=seed_nodes,
                     seen_ids=seen_ids,
                     pdf_path=pdf_path,
@@ -1560,7 +1665,9 @@ async def agentic_ask(
                 )
             else:
                 nodes, page_numbers = await _run_retrieval(
-                    query, tree, llm,
+                    query,
+                    tree,
+                    llm,
                     pdf_path=pdf_path,
                     use_vision=use_vision,
                     max_rounds=max_rounds,
@@ -1573,7 +1680,9 @@ async def agentic_ask(
         else:
             logger.info("Graph-seeded agentic: no entity matches, falling back to standard")
             nodes, page_numbers = await _run_retrieval(
-                query, tree, llm,
+                query,
+                tree,
+                llm,
                 pdf_path=pdf_path,
                 use_vision=use_vision,
                 max_rounds=max_rounds,
@@ -1586,7 +1695,9 @@ async def agentic_ask(
     else:
         # Phase 1b: Standard agentic retrieval (no graph available)
         nodes, page_numbers = await _run_retrieval(
-            query, tree, llm,
+            query,
+            tree,
+            llm,
             pdf_path=pdf_path,
             use_vision=use_vision,
             max_rounds=max_rounds,
@@ -1630,20 +1741,24 @@ async def agentic_ask(
 
     logger.info(
         "Agentic retrieval complete: %d nodes, %d pages",
-        len(nodes), len(page_numbers),
+        len(nodes),
+        len(page_numbers),
     )
 
     # Phase 1f: Knowledge base lookup — inject canonical definitions (financial only)
     kb_ref = ""
     if financial:
         from nanoindex.knowledge import lookup_relevant_terms
+
         kb_ref = lookup_relevant_terms(query, decomposition, max_results=4)
         if kb_ref:
             logger.info("KB injected %d chars of financial reference", len(kb_ref))
 
     # Phase 2: Answer generation (with temporal context + KB reference)
     answer_text = await _generate_answer(
-        query, nodes, llm,
+        query,
+        nodes,
+        llm,
         pdf_path=pdf_path,
         use_vision=use_vision,
         pure_vision=pure_vision,
@@ -1669,7 +1784,11 @@ async def agentic_ask(
 
         if retry_num == 0:
             extra_nodes = _keyword_search_nodes(
-                tree, query, decomposition, seen_ids, max_results=15,
+                tree,
+                query,
+                decomposition,
+                seen_ids,
+                max_results=15,
             )
         else:
             extra_nodes = _dump_all_content(tree)
@@ -1677,15 +1796,21 @@ async def agentic_ask(
                 seen_ids.add(rn.node.node_id)
 
         if extra_nodes:
-            combined = nodes + [rn for rn in extra_nodes if rn.node.node_id not in {n.node.node_id for n in nodes}]
+            combined = nodes + [
+                rn for rn in extra_nodes if rn.node.node_id not in {n.node.node_id for n in nodes}
+            ]
             page_numbers = _collect_page_numbers(combined, limit=_MAX_TOTAL_PAGES)
             logger.info(
                 "Self-eval retry %d: re-answering with %d nodes (was %d)",
-                retry_num + 1, len(combined), len(nodes),
+                retry_num + 1,
+                len(combined),
+                len(nodes),
             )
             nodes = combined
             answer_text = await _generate_answer(
-                query, nodes, llm,
+                query,
+                nodes,
+                llm,
                 pdf_path=pdf_path,
                 use_vision=use_vision,
                 pure_vision=pure_vision,
@@ -1711,4 +1836,5 @@ def _build_citations(
     include_metadata: bool = False,
 ) -> list[Citation]:
     from nanoindex.core.citations import build_citations
+
     return build_citations(nodes, tree, include_metadata)

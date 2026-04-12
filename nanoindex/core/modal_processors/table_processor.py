@@ -83,9 +83,9 @@ def _parse_response(text: str) -> tuple[str, str, str]:
         line_stripped = line.strip()
         upper = line_stripped.upper()
         if upper.startswith("NAME:"):
-            name = line_stripped[len("NAME:"):].strip()
+            name = line_stripped[len("NAME:") :].strip()
         elif upper.startswith("DESCRIPTION:"):
-            description = line_stripped[len("DESCRIPTION:"):].strip()
+            description = line_stripped[len("DESCRIPTION:") :].strip()
         elif upper.startswith("ENTITIES:"):
-            entities = line_stripped[len("ENTITIES:"):].strip()
+            entities = line_stripped[len("ENTITIES:") :].strip()
     return name, description, entities

@@ -30,28 +30,28 @@ def _is_anthropic_model(model: str) -> bool:
 
 # Auto-detect provider base URL from model name
 _PROVIDER_URLS: dict[str, str] = {
-    "gpt-":       "https://api.openai.com/v1",
-    "o1-":        "https://api.openai.com/v1",
-    "o3-":        "https://api.openai.com/v1",
-    "o4-":        "https://api.openai.com/v1",
-    "gemini-":    "https://generativelanguage.googleapis.com/v1beta/openai",
-    "deepseek-":  "https://api.deepseek.com/v1",
-    "mistral-":   "https://api.mistral.ai/v1",
-    "qwen-":      "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
-    "llama-":     "https://api.groq.com/openai/v1",
+    "gpt-": "https://api.openai.com/v1",
+    "o1-": "https://api.openai.com/v1",
+    "o3-": "https://api.openai.com/v1",
+    "o4-": "https://api.openai.com/v1",
+    "gemini-": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "deepseek-": "https://api.deepseek.com/v1",
+    "mistral-": "https://api.mistral.ai/v1",
+    "qwen-": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+    "llama-": "https://api.groq.com/openai/v1",
 }
 
 _PROVIDER_KEY_ENV: dict[str, str] = {
-    "gpt-":       "OPENAI_API_KEY",
-    "o1-":        "OPENAI_API_KEY",
-    "o3-":        "OPENAI_API_KEY",
-    "o4-":        "OPENAI_API_KEY",
-    "claude":     "ANTHROPIC_API_KEY",
-    "gemini-":    "GOOGLE_API_KEY",
-    "deepseek-":  "DEEPSEEK_API_KEY",
-    "mistral-":   "MISTRAL_API_KEY",
-    "qwen-":      "DASHSCOPE_API_KEY",
-    "llama-":     "GROQ_API_KEY",
+    "gpt-": "OPENAI_API_KEY",
+    "o1-": "OPENAI_API_KEY",
+    "o3-": "OPENAI_API_KEY",
+    "o4-": "OPENAI_API_KEY",
+    "claude": "ANTHROPIC_API_KEY",
+    "gemini-": "GOOGLE_API_KEY",
+    "deepseek-": "DEEPSEEK_API_KEY",
+    "mistral-": "MISTRAL_API_KEY",
+    "qwen-": "DASHSCOPE_API_KEY",
+    "llama-": "GROQ_API_KEY",
 }
 
 
@@ -70,6 +70,7 @@ def _auto_detect_key(model: str, api_key: str | None) -> str:
     if api_key:
         return api_key
     import os
+
     for prefix, env_var in _PROVIDER_KEY_ENV.items():
         if model.startswith(prefix):
             key = os.environ.get(env_var)
@@ -103,9 +104,7 @@ class LLMClient:
             try:
                 from anthropic import AsyncAnthropic
             except ImportError:
-                raise ImportError(
-                    "pip install anthropic  — required for Claude models"
-                )
+                raise ImportError("pip install anthropic  — required for Claude models")
             self._anthropic = AsyncAnthropic(api_key=resolved_key)
             self._openai = None
         else:
@@ -137,18 +136,27 @@ class LLMClient:
         effective_model = model or self._model
         if self._is_anthropic or _is_anthropic_model(effective_model):
             return await self._chat_anthropic(
-                messages, model=effective_model,
-                temperature=temperature, max_tokens=max_tokens,
+                messages,
+                model=effective_model,
+                temperature=temperature,
+                max_tokens=max_tokens,
             )
         return await self._chat_openai(
-            messages, model=effective_model,
-            temperature=temperature, max_tokens=max_tokens,
+            messages,
+            model=effective_model,
+            temperature=temperature,
+            max_tokens=max_tokens,
         )
 
     # ---- OpenAI-compatible backend ------------------------------------
 
     async def _chat_openai(
-        self, messages, *, model, temperature, max_tokens,
+        self,
+        messages,
+        *,
+        model,
+        temperature,
+        max_tokens,
     ) -> str:
         last_exc: Exception | None = None
         for attempt in range(_MAX_RETRIES + 1):
@@ -167,22 +175,34 @@ class LLMClient:
                 err_str = str(exc)
 
                 # Clear error for bad API keys
-                if "401" in err_str or "authentication" in err_str.lower() or "invalid" in err_str.lower() and "key" in err_str.lower():
+                if (
+                    "401" in err_str
+                    or "authentication" in err_str.lower()
+                    or "invalid" in err_str.lower()
+                    and "key" in err_str.lower()
+                ):
                     raise RetrievalError(
                         f"Invalid LLM API key for model '{model}'. "
                         f"Check your API key environment variable. Error: {err_str[:100]}"
                     ) from exc
 
-                is_transient = any(code in err_str for code in ("500", "502", "503", "429", "Server", "overloaded"))
+                is_transient = any(
+                    code in err_str for code in ("500", "502", "503", "429", "Server", "overloaded")
+                )
                 if is_transient and attempt < _MAX_RETRIES:
-                    wait = _RETRY_BACKOFF * (2 ** attempt)
+                    wait = _RETRY_BACKOFF * (2**attempt)
                     logger.warning(
                         "LLM call failed (attempt %d/%d): %s — retrying in %.1fs",
-                        attempt + 1, _MAX_RETRIES + 1, err_str[:120], wait,
+                        attempt + 1,
+                        _MAX_RETRIES + 1,
+                        err_str[:120],
+                        wait,
                     )
                     await asyncio.sleep(wait)
                     continue
-                raise RetrievalError(f"LLM call failed after {attempt + 1} attempts: {exc}") from exc
+                raise RetrievalError(
+                    f"LLM call failed after {attempt + 1} attempts: {exc}"
+                ) from exc
         raise RetrievalError(f"LLM call failed: {last_exc}") from last_exc
 
     # ---- Anthropic (Claude) backend -----------------------------------
@@ -206,19 +226,23 @@ class LLMClient:
                 if url.startswith("data:"):
                     header, data = url.split(",", 1)
                     media_type = header.split(";")[0].replace("data:", "")
-                    converted.append({
-                        "type": "image",
-                        "source": {
-                            "type": "base64",
-                            "media_type": media_type,
-                            "data": data,
-                        },
-                    })
+                    converted.append(
+                        {
+                            "type": "image",
+                            "source": {
+                                "type": "base64",
+                                "media_type": media_type,
+                                "data": data,
+                            },
+                        }
+                    )
                 else:
-                    converted.append({
-                        "type": "image",
-                        "source": {"type": "url", "url": url},
-                    })
+                    converted.append(
+                        {
+                            "type": "image",
+                            "source": {"type": "url", "url": url},
+                        }
+                    )
             elif block.get("type") == "text":
                 converted.append({"type": "text", "text": block["text"]})
             else:
@@ -226,7 +250,12 @@ class LLMClient:
         return converted
 
     async def _chat_anthropic(
-        self, messages, *, model, temperature, max_tokens,
+        self,
+        messages,
+        *,
+        model,
+        temperature,
+        max_tokens,
     ) -> str:
         system_parts: list[str] = []
         user_msgs: list[dict] = []
@@ -236,10 +265,12 @@ class LLMClient:
                     msg["content"] if isinstance(msg["content"], str) else str(msg["content"])
                 )
             else:
-                user_msgs.append({
-                    "role": msg["role"],
-                    "content": self._convert_content_for_anthropic(msg["content"]),
-                })
+                user_msgs.append(
+                    {
+                        "role": msg["role"],
+                        "content": self._convert_content_for_anthropic(msg["content"]),
+                    }
+                )
 
         if not user_msgs:
             user_msgs = [{"role": "user", "content": ""}]
@@ -267,21 +298,32 @@ class LLMClient:
                 err_str = str(exc)
 
                 # Clear error for bad API keys
-                if "401" in err_str or "authentication" in err_str.lower() or "invalid x-api-key" in err_str.lower():
+                if (
+                    "401" in err_str
+                    or "authentication" in err_str.lower()
+                    or "invalid x-api-key" in err_str.lower()
+                ):
                     raise RetrievalError(
                         "Invalid ANTHROPIC_API_KEY. Check your key at https://console.anthropic.com/"
                     ) from exc
 
-                is_transient = any(tok in err_str for tok in ("500", "502", "503", "529", "overloaded", "rate"))
+                is_transient = any(
+                    tok in err_str for tok in ("500", "502", "503", "529", "overloaded", "rate")
+                )
                 if is_transient and attempt < _MAX_RETRIES:
-                    wait = _RETRY_BACKOFF * (2 ** attempt)
+                    wait = _RETRY_BACKOFF * (2**attempt)
                     logger.warning(
                         "Anthropic call failed (attempt %d/%d): %s — retrying in %.1fs",
-                        attempt + 1, _MAX_RETRIES + 1, err_str[:120], wait,
+                        attempt + 1,
+                        _MAX_RETRIES + 1,
+                        err_str[:120],
+                        wait,
                     )
                     await asyncio.sleep(wait)
                     continue
-                raise RetrievalError(f"Anthropic call failed after {attempt + 1} attempts: {exc}") from exc
+                raise RetrievalError(
+                    f"Anthropic call failed after {attempt + 1} attempts: {exc}"
+                ) from exc
         raise RetrievalError(f"Anthropic call failed: {last_exc}") from last_exc
 
     # ---- Streaming (OpenAI-compatible only) ---------------------------
@@ -296,7 +338,9 @@ class LLMClient:
     ) -> AsyncIterator[str]:
         """Stream a chat completion, yielding text deltas."""
         if self._is_anthropic:
-            async for token in self._stream_anthropic(messages, model=model, temperature=temperature, max_tokens=max_tokens):
+            async for token in self._stream_anthropic(
+                messages, model=model, temperature=temperature, max_tokens=max_tokens
+            ):
                 yield token
             return
         try:

@@ -19,8 +19,6 @@ import logging
 from pathlib import Path
 from typing import Any
 
-logger = logging.getLogger(__name__)
-
 from nanoindex.config import NanoIndexConfig, load_config
 from nanoindex.exceptions import (
     ConfigError,
@@ -33,8 +31,17 @@ from nanoindex.exceptions import (
 )
 from nanoindex.core.document_store import DocumentStore
 from nanoindex.models import (
-    Answer, DocumentGraph, DocumentTree, ExtractionResult2, RetrievedNode, TreeNode, ValidationResult,
+    Answer,
+    DocumentGraph,
+    DocumentTree,
+    ExtractionResult2,
+    ParsedDocument,
+    RetrievedNode,
+    TreeNode,
+    ValidationResult,
 )
+
+logger = logging.getLogger(__name__)
 
 __all__ = [
     "NanoIndex",
@@ -67,6 +74,7 @@ __version__ = "0.3.2"
 def __getattr__(name: str):
     if name == "KnowledgeBase":
         from nanoindex.kb import KnowledgeBase
+
         return KnowledgeBase
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
@@ -80,6 +88,7 @@ def _run(coro):
 
     if loop and loop.is_running():
         import concurrent.futures
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
             return pool.submit(asyncio.run, coro).result()
     return asyncio.run(coro)
@@ -126,12 +135,14 @@ def _parse_llm_string(llm: str) -> tuple[str, str | None, str | None]:
 def _auto_detect_nanonets_key() -> str | None:
     """Try to find Nanonets API key from environment."""
     import os
+
     return os.environ.get("NANONETS_API_KEY")
 
 
 def _auto_detect_llm() -> str | None:
     """Try to find any LLM API key from env and return a default model."""
     import os
+
     for env_key, model in [
         ("ANTHROPIC_API_KEY", "claude-sonnet-4-6"),
         ("OPENAI_API_KEY", "gpt-5.4"),
@@ -212,6 +223,7 @@ class NanoIndex:
     def _get_client(self):
         if self._client is None:
             from nanoindex.core.client import NanonetsClient
+
             key = self.config.require_nanonets_key()
             self._client = NanonetsClient(api_key=key)
         return self._client
@@ -220,6 +232,7 @@ class NanoIndex:
         """Default LLM — used for enrichment, refining, and summarization."""
         if self._llm is None:
             from nanoindex.core.llm import LLMClient
+
             self._llm = LLMClient(
                 api_key=self.config.require_llm_key(),
                 base_url=self.config.llm_base_url,
@@ -238,7 +251,12 @@ class NanoIndex:
             # Ensure a reasoning LLM is configured — don't silently use OCR model
             cfg.require_reasoning_llm()
             from nanoindex.core.llm import LLMClient, _auto_detect_key, _auto_detect_url
-            key = cfg.reasoning_llm_api_key or _auto_detect_key(cfg.reasoning_llm_model, None) or cfg.require_llm_key()
+
+            key = (
+                cfg.reasoning_llm_api_key
+                or _auto_detect_key(cfg.reasoning_llm_model, None)
+                or cfg.require_llm_key()
+            )
             url = cfg.reasoning_llm_base_url or _auto_detect_url(cfg.reasoning_llm_model, None)
             self._reasoning_llm = LLMClient(
                 api_key=key,
@@ -268,6 +286,7 @@ class NanoIndex:
 
         # Use the pluggable parser system for all parsers (including nanonets)
         from nanoindex.core.parsers import get_parser
+
         parser_kwargs: dict[str, Any] = {}
         if self.config.parser == "nanonets":
             parser_kwargs["api_key"] = self.config.require_nanonets_key()
@@ -283,6 +302,7 @@ class NanoIndex:
         # Auto-detect document mode if set to "auto"
         if self.config.doc_mode == "auto":
             from nanoindex.core.document_classifier import classify_parsed
+
             detected_mode = classify_parsed(parsed_document)
             logger.info("Auto-detected document type: %s", detected_mode)
         else:
@@ -293,11 +313,13 @@ class NanoIndex:
         _extracted_form = None
         if detected_mode == "tabular":
             from nanoindex.core.table_extractor import tables_from_markdown
+
             _extracted_tables = tables_from_markdown(parsed_document.markdown)
             if _extracted_tables:
                 logger.info("Extracted %d tables from document", len(_extracted_tables))
         elif detected_mode == "form":
             from nanoindex.core.form_extractor import extract_form_from_markdown
+
             _extracted_form = extract_form_from_markdown(parsed_document.markdown)
             if _extracted_form and _extracted_form.fields:
                 logger.info("Extracted %d form fields", len(_extracted_form.fields))
@@ -308,6 +330,7 @@ class NanoIndex:
         if not tree.domain:
             from nanoindex.core.gliner_extractor import _detect_domain
             from nanoindex.utils.tree_ops import iter_nodes
+
             sample_text = " ".join(n.text or "" for n in list(iter_nodes(tree.structure))[:5])
             tree.domain = _detect_domain(sample_text, doc_name=tree.doc_name)
             logger.info("Document domain: %s", tree.domain)
@@ -334,12 +357,15 @@ class NanoIndex:
 
         # Validate tree quality
         from nanoindex.core.tree_validator import validate_tree
+
         validation = validate_tree(tree)
         tree._validation = validation  # type: ignore[attr-defined]
 
         should_summarise = add_summaries if add_summaries is not None else self.config.add_summaries
         should_describe = (
-            add_doc_description if add_doc_description is not None else self.config.add_doc_description
+            add_doc_description
+            if add_doc_description is not None
+            else self.config.add_doc_description
         )
 
         if should_summarise or should_describe:
@@ -352,6 +378,7 @@ class NanoIndex:
 
         # Disambiguate repetitive titles (e.g. "Reconciliation" x8)
         from nanoindex.core.title_disambiguator import disambiguate_titles
+
         tree = disambiguate_titles(tree)
 
         # Build entity graph (default: on)
@@ -371,6 +398,7 @@ class NanoIndex:
     ) -> list[RetrievedNode]:
         """Search the document tree for nodes relevant to *query*."""
         from nanoindex.core.retriever import search as _search
+
         llm = self._get_reasoning_llm()
         return await _search(query, tree, llm, self.config)
 
@@ -420,7 +448,11 @@ class NanoIndex:
 
         answer: Answer
         if mode == "global":
-            from nanoindex.core.community_detector import detect_communities, auto_summarize_community
+            from nanoindex.core.community_detector import (
+                detect_communities,
+                auto_summarize_community,
+            )
+
             graph = self._graphs.get(tree.doc_name)
             if not graph:
                 # Fall back to agentic
@@ -446,7 +478,9 @@ Entity Group:
 
 Answer (or "NOT RELEVANT"):"""
                         try:
-                            resp = await llm.chat([{"role": "user", "content": map_prompt}], max_tokens=300)
+                            resp = await llm.chat(
+                                [{"role": "user", "content": map_prompt}], max_tokens=300
+                            )
                             if "not relevant" not in resp.lower():
                                 partial_answers.append(resp)
                         except Exception:
@@ -461,37 +495,52 @@ Answer (or "NOT RELEVANT"):"""
 Question: {query}
 
 Partial Answers:
-{chr(10).join(f"--- Answer {i+1} ---{chr(10)}{a}" for i, a in enumerate(partial_answers))}
+{chr(10).join(f"--- Answer {i + 1} ---{chr(10)}{a}" for i, a in enumerate(partial_answers))}
 
 Final comprehensive answer:"""
 
-                        final = await llm.chat([{"role": "user", "content": reduce_prompt}], max_tokens=1024)
+                        final = await llm.chat(
+                            [{"role": "user", "content": reduce_prompt}], max_tokens=1024
+                        )
                         answer = Answer(content=final, citations=[], mode="global")
                         from nanoindex.core.citation_resolver import resolve_citations
+
                         return resolve_citations(answer, tree)
 
         if mode.startswith("fast"):
             from nanoindex.core.fast_retriever import fast_search
             from nanoindex.core.generator import generate_answer
+
             llm = self._get_reasoning_llm()
             graph = self._graphs.get(tree.doc_name)
             nodes = await fast_search(
-                query, tree, llm, self.config,
+                query,
+                tree,
+                llm,
+                self.config,
                 graph=graph,
             )
             gen_mode = "vision" if "vision" in mode else "text"
             answer = await generate_answer(
-                query, nodes, llm,
-                mode=gen_mode, pdf_path=pdf_path,
-                tree=tree, include_metadata=include_metadata,
+                query,
+                nodes,
+                llm,
+                mode=gen_mode,
+                pdf_path=pdf_path,
+                tree=tree,
+                include_metadata=include_metadata,
             )
         elif mode.startswith("agentic"):
             from nanoindex.core.agentic import agentic_ask
+
             llm = self._get_reasoning_llm()
             # For agentic_graph modes, pass the graph for graph-seeded retrieval
             graph = self._graphs.get(tree.doc_name) if "graph" in mode else None
             answer = await agentic_ask(
-                query, tree, llm, self.config,
+                query,
+                tree,
+                llm,
+                self.config,
                 pdf_path=pdf_path,
                 use_vision="vision" in mode,
                 pure_vision=pure_vision,
@@ -500,16 +549,22 @@ Final comprehensive answer:"""
             )
         else:
             from nanoindex.core.generator import generate_answer
+
             nodes = await self.async_search(query, tree)
             llm = self._get_reasoning_llm()
             answer = await generate_answer(
-                query, nodes, llm,
-                mode=mode, pdf_path=pdf_path,
-                tree=tree, include_metadata=include_metadata,
+                query,
+                nodes,
+                llm,
+                mode=mode,
+                pdf_path=pdf_path,
+                tree=tree,
+                include_metadata=include_metadata,
             )
 
         # Resolve citations to exact bounding boxes
         from nanoindex.core.citation_resolver import resolve_citations
+
         answer = resolve_citations(answer, tree)
         return answer
 
@@ -556,6 +611,7 @@ Final comprehensive answer:"""
         for result in per_doc_results:
             if isinstance(result, Exception):
                 import logging
+
                 logging.getLogger(__name__).warning("Search failed for a document: %s", result)
                 continue
             merged.extend(result)
@@ -576,14 +632,22 @@ Final comprehensive answer:"""
     ) -> Answer:
         """Search across multiple documents and generate a unified answer."""
         from nanoindex.core.generator import generate_answer
+
         nodes = await self.async_multi_search(
-            query, store, strategy=strategy, filters=filters,
-            doc_ids=doc_ids, max_docs=max_docs,
+            query,
+            store,
+            strategy=strategy,
+            filters=filters,
+            doc_ids=doc_ids,
+            max_docs=max_docs,
         )
         llm = self._get_reasoning_llm()
         return await generate_answer(
-            query, nodes, llm,
-            mode=mode, include_metadata=include_metadata,
+            query,
+            nodes,
+            llm,
+            mode=mode,
+            include_metadata=include_metadata,
         )
 
     async def _select_docs(self, query, store, strategy, filters, doc_ids, max_docs):
@@ -597,7 +661,9 @@ Final comprehensive answer:"""
         elif strategy == "direct":
             return store.select_direct(doc_ids)
         else:
-            raise ValueError(f"Unknown strategy: {strategy!r}. Use 'metadata', 'description', or 'direct'.")
+            raise ValueError(
+                f"Unknown strategy: {strategy!r}. Use 'metadata', 'description', or 'direct'."
+            )
 
     def get_graph(self, tree: "DocumentTree") -> "DocumentGraph | None":
         """Get the entity graph for a document. Returns None if not built."""
@@ -606,17 +672,19 @@ Final comprehensive answer:"""
     def load_graph(self, doc_name: str, graph_path: str | Path) -> None:
         """Load a pre-built graph for a document."""
         from nanoindex.core.entity_extractor import load_graph
+
         self._graphs[doc_name] = load_graph(Path(graph_path))
 
     def load_embeddings(self, doc_name: str, embeddings_path: str | Path) -> None:
         """Load pre-built embeddings for a document."""
         from nanoindex.core.embedder import load_embeddings
+
         self._node_embeddings[doc_name] = load_embeddings(Path(embeddings_path))
 
     async def async_build_graph(
         self,
         tree: DocumentTree,
-        parsed: "ParsedDocument | None" = None,
+        parsed: ParsedDocument | None = None,
     ) -> DocumentGraph:
         """Extract entities and relationships from a tree.
 
@@ -631,33 +699,56 @@ Final comprehensive answer:"""
         # Step 1: Try GLiNER2 first, fall back to spaCy
         try:
             from nanoindex.core.gliner_extractor import extract_entities_gliner
+
             graph = extract_entities_gliner(tree)
-            logger.info("GLiNER2 graph: %d entities, %d relationships", len(graph.entities), len(graph.relationships))
+            logger.info(
+                "GLiNER2 graph: %d entities, %d relationships",
+                len(graph.entities),
+                len(graph.relationships),
+            )
         except ImportError:
             from nanoindex.core.spacy_extractor import extract_entities_spacy
+
             graph = extract_entities_spacy(tree)
-            logger.info("spaCy graph: %d entities, %d relationships", len(graph.entities), len(graph.relationships))
+            logger.info(
+                "spaCy graph: %d entities, %d relationships",
+                len(graph.entities),
+                len(graph.relationships),
+            )
 
         # Step 2: Entity resolution (always)
         from nanoindex.core.entity_resolver import resolve_entities
+
         graph = resolve_entities(graph)
 
         # Step 3: LLM enhancement (if reasoning LLM configured)
         if self.config.reasoning_llm_model:
             try:
                 from nanoindex.core.entity_extractor import extract_entities
+
                 llm = self._get_reasoning_llm()
                 llm_graph = await extract_entities(tree, llm)
                 if llm_graph.entities:
                     # Merge: add LLM entities not already found by spaCy
                     spacy_names = {e.name.lower() for e in graph.entities}
-                    new_entities = [e for e in llm_graph.entities if e.name.lower() not in spacy_names]
-                    new_rels = [r for r in llm_graph.relationships
-                                if (r.source.lower(), r.target.lower()) not in
-                                {(r2.source.lower(), r2.target.lower()) for r2 in graph.relationships}]
+                    new_entities = [
+                        e for e in llm_graph.entities if e.name.lower() not in spacy_names
+                    ]
+                    new_rels = [
+                        r
+                        for r in llm_graph.relationships
+                        if (r.source.lower(), r.target.lower())
+                        not in {
+                            (r2.source.lower(), r2.target.lower()) for r2 in graph.relationships
+                        }
+                    ]
                     graph.entities.extend(new_entities)
                     graph.relationships.extend(new_rels)
-                    logger.info("LLM enhanced: +%d entities, +%d relationships", len(new_entities), len(new_rels))
+                    logger.info(
+                        "LLM enhanced: +%d entities, +%d relationships",
+                        len(new_entities),
+                        len(new_rels),
+                    )
             except Exception:
                 logger.debug("LLM enhancement failed, using spaCy-only graph", exc_info=True)
 
@@ -667,6 +758,7 @@ Final comprehensive answer:"""
         if parsed is not None and parsed.modal_contents and self.config.reasoning_llm_model:
             try:
                 from nanoindex.core.entity_extractor import extract_multimodal_entities
+
                 llm = self._get_reasoning_llm()
                 mm_entities, mm_relationships = await extract_multimodal_entities(parsed, tree, llm)
                 graph.entities.extend(mm_entities)
@@ -680,6 +772,7 @@ Final comprehensive answer:"""
     async def async_build_embeddings(self, tree: DocumentTree) -> dict[str, list[float]]:
         """Embed all node summaries for a tree."""
         from nanoindex.core.embedder import embed_tree
+
         embed_key = self.config.embedding_api_key or self.config.require_llm_key()
         embeddings = await embed_tree(
             tree,
@@ -718,18 +811,30 @@ Final comprehensive answer:"""
         include_metadata: bool = False,
         pure_vision: bool = False,
     ) -> Answer:
-        return _run(self.async_ask(
-            query, tree, mode=mode, pdf_path=pdf_path,
-            include_metadata=include_metadata, pure_vision=pure_vision,
-        ))
+        return _run(
+            self.async_ask(
+                query,
+                tree,
+                mode=mode,
+                pdf_path=pdf_path,
+                include_metadata=include_metadata,
+                pure_vision=pure_vision,
+            )
+        )
 
     def multi_search(
-        self, query: str, store: "DocumentStore", **kwargs: Any,
+        self,
+        query: str,
+        store: "DocumentStore",
+        **kwargs: Any,
     ) -> list[RetrievedNode]:
         return _run(self.async_multi_search(query, store, **kwargs))
 
     def multi_ask(
-        self, query: str, store: "DocumentStore", **kwargs: Any,
+        self,
+        query: str,
+        store: "DocumentStore",
+        **kwargs: Any,
     ) -> Answer:
         return _run(self.async_multi_ask(query, store, **kwargs))
 
@@ -752,6 +857,7 @@ Final comprehensive answer:"""
     ) -> "ExtractionResult2":
         """Extract structured data from a PDF (async). Returns ExtractionResult2."""
         from nanoindex.extract import extract_document
+
         return await extract_document(file_path, self, mode=mode, schema=schema)
 
     def close(self) -> None:
@@ -761,6 +867,7 @@ Final comprehensive answer:"""
 # ------------------------------------------------------------------
 # Module-level convenience functions
 # ------------------------------------------------------------------
+
 
 def index(file_path: str | Path, **kwargs: Any) -> DocumentTree:
     """Index a document using default config (reads NANONETS_API_KEY from env)."""
@@ -787,8 +894,12 @@ def ask(
     """Index (if needed), search, and answer a question about a document."""
     ni = NanoIndex(**kwargs)
     return ni.ask(
-        query, tree, mode=mode, pdf_path=pdf_path,
-        include_metadata=include_metadata, pure_vision=pure_vision,
+        query,
+        tree,
+        mode=mode,
+        pdf_path=pdf_path,
+        include_metadata=include_metadata,
+        pure_vision=pure_vision,
     )
 
 
@@ -841,6 +952,7 @@ def visualize(
     threading.Timer(2.0, lambda: webbrowser.open(url)).start()
 
     import os
+
     try:
         subprocess.run(
             ["npx", "next", "dev", "--port", str(port)],

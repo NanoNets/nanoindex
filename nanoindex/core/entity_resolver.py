@@ -25,7 +25,9 @@ def resolve_entities(graph: DocumentGraph) -> DocumentGraph:
             # Merge into existing
             key_map[name_lower] = canonical
             existing = merged[canonical]
-            existing.source_node_ids = sorted(set(existing.source_node_ids) | set(entity.source_node_ids))
+            existing.source_node_ids = sorted(
+                set(existing.source_node_ids) | set(entity.source_node_ids)
+            )
             if len(entity.description) > len(existing.description):
                 existing.description = entity.description
         else:
@@ -45,19 +47,26 @@ def resolve_entities(graph: DocumentGraph) -> DocumentGraph:
             rel_key = (new_src, new_tgt, rel.keywords)
             if rel_key not in seen_rels and new_src != new_tgt:
                 seen_rels.add(rel_key)
-                new_rels.append(Relationship(
-                    source=new_src,
-                    target=new_tgt,
-                    keywords=rel.keywords,
-                    source_node_ids=rel.source_node_ids,
-                ))
+                new_rels.append(
+                    Relationship(
+                        source=new_src,
+                        target=new_tgt,
+                        keywords=rel.keywords,
+                        source_node_ids=rel.source_node_ids,
+                    )
+                )
 
     logger.info(
         "Entity resolution: %d -> %d entities, %d -> %d relationships",
-        len(entities), len(merged), len(graph.relationships), len(new_rels),
+        len(entities),
+        len(merged),
+        len(graph.relationships),
+        len(new_rels),
     )
 
-    return DocumentGraph(doc_name=graph.doc_name, entities=list(merged.values()), relationships=new_rels)
+    return DocumentGraph(
+        doc_name=graph.doc_name, entities=list(merged.values()), relationships=new_rels
+    )
 
 
 def _find_match(name: str, existing: dict[str, Entity]) -> str | None:

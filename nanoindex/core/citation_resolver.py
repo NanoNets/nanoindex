@@ -54,7 +54,9 @@ def resolve_citations(answer: Answer, tree: DocumentTree) -> Answer:
             if len(matched) < original_count:
                 logger.debug(
                     "Citation %s: narrowed %d -> %d bboxes",
-                    citation.node_id, original_count, len(matched),
+                    citation.node_id,
+                    original_count,
+                    len(matched),
                 )
 
     return answer
@@ -109,12 +111,28 @@ def _extract_key_phrases(text: str) -> list[str]:
 
     # 6. Key financial terms that appear in the answer
     _TERMS = [
-        "net sales", "net income", "revenue", "operating income", "total assets",
-        "total liabilities", "cash flow", "capital expenditure", "depreciation",
-        "amortization", "dividends", "earnings per share", "gross profit",
-        "operating expenses", "cost of sales", "working capital", "accounts payable",
-        "accounts receivable", "inventory", "shareholders equity",
-        "provision for income taxes", "income before taxes",
+        "net sales",
+        "net income",
+        "revenue",
+        "operating income",
+        "total assets",
+        "total liabilities",
+        "cash flow",
+        "capital expenditure",
+        "depreciation",
+        "amortization",
+        "dividends",
+        "earnings per share",
+        "gross profit",
+        "operating expenses",
+        "cost of sales",
+        "working capital",
+        "accounts payable",
+        "accounts receivable",
+        "inventory",
+        "shareholders equity",
+        "provision for income taxes",
+        "income before taxes",
     ]
     text_lower = text.lower()
     for term in _TERMS:

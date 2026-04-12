@@ -20,7 +20,7 @@ import logging
 from pathlib import Path
 from typing import Any, TYPE_CHECKING
 
-from nanoindex.models import ExtractionResult2, ValidationResult
+from nanoindex.models import ExtractionResult2
 
 if TYPE_CHECKING:
     from nanoindex import NanoIndex
@@ -136,7 +136,11 @@ async def _extract_table(
             from nanoindex.core.self_corrector import self_correcting_extract
 
             all_rows, corrections = await self_correcting_extract(
-                path, markdown, all_rows, anchors, llm,
+                path,
+                markdown,
+                all_rows,
+                anchors,
+                llm,
             )
             # Re-validate after corrections
             validation = validate_extraction(all_rows, anchors, numeric_columns)
@@ -171,7 +175,8 @@ def _extract_form(markdown: str, path: Path) -> ExtractionResult2:
 
 
 def _detect_numeric_columns(
-    rows: list[dict[str, Any]], columns: list[str],
+    rows: list[dict[str, Any]],
+    columns: list[str],
 ) -> list[str]:
     """Heuristic: find columns where most values look numeric."""
     import re

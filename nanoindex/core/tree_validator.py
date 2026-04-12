@@ -2,6 +2,7 @@
 
 Checks structural integrity, page coverage, and content completeness.
 """
+
 from __future__ import annotations
 
 import logging
@@ -75,7 +76,9 @@ def validate_tree(tree: DocumentTree) -> TreeValidationResult:
     max_level = max(n.level for n in nodes)
     result.stats["max_depth"] = max_level
     if max_level == 1 and len(nodes) > 10:
-        result.warn("Flat tree (all nodes at level 1) for a large document — hierarchy may be missing")
+        result.warn(
+            "Flat tree (all nodes at level 1) for a large document — hierarchy may be missing"
+        )
 
     # 6. Summaries — check if enrichment ran
     nodes_with_summary = sum(1 for n in nodes if n.summary)
@@ -97,9 +100,15 @@ def validate_tree(tree: DocumentTree) -> TreeValidationResult:
     if result.errors:
         logger.warning("Tree validation FAILED for %s: %s", tree.doc_name, result.errors)
     elif result.warnings:
-        logger.info("Tree validation PASSED with %d warnings for %s", len(result.warnings), tree.doc_name)
+        logger.info(
+            "Tree validation PASSED with %d warnings for %s", len(result.warnings), tree.doc_name
+        )
     else:
-        logger.info("Tree validation PASSED for %s (%d nodes, %.0f%% page coverage)",
-                    tree.doc_name, len(nodes), result.stats.get("page_coverage", 0) * 100)
+        logger.info(
+            "Tree validation PASSED for %s (%d nodes, %.0f%% page coverage)",
+            tree.doc_name,
+            len(nodes),
+            result.stats.get("page_coverage", 0) * 100,
+        )
 
     return result

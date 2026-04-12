@@ -64,7 +64,9 @@ async def refine_tree(
             break
 
         logger.info(
-            "Refine pass %d: %d oversized node(s) to split", iteration, len(oversized),
+            "Refine pass %d: %d oversized node(s) to split",
+            iteration,
+            len(oversized),
         )
 
         sem = asyncio.Semaphore(_MAX_CONCURRENT)
@@ -83,6 +85,7 @@ async def refine_tree(
 # ------------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------------
+
 
 def _find_oversized(
     nodes: list[TreeNode],
@@ -135,6 +138,7 @@ async def _split_node(
 # Phase A — sub-heading split
 # ------------------------------------------------------------------
 
+
 def _try_heading_split(node: TreeNode) -> bool:
     """Split a node's text on internal markdown headings."""
     if not node.text:
@@ -153,13 +157,15 @@ def _try_heading_split(node: TreeNode) -> bool:
         section_text = node.text[start:end].strip()
         if not section_text:
             continue
-        node.nodes.append(TreeNode(
-            title=title,
-            level=node.level + 1,
-            text=section_text,
-            start_index=node.start_index,
-            end_index=node.end_index,
-        ))
+        node.nodes.append(
+            TreeNode(
+                title=title,
+                level=node.level + 1,
+                text=section_text,
+                start_index=node.start_index,
+                end_index=node.end_index,
+            )
+        )
 
     if node.nodes:
         node.text = prefix_text or None
@@ -171,6 +177,7 @@ def _try_heading_split(node: TreeNode) -> bool:
 # ------------------------------------------------------------------
 # Phase B — LLM-assisted split
 # ------------------------------------------------------------------
+
 
 async def _try_llm_split(node: TreeNode, llm: LLMClient) -> bool:
     """Ask the LLM to identify subsection boundaries in the node's text."""
@@ -252,13 +259,15 @@ def _split_text_by_titles(node: TreeNode, titles: list[str]) -> bool:
         section_text = text[pos:end].strip()
         if not section_text:
             continue
-        node.nodes.append(TreeNode(
-            title=title,
-            level=node.level + 1,
-            text=section_text,
-            start_index=node.start_index,
-            end_index=node.end_index,
-        ))
+        node.nodes.append(
+            TreeNode(
+                title=title,
+                level=node.level + 1,
+                text=section_text,
+                start_index=node.start_index,
+                end_index=node.end_index,
+            )
+        )
 
     if node.nodes:
         node.text = prefix_text or None
@@ -285,13 +294,15 @@ def _split_text_evenly(node: TreeNode, titles: list[str]) -> bool:
         chunk_text = "\n\n".join(paragraphs[start:end]).strip()
         if not chunk_text:
             continue
-        node.nodes.append(TreeNode(
-            title=title,
-            level=node.level + 1,
-            text=chunk_text,
-            start_index=node.start_index,
-            end_index=node.end_index,
-        ))
+        node.nodes.append(
+            TreeNode(
+                title=title,
+                level=node.level + 1,
+                text=chunk_text,
+                start_index=node.start_index,
+                end_index=node.end_index,
+            )
+        )
 
     if node.nodes:
         node.text = None
@@ -303,6 +314,7 @@ def _split_text_evenly(node: TreeNode, titles: list[str]) -> bool:
 # ------------------------------------------------------------------
 # Fallback — paragraph chunking
 # ------------------------------------------------------------------
+
 
 def _paragraph_split(node: TreeNode, max_tokens: int) -> None:
     """Last-resort paragraph-boundary chunking."""
@@ -324,13 +336,15 @@ def _paragraph_split(node: TreeNode, max_tokens: int) -> None:
         chunks.append("\n\n".join(current))
 
     for i, chunk in enumerate(chunks):
-        node.nodes.append(TreeNode(
-            title=f"{node.title} (part {i + 1})",
-            level=node.level + 1,
-            text=chunk,
-            start_index=node.start_index,
-            end_index=node.end_index,
-        ))
+        node.nodes.append(
+            TreeNode(
+                title=f"{node.title} (part {i + 1})",
+                level=node.level + 1,
+                text=chunk,
+                start_index=node.start_index,
+                end_index=node.end_index,
+            )
+        )
 
     if node.nodes:
         node.text = None
@@ -340,6 +354,7 @@ def _paragraph_split(node: TreeNode, max_tokens: int) -> None:
 # ------------------------------------------------------------------
 # Page-range estimation
 # ------------------------------------------------------------------
+
 
 def _estimate_child_pages(parent: TreeNode) -> None:
     """Distribute parent's page range across children proportionally."""

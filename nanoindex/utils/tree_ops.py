@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Iterator
+from typing import TYPE_CHECKING, Iterator
 
 from nanoindex.models import DocumentTree, TreeNode
+
+if TYPE_CHECKING:
+    from nanoindex.models import DocumentGraph
 
 
 def iter_nodes(nodes: list[TreeNode]) -> Iterator[TreeNode]:
@@ -88,17 +91,14 @@ def find_siblings(
     children, then returns adjacent siblings (excluding the node itself).
     Returns an empty list if the node is a root or not found.
     """
+
     def _search(nodes: list[TreeNode]) -> list[TreeNode] | None:
         for parent in nodes:
             for idx, child in enumerate(parent.nodes):
                 if child.node_id == node_id:
                     lo = max(0, idx - max_each_side)
                     hi = min(len(parent.nodes), idx + max_each_side + 1)
-                    return [
-                        parent.nodes[j]
-                        for j in range(lo, hi)
-                        if j != idx
-                    ]
+                    return [parent.nodes[j] for j in range(lo, hi) if j != idx]
             result = _search(parent.nodes)
             if result is not None:
                 return result
@@ -125,6 +125,7 @@ def load_tree(path: str | Path) -> DocumentTree:
 def load_graph(path: str | Path) -> "DocumentGraph":
     """Deserialise a ``DocumentGraph`` from a JSON file."""
     from nanoindex.models import DocumentGraph
+
     with open(path) as f:
         data = json.load(f)
     return DocumentGraph.model_validate(data)

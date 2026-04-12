@@ -62,18 +62,20 @@ def parse_markdown_headings(markdown: str) -> list[HeadingNode]:
         if m:
             level = len(m.group(1))
             title = m.group(2).strip()
-            headings.append(HeadingNode(
-                title=title, level=level, line_number=i, page=current_page,
-            ))
+            headings.append(
+                HeadingNode(
+                    title=title,
+                    level=level,
+                    line_number=i,
+                    page=current_page,
+                )
+            )
             heading_positions.append(i)
 
     for idx, node in enumerate(headings):
         start = node.line_number + 1
         end = heading_positions[idx + 1] if idx + 1 < len(heading_positions) else len(lines)
-        body_lines = [
-            ln for ln in lines[start:end]
-            if not _PAGE_MARKER_RE.search(ln)
-        ]
+        body_lines = [ln for ln in lines[start:end] if not _PAGE_MARKER_RE.search(ln)]
         node.text_content = "\n".join(body_lines).strip()
 
     return headings

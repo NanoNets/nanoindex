@@ -65,6 +65,7 @@ Return a JSON array of IDs:"""
 # Node-id parsing helper
 # ------------------------------------------------------------------
 
+
 def _parse_node_ids(text: str) -> list[str]:
     """Robustly extract a JSON array of node-id strings from LLM output."""
     text = text.strip()
@@ -95,6 +96,7 @@ def _parse_node_ids(text: str) -> list[str]:
 # Fuzzy node resolution — walk up the ID hierarchy on miss
 # ------------------------------------------------------------------
 
+
 def _resolve_node(structure: list[TreeNode], nid: str) -> TreeNode | None:
     """Try *nid*, then progressively strip trailing segments to find an ancestor.
 
@@ -116,6 +118,7 @@ def _resolve_node(structure: list[TreeNode], nid: str) -> TreeNode | None:
 # ------------------------------------------------------------------
 # Single-pass search
 # ------------------------------------------------------------------
+
 
 async def _single_pass_search(
     query: str,
@@ -139,6 +142,7 @@ async def _single_pass_search(
 # ------------------------------------------------------------------
 # Layer-by-layer search
 # ------------------------------------------------------------------
+
 
 def _outline_for_nodes(nodes: list[TreeNode]) -> str:
     """Build an outline string showing only the given nodes (one level)."""
@@ -213,6 +217,7 @@ async def _layer_search(
 # Public API
 # ------------------------------------------------------------------
 
+
 async def search(
     query: str,
     tree: DocumentTree,
@@ -232,7 +237,8 @@ async def search(
     else:
         logger.info(
             "Outline is %d tokens (budget %d) — using layer-by-layer search",
-            outline_tokens, _CONTEXT_BUDGET,
+            outline_tokens,
+            _CONTEXT_BUDGET,
         )
         node_ids = await _layer_search(query, tree, llm)
 

@@ -1,4 +1,5 @@
 """Filesystem-safe slug generation."""
+
 import re
 
 

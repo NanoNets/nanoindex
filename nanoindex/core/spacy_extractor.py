@@ -43,12 +43,17 @@ _SPACY_TYPE_MAP = {
 def _load_spacy():
     """Load spaCy model, downloading automatically if not present."""
     import spacy
+
     try:
         return spacy.load("en_core_web_sm")
     except OSError:
         logger.info("Downloading spaCy model en_core_web_sm (~15MB, one-time)...")
-        import subprocess, sys
-        subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm", "--quiet"])
+        import subprocess
+        import sys
+
+        subprocess.check_call(
+            [sys.executable, "-m", "spacy", "download", "en_core_web_sm", "--quiet"]
+        )
         return spacy.load("en_core_web_sm")
 
 
@@ -76,7 +81,11 @@ def _extract_svo_triples(doc) -> list[tuple[str, str, str]]:
                     obj = child.text
                     # Expand to include compound nouns
                     obj_phrase = " ".join(
-                        [c.text for c in child.subtree if c.dep_ in ("compound", "amod", "det") or c == child]
+                        [
+                            c.text
+                            for c in child.subtree
+                            if c.dep_ in ("compound", "amod", "det") or c == child
+                        ]
                     )
                     if obj_phrase:
                         obj = obj_phrase
@@ -143,27 +152,31 @@ def extract_entities_spacy(tree: DocumentTree) -> DocumentGraph:
             obj_norm = _normalize_name(obj).lower()
 
             if subj_norm in entity_mentions and obj_norm in entity_mentions:
-                relationships.append({
-                    "source": entity_mentions[subj_norm]["name"],
-                    "target": entity_mentions[obj_norm]["name"],
-                    "keywords": verb,
-                    "node_id": node.node_id,
-                })
+                relationships.append(
+                    {
+                        "source": entity_mentions[subj_norm]["name"],
+                        "target": entity_mentions[obj_norm]["name"],
+                        "keywords": verb,
+                        "node_id": node.node_id,
+                    }
+                )
 
         # --- Co-occurrence: entities in the same sentence are related ---
         for sent in doc.sents:
             sent_ents = [e for e in sent.ents if _normalize_name(e.text).lower() in entity_mentions]
             for i, e1 in enumerate(sent_ents):
-                for e2 in sent_ents[i + 1:]:
+                for e2 in sent_ents[i + 1 :]:
                     n1 = _normalize_name(e1.text)
                     n2 = _normalize_name(e2.text)
                     if n1.lower() != n2.lower():
-                        relationships.append({
-                            "source": entity_mentions[n1.lower()]["name"],
-                            "target": entity_mentions[n2.lower()]["name"],
-                            "keywords": "co-occurs with",
-                            "node_id": node.node_id,
-                        })
+                        relationships.append(
+                            {
+                                "source": entity_mentions[n1.lower()]["name"],
+                                "target": entity_mentions[n2.lower()]["name"],
+                                "keywords": "co-occurs with",
+                                "node_id": node.node_id,
+                            }
+                        )
 
     # --- Deduplicate relationships ---
     seen_rels = set()
@@ -187,25 +200,31 @@ def extract_entities_spacy(tree: DocumentTree) -> DocumentGraph:
             descs = sorted(info["descriptions"], key=len)
             desc = descs[0] if descs else ""
 
-        entities.append(Entity(
-            name=info["name"],
-            entity_type=info["type"],
-            description=desc[:200],
-            source_node_ids=sorted(info["node_ids"]),
-        ))
+        entities.append(
+            Entity(
+                name=info["name"],
+                entity_type=info["type"],
+                description=desc[:200],
+                source_node_ids=sorted(info["node_ids"]),
+            )
+        )
 
     rels = []
     for r in unique_rels:
-        rels.append(Relationship(
-            source=r["source"],
-            target=r["target"],
-            keywords=r["keywords"],
-            source_node_ids=[r["node_id"]],
-        ))
+        rels.append(
+            Relationship(
+                source=r["source"],
+                target=r["target"],
+                keywords=r["keywords"],
+                source_node_ids=[r["node_id"]],
+            )
+        )
 
     logger.info(
         "spaCy extraction: %d entities, %d relationships from %d nodes",
-        len(entities), len(rels), len(all_nodes),
+        len(entities),
+        len(rels),
+        len(all_nodes),
     )
 
     return DocumentGraph(

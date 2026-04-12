@@ -31,8 +31,7 @@ def build_citations(
     citations: list[Citation] = []
     for rn in nodes:
         pages = (
-            list(range(rn.node.start_index, rn.node.end_index + 1))
-            if rn.node.start_index else []
+            list(range(rn.node.start_index, rn.node.end_index + 1)) if rn.node.start_index else []
         )
 
         # Use bboxes from the node (content-level after _attach_content_bboxes)
@@ -49,12 +48,14 @@ def build_citations(
             page_set = set(pages)
             dims = [pd for pd in tree.page_dimensions if pd.page in page_set]
 
-        citations.append(Citation(
-            node_id=rn.node.node_id,
-            title=rn.node.title,
-            doc_name=rn.doc_name,
-            pages=pages,
-            bounding_boxes=bboxes,
-            page_dimensions=dims,
-        ))
+        citations.append(
+            Citation(
+                node_id=rn.node.node_id,
+                title=rn.node.title,
+                doc_name=rn.doc_name,
+                pages=pages,
+                bounding_boxes=bboxes,
+                page_dimensions=dims,
+            )
+        )
     return citations

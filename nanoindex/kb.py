@@ -19,7 +19,10 @@ import json
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from nanoindex.models import DocumentGraph, DocumentTree
 
 # numpy imported lazily in methods that need it
 
@@ -133,6 +136,7 @@ class KnowledgeBase:
         # Wiki compile
         try:
             from nanoindex.core import wiki_compiler
+
             wiki_compiler.incremental_update(
                 wiki_path=self.path,
                 new_doc=kb_doc,
@@ -152,12 +156,12 @@ class KnowledgeBase:
 
         # Log
         from nanoindex.utils.tree_ops import iter_nodes
+
         node_count = len(list(iter_nodes(tree.structure)))
         entity_count = len(graph.entities) if graph else 0
         self._append_log(
             "ingest",
-            f"{doc_name} (from cached tree)\n"
-            f"Added {node_count} nodes, {entity_count} entities.\n",
+            f"{doc_name} (from cached tree)\nAdded {node_count} nodes, {entity_count} entities.\n",
         )
         return kb_doc
 
@@ -190,6 +194,7 @@ class KnowledgeBase:
             emb_path = self._data_dir / emb_rel
             emb_path.parent.mkdir(parents=True, exist_ok=True)
             import numpy as np
+
             np.savez(emb_path, **{k: np.array(v) for k, v in emb_data.items()})
 
         # 4. Add tree to DocumentStore
@@ -215,13 +220,18 @@ class KnowledgeBase:
         # 6. Try wiki compiler (lazy import — may not exist yet)
         try:
             from nanoindex.core import wiki_compiler
+
             wiki_compiler.incremental_update(
                 wiki_path=self.path,
                 new_doc=kb_doc,
                 new_tree=tree,
                 new_graph=graph,
                 config=self._config,
-                all_graphs={d.doc_id: self._load_graph(d) for d in self._config.documents if self._graph_path(d).exists()},
+                all_graphs={
+                    d.doc_id: self._load_graph(d)
+                    for d in self._config.documents
+                    if self._graph_path(d).exists()
+                },
             )
         except Exception:
             logger.debug("Wiki update failed; skipping", exc_info=True)
@@ -231,6 +241,7 @@ class KnowledgeBase:
 
         # 8. Append to activity log
         from nanoindex.utils.tree_ops import iter_nodes
+
         all_nodes = list(iter_nodes(tree.structure))
         entity_count = len(graph.entities) if graph else 0
         concept_names = list(self._config.concept_index.keys())[-5:]
@@ -268,10 +279,14 @@ class KnowledgeBase:
         query_slug = slugify(question)
         try:
             from nanoindex.knowledge import wiki_compiler  # type: ignore[import-untyped]
+
             query_dir = self._data_dir / "queries"
             query_dir.mkdir(parents=True, exist_ok=True)
             wiki_compiler.compile_query_page(
-                self.path, question, answer, query_slug,
+                self.path,
+                question,
+                answer,
+                query_slug,
             )
         except (ImportError, ModuleNotFoundError):
             logger.debug("wiki_compiler not available; skipping query page")
@@ -290,9 +305,7 @@ class KnowledgeBase:
                             existing += "\n## Recent Queries\n"
                         query_link = f"\n- [[queries/{query_slug}|{question}]]"
                         if query_link.strip() not in existing:
-                            concept_path.write_text(
-                                existing + query_link + "\n", encoding="utf-8"
-                            )
+                            concept_path.write_text(existing + query_link + "\n", encoding="utf-8")
         except Exception:
             logger.debug("Concept page update on ask failed; skipping", exc_info=True)
 
@@ -300,8 +313,7 @@ class KnowledgeBase:
         cited = ", ".join(c.title for c in answer.citations[:3]) if answer.citations else "none"
         self._append_log(
             "ask",
-            f"{question}\n"
-            f"Answer: {answer.content[:100]}. Cited: {cited}. Filed to queries/.\n",
+            f"{question}\nAnswer: {answer.content[:100]}. Cited: {cited}. Filed to queries/.\n",
         )
 
         return answer
@@ -328,7 +340,11 @@ class KnowledgeBase:
         """Return summary statistics for the knowledge base."""
         num_docs = len(self._config.documents)
         num_concepts = len(self._config.concept_index)
-        num_queries = len(list((self._data_dir / "queries").glob("*.json"))) if (self._data_dir / "queries").exists() else 0
+        num_queries = (
+            len(list((self._data_dir / "queries").glob("*.json")))
+            if (self._data_dir / "queries").exists()
+            else 0
+        )
 
         total_entities = 0
         total_relationships = 0
@@ -462,6 +478,7 @@ class KnowledgeBase:
                 emb_path = self._data_dir / doc.embeddings_path
                 if emb_path.exists():
                     import numpy as np
+
                     loaded = np.load(emb_path)
                     self._ni._node_embeddings[doc.doc_name] = {
                         k: loaded[k].tolist() for k in loaded.files

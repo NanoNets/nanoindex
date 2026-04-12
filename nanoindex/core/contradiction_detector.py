@@ -23,9 +23,10 @@ def find_contradictions(graphs: dict[str, DocumentGraph]) -> list[dict]:
 
         # Check for numeric contradictions
         import re
+
         numbers_per_doc: dict[str, list[str]] = {}
         for doc, desc in descriptions:
-            nums = re.findall(r'\$?[\d,]+\.?\d*%?', desc)
+            nums = re.findall(r"\$?[\d,]+\.?\d*%?", desc)
             if nums:
                 numbers_per_doc[doc] = nums
 
@@ -39,11 +40,13 @@ def find_contradictions(graphs: dict[str, DocumentGraph]) -> list[dict]:
                 for j in range(i + 1, len(num_sets))
             )
             if has_discrepancy:
-                contradictions.append({
-                    "entity": entity_key,
-                    "type": "numeric_discrepancy",
-                    "descriptions": descriptions,
-                    "numbers": numbers_per_doc,
-                })
+                contradictions.append(
+                    {
+                        "entity": entity_key,
+                        "type": "numeric_discrepancy",
+                        "descriptions": descriptions,
+                        "numbers": numbers_per_doc,
+                    }
+                )
 
     return contradictions

@@ -53,12 +53,16 @@ class NanoIndexConfig(BaseModel):
     max_node_tokens: int = Field(default=20_000, ge=100)
     max_node_pages: int = Field(default=10, ge=1)
     parser: str = "nanonets"  # "nanonets" or "pymupdf"
-    use_v2_api: bool = False  # V1 is default (better tree structure). V2 adds bboxes but weaker hierarchy.
-    use_hierarchy_api: bool = True  # Hierarchy API — single call, rich output with summaries + entities
+    use_v2_api: bool = (
+        False  # V1 is default (better tree structure). V2 adds bboxes but weaker hierarchy.
+    )
+    use_hierarchy_api: bool = (
+        True  # Hierarchy API — single call, rich output with summaries + entities
+    )
     financial_doc: bool = False  # Enable financial-specific prompts in hierarchy API
     hierarchy_include_summaries: bool = True  # Generate summaries in hierarchy API
     hierarchy_include_entities: bool = True  # Extract entities in hierarchy API
-    doc_mode: str = "auto"    # "auto", "tree", "table", "form" — auto-detects by default
+    doc_mode: str = "auto"  # "auto", "tree", "table", "form" — auto-detects by default
     split_strategy: str = "hybrid"  # "heuristic", "llm", or "hybrid"
 
     add_summaries: bool = True
@@ -69,14 +73,14 @@ class NanoIndexConfig(BaseModel):
     # Graph + embedding settings
     # Graph requires a reasoning LLM (set reasoning_llm_model to enable)
     # Embeddings use a local model (no API key needed)
-    build_graph: bool = False         # Set True to build entity graph during indexing
-    build_embeddings: bool = False    # Enable for fast mode retrieval
+    build_graph: bool = False  # Set True to build entity graph during indexing
+    build_embeddings: bool = False  # Enable for fast mode retrieval
     embedding_model: str = "local:all-MiniLM-L6-v2"
     embedding_api_key: str | None = None
     embedding_base_url: str = "https://api.openai.com/v1"
-    graph_hops: int = 2               # Expansion depth for graph traversal
-    fast_top_k_embed: int = 20        # Tier 1: embedding candidates
-    fast_top_k_final: int = 10        # Tier 2: LLM final selection
+    graph_hops: int = 2  # Expansion depth for graph traversal
+    fast_top_k_embed: int = 20  # Tier 1: embedding candidates
+    fast_top_k_final: int = 10  # Tier 2: LLM final selection
 
     @model_validator(mode="after")
     def _resolve_defaults(self) -> "NanoIndexConfig":

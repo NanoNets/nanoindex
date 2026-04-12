@@ -58,7 +58,11 @@ def build_nx_graph(graph_data: DocumentGraph) -> Any:
             source_node_ids=set(rel.source_node_ids),
         )
 
-    logger.info("Built graph: %d entity nodes, %d relationship edges", G.number_of_nodes(), G.number_of_edges())
+    logger.info(
+        "Built graph: %d entity nodes, %d relationship edges",
+        G.number_of_nodes(),
+        G.number_of_edges(),
+    )
     return G
 
 
@@ -137,7 +141,11 @@ def graph_expand(
 
     new_nodes = expanded_node_ids - seed_node_ids
     if new_nodes:
-        logger.info("Graph expansion: %d seed entities → %d expanded → %d new tree nodes",
-                    len(seed_entities), len(expanded_entities), len(new_nodes))
+        logger.info(
+            "Graph expansion: %d seed entities → %d expanded → %d new tree nodes",
+            len(seed_entities),
+            len(expanded_entities),
+            len(new_nodes),
+        )
 
     return expanded_node_ids

@@ -28,7 +28,9 @@ _POLL_INTERVAL = 2.0
 class NanonetsClient:
     """Async client for the Nanonets document APIs."""
 
-    def __init__(self, api_key: str, *, base_url: str = _BASE_URL, timeout: float = _DEFAULT_TIMEOUT) -> None:
+    def __init__(
+        self, api_key: str, *, base_url: str = _BASE_URL, timeout: float = _DEFAULT_TIMEOUT
+    ) -> None:
         self._api_key = api_key
         self._base_url = base_url.rstrip("/")
         self._timeout = timeout
@@ -72,7 +74,9 @@ class NanonetsClient:
                     resp = await client.request(method, path, data=data, files=files)
 
                 if resp.status_code == 429:
-                    retry_after = float(resp.headers.get("Retry-After", _BACKOFF_BASE ** (attempt + 1)))
+                    retry_after = float(
+                        resp.headers.get("Retry-After", _BACKOFF_BASE ** (attempt + 1))
+                    )
                     if attempt < _MAX_RETRIES - 1:
                         logger.warning("Rate limited (429), retrying in %.1fs …", retry_after)
                         await asyncio.sleep(retry_after)
@@ -82,7 +86,9 @@ class NanonetsClient:
                 if resp.status_code >= 500:
                     if attempt < _MAX_RETRIES - 1:
                         wait = _BACKOFF_BASE ** (attempt + 1)
-                        logger.warning("Server error %d, retrying in %.1fs …", resp.status_code, wait)
+                        logger.warning(
+                            "Server error %d, retrying in %.1fs …", resp.status_code, wait
+                        )
                         await asyncio.sleep(wait)
                         continue
 
@@ -93,7 +99,11 @@ class NanonetsClient:
                     )
 
                 if resp.status_code == 400:
-                    body = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+                    body = (
+                        resp.json()
+                        if resp.headers.get("content-type", "").startswith("application/json")
+                        else {}
+                    )
                     detail = body.get("detail", resp.text[:200])
                     raise ExtractionError(f"Bad request: {detail}")
 
@@ -104,7 +114,9 @@ class NanonetsClient:
                 last_exc = exc
                 if attempt < _MAX_RETRIES - 1:
                     wait = _BACKOFF_BASE ** (attempt + 1)
-                    logger.warning("Connection error: %s. Retrying in %.1fs …", type(exc).__name__, wait)
+                    logger.warning(
+                        "Connection error: %s. Retrying in %.1fs …", type(exc).__name__, wait
+                    )
                     await asyncio.sleep(wait)
                     continue
                 raise ExtractionError(
@@ -135,6 +147,7 @@ class NanonetsClient:
             fields["custom_instructions"] = custom_instructions
         if extraction_options:
             import json as _json
+
             fields["extraction_options"] = _json.dumps(extraction_options)
         return fields
 
@@ -149,11 +162,15 @@ class NanonetsClient:
     ) -> dict[str, Any]:
         """Synchronous extraction — blocks until result is ready."""
         path = Path(file_path)
-        fields = self._build_extract_fields(output_format, json_options, include_metadata, custom_instructions)
+        fields = self._build_extract_fields(
+            output_format, json_options, include_metadata, custom_instructions
+        )
 
         with open(path, "rb") as f:
             files = {"file": (path.name, f, "application/octet-stream")}
-            resp = await self._request_with_retry("POST", "/api/v1/extract/sync", data=fields, files=files)
+            resp = await self._request_with_retry(
+                "POST", "/api/v1/extract/sync", data=fields, files=files
+            )
 
         return resp.json()
 
@@ -169,7 +186,9 @@ class NanonetsClient:
         """Synchronous extraction from in-memory bytes (single-page PDFs)."""
         fields = self._build_extract_fields(output_format, json_options, include_metadata)
         files = {"file": (filename, file_bytes, "application/pdf")}
-        resp = await self._request_with_retry("POST", "/api/v1/extract/sync", data=fields, files=files)
+        resp = await self._request_with_retry(
+            "POST", "/api/v1/extract/sync", data=fields, files=files
+        )
         return resp.json()
 
     async def extract_async(
@@ -184,11 +203,15 @@ class NanonetsClient:
     ) -> str:
         """Asynchronous extraction — returns a ``record_id`` for polling."""
         path = Path(file_path)
-        fields = self._build_extract_fields(output_format, json_options, include_metadata, custom_instructions, extraction_options)
+        fields = self._build_extract_fields(
+            output_format, json_options, include_metadata, custom_instructions, extraction_options
+        )
 
         with open(path, "rb") as f:
             files = {"file": (path.name, f, "application/octet-stream")}
-            resp = await self._request_with_retry("POST", "/api/v1/extract/async", data=fields, files=files)
+            resp = await self._request_with_retry(
+                "POST", "/api/v1/extract/async", data=fields, files=files
+            )
 
         data = resp.json()
         record_id = data.get("record_id") or data.get("id", "")
@@ -250,7 +273,9 @@ class NanonetsClient:
         client = await self._ensure_client()
         with open(path, "rb") as f:
             files = {"file": (path.name, f, "application/octet-stream")}
-            async with client.stream("POST", "/api/v1/extract/stream", data=fields, files=files) as resp:
+            async with client.stream(
+                "POST", "/api/v1/extract/stream", data=fields, files=files
+            ) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():
                     if line.startswith("data:"):
@@ -283,21 +308,27 @@ class NanonetsClient:
 
         if use_async:
             record_id = await self.extract_async(
-                path, output_format=output_format,
-                json_options=json_options, include_metadata=include_metadata,
+                path,
+                output_format=output_format,
+                json_options=json_options,
+                include_metadata=include_metadata,
             )
             return await self.poll_result(record_id)
 
         try:
             return await self.extract_sync(
-                path, output_format=output_format,
-                json_options=json_options, include_metadata=include_metadata,
+                path,
+                output_format=output_format,
+                json_options=json_options,
+                include_metadata=include_metadata,
             )
         except ExtractionError:
             logger.info("Sync extraction failed — falling back to async")
             record_id = await self.extract_async(
-                path, output_format=output_format,
-                json_options=json_options, include_metadata=include_metadata,
+                path,
+                output_format=output_format,
+                json_options=json_options,
+                include_metadata=include_metadata,
             )
             return await self.poll_result(record_id)
 
@@ -317,7 +348,9 @@ class NanonetsClient:
         with open(path, "rb") as f:
             files = {"file": (path.name, f, "application/octet-stream")}
             data = {"categories": _json.dumps(categories)}
-            resp = await self._request_with_retry("POST", "/api/v1/classify/sync", data=data, files=files)
+            resp = await self._request_with_retry(
+                "POST", "/api/v1/classify/sync", data=data, files=files
+            )
 
         result = resp.json()
         pages = result.get("result", {}).get("pages", [])

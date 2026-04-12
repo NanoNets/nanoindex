@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field, model_validator
 # Bounding box / layout metadata
 # ---------------------------------------------------------------------------
 
+
 class BoundingBox(BaseModel):
     """Normalised coordinates for a single detected region on a page."""
 
@@ -37,6 +38,7 @@ class PageDimensions(BaseModel):
 # ---------------------------------------------------------------------------
 # Extraction result (output of Nanonets API)
 # ---------------------------------------------------------------------------
+
 
 class HierarchyTable(BaseModel):
     id: str = ""
@@ -122,6 +124,7 @@ class ExtractionResult(BaseModel):
 # Parsed document (universal output from any parser)
 # ---------------------------------------------------------------------------
 
+
 class ModalContent(BaseModel):
     """A non-text element extracted from a document."""
 
@@ -151,6 +154,7 @@ class ParsedDocument(BaseModel):
                 md = str(md) if md else ""
             data["markdown"] = md
         return data
+
     pages: list[str] = Field(default_factory=list)  # per-page text
     page_count: int = 0
     modal_contents: list[ModalContent] = Field(default_factory=list)
@@ -179,6 +183,7 @@ class ParsedDocument(BaseModel):
 # Tree nodes (the core index structure)
 # ---------------------------------------------------------------------------
 
+
 class TreeNode(BaseModel):
     """A single node in the document tree index."""
 
@@ -200,7 +205,9 @@ class DocumentTree(BaseModel):
 
     doc_name: str
     doc_description: str | None = None
-    domain: str | None = None  # "sec_10k", "sec_10q", "earnings", "financial", "legal", "medical", "generic"
+    domain: str | None = (
+        None  # "sec_10k", "sec_10q", "earnings", "financial", "legal", "medical", "generic"
+    )
     extraction_metadata: dict[str, Any] = Field(default_factory=dict)
     structure: list[TreeNode] = Field(default_factory=list)
     all_bounding_boxes: list[BoundingBox] = Field(default_factory=list)
@@ -208,12 +215,15 @@ class DocumentTree(BaseModel):
 
     @property
     def is_financial(self) -> bool:
-        return self.domain in ("sec_10k", "sec_10q", "earnings", "financial") if self.domain else False
+        return (
+            self.domain in ("sec_10k", "sec_10q", "earnings", "financial") if self.domain else False
+        )
 
 
 # ---------------------------------------------------------------------------
 # Retrieval / generation models
 # ---------------------------------------------------------------------------
+
 
 class RetrievedNode(BaseModel):
     """A tree node selected during tree search, enriched with content."""
@@ -245,6 +255,7 @@ class Answer(BaseModel):
 # ---------------------------------------------------------------------------
 # Graph models (entity-relationship layer)
 # ---------------------------------------------------------------------------
+
 
 class Entity(BaseModel):
     """An entity extracted from one or more tree nodes."""
@@ -297,6 +308,7 @@ class ExtractedForm(BaseModel):
 # Knowledge Base models
 # ---------------------------------------------------------------------------
 
+
 class KBDocument(BaseModel):
     """Metadata for a document tracked by the KnowledgeBase."""
 
@@ -322,6 +334,7 @@ class KBConfig(BaseModel):
 # ---------------------------------------------------------------------------
 # Self-correcting extraction models
 # ---------------------------------------------------------------------------
+
 
 class ValidationResult(BaseModel):
     """Result of validating extracted data against document anchors."""

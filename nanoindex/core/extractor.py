@@ -49,7 +49,10 @@ _DEFAULT_CONCURRENCY = 25
 # Response parsers
 # ------------------------------------------------------------------
 
-def _parse_markdown_response(resp: dict[str, Any]) -> tuple[str, list[BoundingBox], list[PageDimensions]]:
+
+def _parse_markdown_response(
+    resp: dict[str, Any],
+) -> tuple[str, list[BoundingBox], list[PageDimensions]]:
     """Extract markdown text, bounding boxes, and page dims from a response."""
     markdown = ""
     bboxes: list[BoundingBox] = []
@@ -69,24 +72,28 @@ def _parse_markdown_response(resp: dict[str, Any]) -> tuple[str, list[BoundingBo
 
         for el in bb_meta.get("elements", []):
             bb = el.get("bounding_box") or el
-            bboxes.append(BoundingBox(
-                page=bb.get("page", 1),
-                x=bb.get("x", 0),
-                y=bb.get("y", 0),
-                width=bb.get("width", 0),
-                height=bb.get("height", 0),
-                confidence=bb.get("confidence", 1.0),
-                region_type=bb.get("type", "unknown"),
-                text=el.get("content") or bb.get("text"),
-            ))
+            bboxes.append(
+                BoundingBox(
+                    page=bb.get("page", 1),
+                    x=bb.get("x", 0),
+                    y=bb.get("y", 0),
+                    width=bb.get("width", 0),
+                    height=bb.get("height", 0),
+                    confidence=bb.get("confidence", 1.0),
+                    region_type=bb.get("type", "unknown"),
+                    text=el.get("content") or bb.get("text"),
+                )
+            )
 
         pd_meta = bb_meta.get("page_dimensions") or {}
         for pg in pd_meta.get("pages", []):
-            page_dims.append(PageDimensions(
-                page=pg.get("page", 1),
-                width=pg.get("width", 0),
-                height=pg.get("height", 0),
-            ))
+            page_dims.append(
+                PageDimensions(
+                    page=pg.get("page", 1),
+                    width=pg.get("width", 0),
+                    height=pg.get("height", 0),
+                )
+            )
     else:
         markdown = str(md_obj)
 
@@ -114,13 +121,15 @@ def _parse_toc_response(resp: dict[str, Any]) -> list[TOCEntry]:
     hierarchy = content.get("hierarchy", [])
     entries: list[TOCEntry] = []
     for h in hierarchy:
-        entries.append(TOCEntry(
-            id=h.get("id", ""),
-            title=h.get("title", ""),
-            level=h.get("level", 1),
-            page=h.get("page", 0),
-            parent_ids=h.get("parent_ids", []),
-        ))
+        entries.append(
+            TOCEntry(
+                id=h.get("id", ""),
+                title=h.get("title", ""),
+                level=h.get("level", 1),
+                page=h.get("page", 0),
+                parent_ids=h.get("parent_ids", []),
+            )
+        )
     return entries
 
 
@@ -181,6 +190,7 @@ def _parse_sections(raw: list[dict[str, Any]]) -> list[HierarchySection]:
 # Hierarchy v2 (beta pipeline) response parser
 # ------------------------------------------------------------------
 
+
 def _parse_hierarchy_v2_sections(raw: list[dict[str, Any]]) -> list[HierarchySection]:
     """Recursively parse sections from the beta hierarchy_output API."""
     sections: list[HierarchySection] = []
@@ -230,9 +240,13 @@ def _parse_hierarchy_v2_sections(raw: list[dict[str, Any]]) -> list[HierarchySec
             if rel_type == "?":
                 rel_type = "related_to"
             if src and tgt:
-                relationships.append(HierarchyRelationship(
-                    source=src, target=tgt, rel_type=rel_type,
-                ))
+                relationships.append(
+                    HierarchyRelationship(
+                        source=src,
+                        target=tgt,
+                        rel_type=rel_type,
+                    )
+                )
 
         section = HierarchySection(
             id=s.get("id", ""),
@@ -301,16 +315,18 @@ def _parse_hierarchy_v2_response(resp: dict[str, Any]) -> ExtractionResult:
                 if not bb_data or not isinstance(bb_data, dict):
                     continue
                 pg = bb_data.get("page", sec.page or 0)
-                bboxes.append(BoundingBox(
-                    page=pg,
-                    x=bb_data.get("x", 0),
-                    y=bb_data.get("y", 0),
-                    width=bb_data.get("width", 0),
-                    height=bb_data.get("height", 0),
-                    confidence=bb_data.get("confidence", 1.0),
-                    region_type="heading" if bb_data is sec.title_bounding_box else "content",
-                    text=sec.title if bb_data is sec.title_bounding_box else None,
-                ))
+                bboxes.append(
+                    BoundingBox(
+                        page=pg,
+                        x=bb_data.get("x", 0),
+                        y=bb_data.get("y", 0),
+                        width=bb_data.get("width", 0),
+                        height=bb_data.get("height", 0),
+                        confidence=bb_data.get("confidence", 1.0),
+                        region_type="heading" if bb_data is sec.title_bounding_box else "content",
+                        text=sec.title if bb_data is sec.title_bounding_box else None,
+                    )
+                )
                 img_dims = bb_data.get("image_dimensions") or {}
                 if img_dims and pg and pg not in page_dims_set:
                     page_dims_set[pg] = PageDimensions(
@@ -349,6 +365,7 @@ def _parse_hierarchy_v2_response(resp: dict[str, Any]) -> ExtractionResult:
 # ------------------------------------------------------------------
 # Single-page extraction helper (for page-parallel)
 # ------------------------------------------------------------------
+
 
 async def _extract_single_page(
     page_num: int,
@@ -389,6 +406,7 @@ def _remap_page_result(
 # Strategy A: Small documents (<=5 pages) — one combined sync call
 # ------------------------------------------------------------------
 
+
 async def _extract_small(
     file_path: Path,
     client: NanonetsClient,
@@ -416,8 +434,12 @@ async def _extract_small(
         page_count = pp
 
     elapsed = time.monotonic() - t0
-    logger.info("Small-doc extraction done in %.1fs — %d chars, %d TOC entries",
-                elapsed, len(markdown), len(toc))
+    logger.info(
+        "Small-doc extraction done in %.1fs — %d chars, %d TOC entries",
+        elapsed,
+        len(markdown),
+        len(toc),
+    )
 
     return ExtractionResult(
         markdown=markdown,
@@ -433,6 +455,7 @@ async def _extract_small(
 # Strategy B: Large documents (>5 pages) — hybrid parallel + async TOC
 # ------------------------------------------------------------------
 
+
 async def _page_parallel_markdown(
     file_path: Path,
     client: NanonetsClient,
@@ -447,10 +470,7 @@ async def _page_parallel_markdown(
     logger.info("Page-parallel: %d pages, concurrency=%d", total_pages, concurrency)
 
     sem = asyncio.Semaphore(concurrency)
-    tasks = [
-        _extract_single_page(pn, pb, client, sem)
-        for pn, pb in pages
-    ]
+    tasks = [_extract_single_page(pn, pb, client, sem) for pn, pb in pages]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     all_md: list[tuple[int, str]] = []
@@ -508,13 +528,17 @@ async def _extract_large(
     toc_task = _async_toc(file_path, client)
 
     (markdown, bboxes, page_dims, total_pages, failed), toc = await asyncio.gather(
-        md_task, toc_task,
+        md_task,
+        toc_task,
     )
 
     elapsed = time.monotonic() - t0
     logger.info(
         "Hybrid extraction done in %.1fs — %d/%d pages, %d TOC entries",
-        elapsed, total_pages - failed, total_pages, len(toc),
+        elapsed,
+        total_pages - failed,
+        total_pages,
+        len(toc),
     )
 
     return ExtractionResult(
@@ -530,6 +554,7 @@ async def _extract_large(
 # ------------------------------------------------------------------
 # Strategy C: Hierarchy API (beta pipeline) — single async call
 # ------------------------------------------------------------------
+
 
 async def _extract_hierarchy(
     file_path: Path,
@@ -566,7 +591,9 @@ async def _extract_hierarchy(
     elapsed = time.monotonic() - t0
     logger.info(
         "Hierarchy extraction done in %.1fs — %d pages, %d sections",
-        elapsed, result.page_count, len(result.hierarchy_sections),
+        elapsed,
+        result.page_count,
+        len(result.hierarchy_sections),
     )
     result.processing_time = round(elapsed, 2)
     return result
@@ -575,6 +602,7 @@ async def _extract_hierarchy(
 # ------------------------------------------------------------------
 # Public API
 # ------------------------------------------------------------------
+
 
 async def extract_document(
     file_path: str | Path,
@@ -598,13 +626,15 @@ async def extract_document(
 
     if use_hierarchy:
         return await _extract_hierarchy(
-            path, client,
+            path,
+            client,
             financial_doc=financial_doc,
             include_summaries=include_summaries,
             include_entities=include_entities,
         )
 
     from nanoindex.utils.pdf import get_page_count
+
     pages = get_page_count(path)
     logger.info("Document has %d pages", pages)
 
