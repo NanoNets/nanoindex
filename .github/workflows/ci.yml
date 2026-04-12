@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install -e ".[dev]"
+      - run: pip install -e ".[dev]" pytest-timeout
       - run: python -m spacy download en_core_web_sm
       - run: pytest tests/ -x -q --timeout=60
         env:
