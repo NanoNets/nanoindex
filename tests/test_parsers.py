@@ -12,6 +12,7 @@ def test_parser_registry():
 
 def test_base_parser_is_abstract():
     import pytest
+
     with pytest.raises(TypeError):
         BaseParser()
 
@@ -29,6 +30,7 @@ def test_nanonets_parser_instantiation():
 # ---------------------------------------------------------------------------
 # PyMuPDF parser tests
 # ---------------------------------------------------------------------------
+
 
 def test_pymupdf_registered():
     """PyMuPDF parser must appear in the registry."""
@@ -68,20 +70,27 @@ def test_pymupdf_parse_pdf():
 # NanoIndex integration with pymupdf parser
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.skipif(not FIXTURE_PDF.exists(), reason="Test PDF fixture not available")
 def test_nanoindex_pymupdf_integration():
     """NanoIndex with parser='pymupdf' should index a PDF and produce a valid tree."""
     from nanoindex import NanoIndex
     from nanoindex.config import NanoIndexConfig
+    from nanoindex.exceptions import ConfigError
 
     config = NanoIndexConfig(
         parser="pymupdf",
         add_summaries=False,
         add_doc_description=False,
         split_strategy="heuristic",
+        use_hierarchy_api=False,
     )
-    ni = NanoIndex(config=config)
-    tree = ni.index(FIXTURE_PDF)
+    try:
+        ni = NanoIndex(config=config)
+        tree = ni.index(FIXTURE_PDF)
+    except ConfigError:
+        pytest.skip("No LLM API key available for tree refinement")
+        return
 
     assert tree.doc_name == FIXTURE_PDF.stem
     assert len(tree.structure) > 0
