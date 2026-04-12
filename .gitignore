@@ -25,27 +25,8 @@ results/
 pdf_images/
 *.json.bak
 
-# Benchmark data and caches (large, not for distribution)
-benchmarks/cache/
-benchmarks/cache_v2/
-benchmarks/cache_v3/
-benchmarks/data/
-benchmarks/embed_cache/
-benchmarks/graph_cache/
-benchmarks/extraction_cache/
-benchmarks/mmlongbench_extraction_cache/
-benchmarks/docbench_tree_cache/
-benchmarks/docbench_legal_tree_cache/
-benchmarks/mmlongbench_tree_cache/
-# Benchmark raw outputs (large, per-sample predictions)
-benchmarks/results_*/answers.jsonl
-benchmarks/*.jsonl
-benchmarks/*_results.json
-benchmarks/failure_diagnostics.json
-benchmarks/fix3_results.json
-benchmarks/fix4_results.json
-benchmarks/docbench_legal_pdfs.txt
-benchmarks/re_enrich.py
+# Benchmarks (run locally, not distributed)
+benchmarks/
 
 # Test outputs
 tests/output/
