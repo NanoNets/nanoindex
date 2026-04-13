@@ -571,12 +571,21 @@ async def _extract_hierarchy(
     """
     t0 = time.monotonic()
 
-    extraction_options = {
+    extraction_options: dict[str, Any] = {
         "pipeline": "beta",
         "financial_doc": financial_doc,
         "include_summaries": include_summaries,
         "include_entities": include_entities,
     }
+
+    if include_summaries:
+        extraction_options["custom_summary_prompt"] = (
+            "Write a retrieval-optimized summary (max 60 words). "
+            "Lead with the MOST IMPORTANT number or fact, not a description. "
+            "Include specific dollar amounts, percentages, growth rates. "
+            "If there is a table, list every row label. "
+            "NEVER start with 'This section' or 'The section'."
+        )
 
     record_id = await client.extract_async(
         file_path,

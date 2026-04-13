@@ -21,12 +21,14 @@ from nanoindex.utils.tree_ops import iter_nodes
 logger = logging.getLogger(__name__)
 
 _SUMMARY_PROMPT_FINANCE = """\
-Summarize this section in TWO parts (max 60 words total):
-1. One sentence describing the section.
-2. Key data items: list the specific metrics, line items, or data points \
-present (e.g. revenue, net income, total assets, capex, operating cash flow, \
-gross margin, EPS, shares outstanding). If the section contains a financial \
-table, list every row label visible.
+Write a retrieval-optimized summary (max 60 words). Rules:
+- Lead with the MOST IMPORTANT number or fact, not a description.
+- Include specific dollar amounts, percentages, and growth rates.
+- If there is a table, list every row label.
+- NEVER start with "This section" or "The section".
+
+BAD: "This section discusses revenue performance."
+GOOD: "Net revenue was $280.5B in 2019, up 20% YoY. Operating income was $14.5B (5.2% margin). Includes: net sales, cost of sales, operating expenses, operating income."
 
 Title: {title}
 Content: {content}
@@ -34,10 +36,14 @@ Content: {content}
 Summary:"""
 
 _SUMMARY_PROMPT_GENERAL = """\
-Summarize this section in TWO parts (max 60 words total):
-1. One sentence describing what this section covers.
-2. Key items: list the specific topics, entities, data points, or findings \
-present. If the section contains a table, list every column header visible.
+Write a retrieval-optimized summary (max 60 words). Rules:
+- Lead with the KEY FINDING or CONCLUSION, not a description.
+- Include specific names, dates, numbers, and outcomes.
+- If there is a table, list every column header.
+- NEVER start with "This section" or "The section".
+
+BAD: "This section covers the company's risk factors."
+GOOD: "Key risks: intense competition across retail/cloud/media, international expansion challenges, inventory management complexity. 15 risk categories spanning operational, financial, and regulatory domains."
 
 Title: {title}
 Content: {content}
