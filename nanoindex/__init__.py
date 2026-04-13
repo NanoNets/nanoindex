@@ -400,6 +400,13 @@ class NanoIndex:
                 # Fallback: local NER (GLiNER/spaCy)
                 await self.async_build_graph(tree, parsed_document)
 
+            # Add cross-reference edges (Section X.Y -> Section A.B)
+            graph = self._graphs.get(tree.doc_name)
+            if graph:
+                from nanoindex.core.graph_builder import add_cross_references
+
+                add_cross_references(graph, tree.structure)
+
         # Build node embeddings (default: on)
         if self.config.build_embeddings:
             await self.async_build_embeddings(tree)

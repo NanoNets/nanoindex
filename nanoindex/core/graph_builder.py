@@ -193,6 +193,94 @@ def build_graph_from_hierarchy(
 
 
 # ------------------------------------------------------------------
+# Cross-reference resolution
+# ------------------------------------------------------------------
+
+# Patterns that match internal document references
+_XREF_PATTERNS = [
+    re.compile(r"\bSection\s+(\d+(?:\.\d+)*(?:\([a-z]\))?)", re.IGNORECASE),
+    re.compile(r"\bClause\s+(\d+(?:\.\d+)*(?:\([a-z]\))?)", re.IGNORECASE),
+    re.compile(r"\bArticle\s+(\d+(?:\.\d+)*)", re.IGNORECASE),
+    re.compile(r"\bItem\s+(\d+[A-Z]?(?:\.\d+)?)", re.IGNORECASE),
+    re.compile(r"\bNote\s+(\d+)", re.IGNORECASE),
+    re.compile(r"\bExhibit\s+(\d+(?:\.\d+)*)", re.IGNORECASE),
+    re.compile(r"\bSchedule\s+(\d+(?:\.\d+)*)", re.IGNORECASE),
+    re.compile(r"\bPart\s+([IVX]+)", re.IGNORECASE),
+]
+
+
+def add_cross_references(
+    graph: DocumentGraph,
+    tree_nodes: list,
+) -> DocumentGraph:
+    """Scan tree node text for internal references and add graph edges.
+
+    Detects patterns like "Section 3.1", "Clause 5(b)", "Article 19",
+    "Item 1A", "Note 7", "Exhibit 4.6" and creates ``references``
+    relationships between the node containing the reference and the
+    node whose title matches the referenced section.
+
+    Modifies *graph* in-place and returns it.
+    """
+    from nanoindex.utils.tree_ops import iter_nodes
+
+    all_nodes = list(iter_nodes(tree_nodes))
+
+    # Build lookup: normalized reference label -> node_id
+    # e.g. "section 3.1" -> "0004", "item 1a" -> "0012"
+    label_to_node: dict[str, str] = {}
+    for node in all_nodes:
+        title = (node.title or "").strip()
+        for pattern in _XREF_PATTERNS:
+            m = pattern.match(title)
+            if m:
+                label = pattern.pattern.split(r"\s+")[0].strip("\\b").lower()
+                ref_id = f"{label} {m.group(1)}".lower()
+                label_to_node[ref_id] = node.node_id
+                break
+
+    if not label_to_node:
+        return graph
+
+    # Scan all node text for references
+    xref_count = 0
+    seen: set[tuple[str, str]] = set()
+
+    for node in all_nodes:
+        text = node.text or ""
+        if not text:
+            continue
+
+        for pattern in _XREF_PATTERNS:
+            for m in pattern.finditer(text):
+                label = pattern.pattern.split(r"\s+")[0].strip("\\b").lower()
+                ref_id = f"{label} {m.group(1)}".lower()
+                target_node_id = label_to_node.get(ref_id)
+
+                if target_node_id and target_node_id != node.node_id:
+                    edge_key = (node.node_id, target_node_id)
+                    if edge_key not in seen:
+                        seen.add(edge_key)
+                        graph.relationships.append(
+                            Relationship(
+                                source=node.title,
+                                target=next(
+                                    (n.title for n in all_nodes if n.node_id == target_node_id),
+                                    ref_id,
+                                ),
+                                keywords="references",
+                                source_node_ids=[node.node_id, target_node_id],
+                            )
+                        )
+                        xref_count += 1
+
+    if xref_count:
+        logger.info("Added %d cross-reference edges to graph", xref_count)
+
+    return graph
+
+
+# ------------------------------------------------------------------
 # Build NetworkX graph from DocumentGraph
 # ------------------------------------------------------------------
 

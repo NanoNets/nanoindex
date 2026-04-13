@@ -41,6 +41,21 @@ Text (first {char_limit} characters):
 
 JSON:"""
 
+_PROPOSITION_PROMPT = """\
+Extract atomic propositions from the following text. Each proposition must:
+- Make a single, complete factual claim
+- Stand alone without needing other propositions
+- Preserve specific numbers, dates, names, and references exactly
+
+Return a JSON array of strings. Group related facts (max 3 per group) to \
+avoid excessive fragmentation.
+
+Title: {title}
+Text (first {char_limit} characters):
+{text}
+
+JSON:"""
+
 _MAX_CONCURRENT = 3
 _MAX_REFINE_PASSES = 4
 _LLM_CHAR_LIMIT = 40_000
@@ -123,6 +138,20 @@ async def _split_node(
     ):
         if await _try_llm_split(node, llm):
             logger.info("Phase B (LLM) split '%s' into %d children", node.title, len(node.nodes))
+            return True
+
+    # Phase C: proposition extraction — for dense text without structure
+    if (
+        config.split_strategy in ("llm", "hybrid")
+        and node.text
+        and count_tokens(node.text) > config.max_node_tokens
+    ):
+        if await _try_proposition_split(node, llm):
+            logger.info(
+                "Phase C (propositions) split '%s' into %d children",
+                node.title,
+                len(node.nodes),
+            )
             return True
 
     # Fallback: paragraph chunking
@@ -307,6 +336,71 @@ def _split_text_evenly(node: TreeNode, titles: list[str]) -> bool:
     if node.nodes:
         node.text = None
         _estimate_child_pages(node)
+        return True
+    return False
+
+
+# ------------------------------------------------------------------
+# Phase C — proposition extraction
+# ------------------------------------------------------------------
+
+
+async def _try_proposition_split(node: TreeNode, llm: LLMClient) -> bool:
+    """Extract atomic propositions from dense text and create child nodes.
+
+    Each proposition is a self-contained factual claim that can be
+    independently retrieved. Related facts are grouped (max 3 per node)
+    to avoid excessive fragmentation.
+    """
+    if not node.text:
+        return False
+
+    prompt = _PROPOSITION_PROMPT.format(
+        title=node.title,
+        char_limit=_LLM_CHAR_LIMIT,
+        text=node.text[:_LLM_CHAR_LIMIT],
+    )
+
+    try:
+        response = await llm.chat(
+            [{"role": "user", "content": prompt}],
+            temperature=0.0,
+            max_tokens=4096,
+        )
+        propositions = _parse_json_titles(response)
+    except Exception:
+        logger.warning("Proposition extraction failed for '%s'", node.title, exc_info=True)
+        return False
+
+    if len(propositions) < 2:
+        return False
+
+    # Create a child node per proposition (or proposition group)
+    for i, prop in enumerate(propositions):
+        prop = prop.strip()
+        if not prop:
+            continue
+        # Use first ~60 chars as title, full text as content
+        title = prop[:60] + ("..." if len(prop) > 60 else "")
+        node.nodes.append(
+            TreeNode(
+                title=title,
+                level=node.level + 1,
+                text=prop,
+                start_index=node.start_index,
+                end_index=node.end_index,
+            )
+        )
+
+    if node.nodes:
+        # Keep original text on parent for context, clear for token savings
+        node.text = None
+        _estimate_child_pages(node)
+        logger.info(
+            "Extracted %d propositions from '%s'",
+            len(node.nodes),
+            node.title[:40],
+        )
         return True
     return False
 
