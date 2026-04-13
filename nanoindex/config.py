@@ -71,9 +71,9 @@ class NanoIndexConfig(BaseModel):
     summary_model: str | None = None
 
     # Graph + embedding settings
-    # Graph requires a reasoning LLM (set reasoning_llm_model to enable)
-    # Embeddings use a local model (no API key needed)
-    build_graph: bool = False  # Set True to build entity graph during indexing
+    # Graph is built from API-extracted entities (zero cost with hierarchy API)
+    # Falls back to local NER (GLiNER/spaCy) when API entities unavailable
+    build_graph: bool = True  # Entity graph for graph-based retrieval
     build_embeddings: bool = False  # Enable for fast mode retrieval
     embedding_model: str = "local:all-MiniLM-L6-v2"
     embedding_api_key: str | None = None
