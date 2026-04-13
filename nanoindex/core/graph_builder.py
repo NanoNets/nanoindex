@@ -2,15 +2,30 @@
 
 The graph connects entities as nodes and relationships as edges.
 Each entity node stores which tree node_ids it appears in, enabling
-efficient entity→tree_node lookup for retrieval.
+efficient entity->tree_node lookup for retrieval.
+
+Two build paths:
+  1. **From API entities** (``build_graph_from_hierarchy``) - uses entities
+     and relationships extracted by the hierarchy API during indexing.
+     Fast (milliseconds), high quality (Gemini-extracted semantic relations).
+  2. **From local NER** (GLiNER/spaCy in ``entity_extractor.py``) - runs
+     NER locally on every node's text.  Slower, used as fallback when
+     hierarchy API entities are not available.
 """
 
 from __future__ import annotations
 
 import logging
+import re
+from difflib import SequenceMatcher
 from typing import Any
 
-from nanoindex.models import DocumentGraph
+from nanoindex.models import (
+    DocumentGraph,
+    Entity,
+    HierarchySection,
+    Relationship,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +38,163 @@ except ImportError:
 def _require_nx():
     if nx is None:
         raise ImportError("pip install networkx — required for graph mode")
+
+
+# ------------------------------------------------------------------
+# Relationship type normalization
+# ------------------------------------------------------------------
+
+_REL_SYNONYMS: dict[str, str] = {
+    "incorporated_in": "operates_in",
+    "incorporated in": "operates_in",
+    "located_at": "located_in",
+    "located at": "located_in",
+    "is_title": "holds_title",
+    "has_title": "holds_title",
+    "is_president_of": "holds_title",
+    "is_vice_president_cfo_and_treasurer_of": "holds_title",
+    "representative_of": "represents",
+    "submits to jurisdiction of": "submits_to_jurisdiction",
+    "operates as": "acts_as",
+    "serves_as_trustee_for": "acts_as",
+    "formerly known as": "formerly_known_as",
+    "dated as of": "in_period",
+    "title": "holds_title",
+    "is_officer_of": "works_for",
+    "employed_by": "works_for",
+    "is_cfo_of": "works_for",
+    "is_vice_president_of": "works_for",
+}
+
+_DROP_REL_TYPES = {"?", "related_to", ""}
+
+
+def _normalize_rel_type(raw: str) -> str | None:
+    """Normalize a relationship type string. Returns None if it should be dropped."""
+    cleaned = raw.strip().lower().replace(" ", "_")
+    if cleaned in _DROP_REL_TYPES:
+        return None
+    return _REL_SYNONYMS.get(raw.strip().lower(), cleaned)
+
+
+def _fuzzy_match(a: str, b: str) -> bool:
+    """Check if two entity names are near-duplicates (e.g. 'PepsiCo' vs 'PepsiCo, Inc.')."""
+    a_clean = re.sub(r"[,.\s]+(Inc|Corp|LLC|Ltd|plc|Co)\.?$", "", a.strip(), flags=re.IGNORECASE)
+    b_clean = re.sub(r"[,.\s]+(Inc|Corp|LLC|Ltd|plc|Co)\.?$", "", b.strip(), flags=re.IGNORECASE)
+    if a_clean.lower() == b_clean.lower():
+        return True
+    return SequenceMatcher(None, a.lower(), b.lower()).ratio() > 0.9
+
+
+# ------------------------------------------------------------------
+# Build graph from hierarchy API entities (fast path)
+# ------------------------------------------------------------------
+
+
+def build_graph_from_hierarchy(
+    sections: list[HierarchySection],
+    doc_name: str,
+) -> DocumentGraph:
+    """Build an entity graph directly from API-extracted entities and relationships.
+
+    Walks all sections recursively, merges entities by name (with fuzzy
+    dedup for suffixes like ', Inc.'), normalizes relationship types,
+    and drops noise relationships ('related_to', '?').
+
+    Returns a ``DocumentGraph`` ready for graph search and retrieval.
+    """
+    raw_entities: dict[str, Entity] = {}  # lowercase name -> Entity
+    raw_relationships: list[Relationship] = []
+    # For fuzzy dedup: canonical name lookup
+    canonical: dict[str, str] = {}  # lowercase_variant -> canonical_name
+
+    def _canonical_name(name: str) -> str:
+        """Find or register the canonical form of an entity name."""
+        key = name.strip().lower()
+        if key in canonical:
+            return canonical[key]
+        # Check fuzzy match against existing names
+        for existing_key, existing_canonical in canonical.items():
+            if _fuzzy_match(name, existing_canonical):
+                canonical[key] = existing_canonical
+                return existing_canonical
+        # New entity
+        canonical[key] = name.strip()
+        return name.strip()
+
+    def _walk(secs: list[HierarchySection], parent_node_id: str = "") -> None:
+        for sec in secs:
+            node_id = sec.id or parent_node_id
+
+            # Collect entities
+            for e in sec.entities:
+                canon = _canonical_name(e.name)
+                key = canon.lower()
+                if key in raw_entities:
+                    if node_id and node_id not in raw_entities[key].source_node_ids:
+                        raw_entities[key].source_node_ids.append(node_id)
+                    # Keep longer description
+                    if len(e.value) > len(raw_entities[key].description):
+                        raw_entities[key].description = e.value
+                else:
+                    raw_entities[key] = Entity(
+                        name=canon,
+                        entity_type=e.entity_type,
+                        description=e.value,
+                        source_node_ids=[node_id] if node_id else [],
+                    )
+
+            # Collect relationships
+            for r in sec.relationships:
+                rel_type = _normalize_rel_type(r.rel_type)
+                if rel_type is None:
+                    continue  # drop noise
+                src = _canonical_name(r.source)
+                tgt = _canonical_name(r.target)
+                if src and tgt and src.lower() != tgt.lower():
+                    raw_relationships.append(
+                        Relationship(
+                            source=src,
+                            target=tgt,
+                            keywords=rel_type,
+                            source_node_ids=[node_id] if node_id else [],
+                        )
+                    )
+
+            _walk(sec.subsections, node_id)
+
+    _walk(sections)
+
+    # Deduplicate relationships (same source+target+type)
+    seen_rels: dict[tuple[str, str, str], Relationship] = {}
+    for r in raw_relationships:
+        key = (r.source.lower(), r.target.lower(), r.keywords)
+        if key in seen_rels:
+            for nid in r.source_node_ids:
+                if nid not in seen_rels[key].source_node_ids:
+                    seen_rels[key].source_node_ids.append(nid)
+        else:
+            seen_rels[key] = r
+
+    entities = list(raw_entities.values())
+    relationships = list(seen_rels.values())
+
+    logger.info(
+        "Graph from API: %d entities, %d relationships (from %d sections)",
+        len(entities),
+        len(relationships),
+        len(canonical),
+    )
+    return DocumentGraph(
+        doc_name=doc_name,
+        entities=entities,
+        relationships=relationships,
+    )
+
+
+# ------------------------------------------------------------------
+# Build NetworkX graph from DocumentGraph
+# ------------------------------------------------------------------
 
 
 def build_nx_graph(graph_data: DocumentGraph) -> Any:

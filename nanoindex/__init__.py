@@ -381,9 +381,24 @@ class NanoIndex:
 
         tree = disambiguate_titles(tree)
 
-        # Build entity graph (default: on)
+        # Build entity graph
         if self.config.build_graph:
-            await self.async_build_graph(tree, parsed_document)
+            # Fast path: use API-extracted entities if available (hierarchy pipeline)
+            if extraction.hierarchy_sections and any(
+                s.entities for s in extraction.hierarchy_sections
+            ):
+                from nanoindex.core.graph_builder import build_graph_from_hierarchy
+
+                graph = build_graph_from_hierarchy(extraction.hierarchy_sections, tree.doc_name)
+                self._graphs[tree.doc_name] = graph
+                logger.info(
+                    "Graph from API: %d entities, %d relationships",
+                    len(graph.entities),
+                    len(graph.relationships),
+                )
+            else:
+                # Fallback: local NER (GLiNER/spaCy)
+                await self.async_build_graph(tree, parsed_document)
 
         # Build node embeddings (default: on)
         if self.config.build_embeddings:
