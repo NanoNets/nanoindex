@@ -26,7 +26,7 @@
 | Benchmark | Accuracy |
 |---|---|
 | **FinanceBench** (84 SEC filings, avg 143 pages) | **95%** |
-| **DocBench Legal** (51 court filings, avg 54 pages) | **96.0%** |
+| **DocBench Legal** (51 court filings, avg 54 pages) | **96%** |
 
 If NanoIndex is useful, a ⭐ helps others find it.
 
